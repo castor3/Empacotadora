@@ -1,0 +1,207 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{FB7FDB2D-944F-44E6-BF04-6819BCAB3B14}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>Empacotadora</RootNamespace>
+    <AssemblyName>Empacotadora</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="Brushes.cs" />
+    <Compile Include="General.cs" />
+    <Compile Include="History.cs" />
+    <Compile Include="OrderDetails.cs" />
+    <Compile Include="Recipes.cs" />
+    <Compile Include="Win_Calculator.xaml.cs">
+      <DependentUpon>Win_Calculator.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Win_Keypad.xaml.cs">
+      <DependentUpon>Win_Keypad.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Win_Main.xaml.cs">
+      <DependentUpon>Win_Main.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Win_Orders.xaml.cs">
+      <DependentUpon>Win_Orders.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Win_Calculator.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Win_Init.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Win_Init.xaml.cs">
+      <DependentUpon>Win_Init.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Include="Win_Keypad.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Win_Main.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Win_Orders.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Ferpinta Logo.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\calculadora.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\atado4.png" />
+    <Resource Include="Resources\atado5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\atado2.png" />
+    <Resource Include="Resources\atado3.png" />
+    <Resource Include="Resources\atado6.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Manual\Active\Wrapper\A_TrasportQueue.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Manual\Active\Storage\A_LiftChains.bmp" />
+    <Resource Include="Resources\Manual\Active\Storage\A_StorageChains.bmp" />
+    <Resource Include="Resources\Manual\Active\Storage\A_Drain.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Manual\Active\Strapper\A_TrasportLat.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Manual\Active\Strapper\A_CarRolls.bmp" />
+    <Resource Include="Resources\Manual\Active\Strapper\A_Car.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Manual\Active\Wrapper\A_AlignmentRolls.bmp" />
+    <Resource Include="Resources\Manual\Active\Wrapper\A_BatenteAllinFile.bmp" />
+    <Resource Include="Resources\Manual\Active\Wrapper\A_ControsagomeMecc.bmp" />
+    <Resource Include="Resources\Manual\Active\Wrapper\A_ControsagomePneum_lateral.bmp" />
+    <Resource Include="Resources\Manual\Active\Wrapper\A_ControsagomePneum_lower.bmp" />
+    <Resource Include="Resources\Manual\Active\Wrapper\A_ControsagomePneum_upper.bmp" />
+    <Resource Include="Resources\Manual\Active\Wrapper\A_Loader.bmp" />
+    <Resource Include="Resources\Manual\Active\Wrapper\A_Shelves.bmp" />
+    <Resource Include="Resources\Manual\Active\Wrapper\A_Tilt.bmp" />
+    <Resource Include="Resources\Manual\Active\Wrapper\A_TransportChain.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Manual\Normal\Storage\Drain.bmp" />
+    <Resource Include="Resources\Manual\Normal\Storage\LiftChains.bmp" />
+    <Resource Include="Resources\Manual\Normal\Storage\StorageChains.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Manual\Normal\Strapper\Car.bmp" />
+    <Resource Include="Resources\Manual\Normal\Strapper\TrasportLat.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Manual\Normal\Wrapper\AlignmentRolls.bmp" />
+    <Resource Include="Resources\Manual\Normal\Wrapper\BatenteAllinFile.bmp" />
+    <Resource Include="Resources\Manual\Normal\Wrapper\ControsagomeMecc.bmp" />
+    <Resource Include="Resources\Manual\Normal\Wrapper\ControsagomePneum_lateral.bmp" />
+    <Resource Include="Resources\Manual\Normal\Wrapper\ControsagomePneum_lower.bmp" />
+    <Resource Include="Resources\Manual\Normal\Wrapper\ControsagomePneum_upper.bmp" />
+    <Resource Include="Resources\Manual\Normal\Wrapper\Loader.bmp" />
+    <Resource Include="Resources\Manual\Normal\Wrapper\Shelves.bmp" />
+    <Resource Include="Resources\Manual\Normal\Wrapper\Tilt.bmp" />
+    <Resource Include="Resources\Manual\Normal\Wrapper\TransportChain.bmp" />
+    <Resource Include="Resources\Manual\Normal\Wrapper\TrasportQueue.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Manual\Normal\Strapper\CarRolls.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Manual\Normal\Storage\StorageChains-Withdrawal.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Manual\Active\Storage\A_StorageChains-Withdrawal.bmp" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

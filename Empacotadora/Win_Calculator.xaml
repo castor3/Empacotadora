@@ -1,0 +1,31 @@
+﻿<Window x:Class="Empacotadora.Win_Calculator"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Empacotadora"
+        mc:Ignorable="d"
+        Title="Calculadora" Height="381.916" Width="305.084" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" ShowInTaskbar="False">
+    <Grid Background="White" Margin="0">
+        <Button Content="7" HorizontalAlignment="Left" Margin="11,131,0,0" VerticalAlignment="Top" Width="61" Height="45" FontSize="18" BorderThickness="2,2,2,1" Click="Button_Click_1"></Button>
+        <TextBox Height="51" TextWrapping="Wrap" VerticalAlignment="Top" Margin="10,15,0,0" HorizontalAlignment="Left" Width="267" FontSize="22" Background="#FFDDDDDD" BorderThickness="2" Name="tbResult" Text="" BorderBrush="#FF707070"></TextBox>
+        <Button Content="8" HorizontalAlignment="Left" Margin="79,131,0,0" VerticalAlignment="Top" Width="61" Height="45" FontSize="18" BorderThickness="2" Click="Button_Click_1"></Button>
+        <Button Content="9" HorizontalAlignment="Left" Margin="148,131,0,0" VerticalAlignment="Top" Width="60" Height="45" FontSize="18" BorderThickness="2" Click="Button_Click_1"></Button>
+        <Button Content="/" HorizontalAlignment="Left" Margin="215,131,0,0" VerticalAlignment="Top" Width="62" Height="45" FontSize="18" BorderThickness="2" Click="Button_Click_1"></Button>
+        <Button Content="4" HorizontalAlignment="Left" Margin="11,183,0,0" VerticalAlignment="Top" Width="61" Height="46" FontSize="18" BorderThickness="2" Click="Button_Click_1"></Button>
+        <Button Content="5" HorizontalAlignment="Left" Margin="79,183,0,0" VerticalAlignment="Top" Width="61" Height="46" FontSize="18" BorderThickness="2" Click="Button_Click_1"></Button>
+        <Button Content="6" HorizontalAlignment="Left" Margin="148,183,0,0" VerticalAlignment="Top" Width="60" Height="46" FontSize="18" BorderThickness="2" Click="Button_Click_1"></Button>
+        <Button Content="*" HorizontalAlignment="Left" Margin="215,183,0,0" VerticalAlignment="Top" Width="62" Height="46" FontSize="18" BorderThickness="2" Click="Button_Click_1"></Button>
+        <Button Content="1" HorizontalAlignment="Left" Margin="11,235,0,0" VerticalAlignment="Top" Width="61" Height="45" FontSize="18" BorderThickness="2" Click="Button_Click_1"></Button>
+        <Button Content="2" HorizontalAlignment="Left" Margin="79,235,0,0" VerticalAlignment="Top" Width="61" Height="45" FontSize="18" BorderThickness="2" Click="Button_Click_1"></Button>
+        <Button Content="3" HorizontalAlignment="Left" Margin="148,235,0,0" VerticalAlignment="Top" Width="60" Height="45" FontSize="18" BorderThickness="2" Click="Button_Click_1"></Button>
+        <Button Content="-" HorizontalAlignment="Left" Margin="215,235,0,0" VerticalAlignment="Top" Width="62" Height="45" FontSize="18" BorderThickness="2" Click="Button_Click_1"></Button>
+        <Button Content="0" HorizontalAlignment="Left" Margin="11,287,0,0" VerticalAlignment="Top" Width="61" Height="45" FontSize="18" BorderThickness="2" Click="Button_Click_1"></Button>
+        <Button Content="=" HorizontalAlignment="Left" Margin="130,287,0,0" VerticalAlignment="Top" Width="78" Height="45" FontSize="18" BorderThickness="2" Click="Result_click"></Button>
+        <Button Content="+" HorizontalAlignment="Left" Margin="215,287,0,0" VerticalAlignment="Top" Width="62" Height="45" FontSize="18" BorderThickness="2" Click="Button_Click_1"></Button>
+        <Button Content="Sair" HorizontalAlignment="Left" Margin="148,79,0,0" VerticalAlignment="Top" Width="129" Height="45" FontSize="18" BorderThickness="2" Click="btnSair_Click"></Button>
+        <Button Content="Del" HorizontalAlignment="Left" Margin="11,79,0,0" VerticalAlignment="Top" Width="61" Height="45" FontSize="18" BorderThickness="2" Click="Del_Click"></Button>
+        <Button Content="C" HorizontalAlignment="Left" Margin="79,79,0,0" VerticalAlignment="Top" Width="61" Height="45" FontSize="18" BorderThickness="2" Click="C_Click"></Button>
+        <Button Content="," HorizontalAlignment="Left" Margin="79,287,0,0" VerticalAlignment="Top" Width="44" Height="45" FontSize="18" BorderThickness="2" Click="Button_Click_1"/>
+    </Grid>
+</Window>
