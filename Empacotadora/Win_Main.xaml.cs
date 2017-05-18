@@ -1209,21 +1209,30 @@ namespace Empacotadora {
 			}
 			catch (ArgumentOutOfRangeException)
 			{
-				UpdateStatusBar("Para continuar selecione uma receita", 1);
 			}
 			return datagridRow;
 		}
 		private void btnRecipeEdit_Click(object sender, RoutedEventArgs e)
 		{
-			btnRecipeEdit.IsEnabled = false;
-			btnRecipeRoundTube.IsEnabled = false;
-			btnRecipeSquareTube.IsEnabled = false;
-			List<TextBox> textBoxes = GetTextBoxesFromGrids();
-			foreach (var item in textBoxes)
+			try
 			{
-				item.Background = Brushes.yellowBrush;
-				item.IsReadOnly = false;
-				item.Focusable = true;
+				var test1 = datagridRecipes.Items[datagridRecipes.SelectedIndex];
+				test1 = datagridRecipes.Items[datagridRecipes.SelectedIndex];
+				btnRecipeEdit.IsEnabled = false;
+				btnRecipeRoundTube.IsEnabled = false;
+				btnRecipeSquareTube.IsEnabled = false;
+				btnReturn.IsEnabled = false;
+				List<TextBox> textBoxes = GetTextBoxesFromGrids();
+				foreach (var item in textBoxes)
+				{
+					item.Background = Brushes.yellowBrush;
+					item.IsReadOnly = false;
+					item.Focusable = true;
+				}
+			}
+			catch (ArgumentOutOfRangeException)
+			{
+				UpdateStatusBar("Para continuar selecione uma receita", 1);
 			}
 		}
 		private void btnRecipeSave(object sender, RoutedEventArgs e)
@@ -1247,13 +1256,15 @@ namespace Empacotadora {
 					{
 						array[1] = tbRecipeBigRow.Text;
 						array[2] = tbRecipeSmallRow.Text;
+						foreach (var value in array)
+							newline += value + ",";
+						newline = newline.Remove(newline.Length - 1);
 					}
-					foreach (var value in array)
-						newline += value + ",";
-					newline.Remove(newline.Length - 1);
 					newFileContent.Add(newline == "" ? item : newline);
 				}
 				UpdateStatusBar(General.WriteToFile(pathRoundTubes, newFileContent));
+				datagridRecipes.ItemsSource = null;
+				datagridRecipes.ItemsSource = Recipes.ReadTubeRecipesFromFile(pathRoundTubes);
 			}
 			else
 			{
@@ -1269,13 +1280,13 @@ namespace Empacotadora {
 						array[array.Length - 2] = tbRecipeColums.Text;
 						array[array.Length - 1] = tbRecipeRows.Text;
 						found = true;
+						foreach (var value in array)
+							newline += value + ",";
+						newline = newline.Remove(newline.Length - 1);
 					}
-					foreach (var value in array)
-						newline += value + ",";
-					newline.Remove(newline.Length - 1);
 					newFileContent.Add(newline == "" ? item : newline);
 				}
-				if(found==true)
+				if (found == true)
 					UpdateStatusBar(General.WriteToFile(pathSquareTubes, newFileContent));
 				else
 				{
@@ -1288,24 +1299,27 @@ namespace Empacotadora {
 						{
 							array[array.Length - 2] = tbRecipeColums.Text;
 							array[array.Length - 1] = tbRecipeRows.Text;
+							foreach (var value in array)
+								newline += value + ",";
+							newline = newline.Remove(newline.Length - 1);
 						}
-						foreach (var value in array)
-							newline += value + ",";
-						newline.Remove(newline.Length - 1);
 						newFileContent.Add(newline == "" ? item : newline);
 					}
 					UpdateStatusBar(General.WriteToFile(pathRectTubes, newFileContent));
 				}
+				datagridRecipes.ItemsSource = null;
+				datagridRecipes.ItemsSource = Recipes.ReadTubeRecipesFromFile(pathSquareTubes, pathRectTubes);
 			}
-			datagridRecipes.ItemsSource = null;
-			datagridRecipes.ItemsSource = Recipes.ReadTubeRecipesFromFile(pathRoundTubes);
 			btnRecipeEdit.IsEnabled = true;
+			btnRecipeRoundTube.IsEnabled = true;
+			btnRecipeSquareTube.IsEnabled = true;
 		}
 		private void btnRecipeCancel_Click(object sender, RoutedEventArgs e)
 		{
 			btnRecipeEdit.IsEnabled = true;
 			btnRecipeRoundTube.IsEnabled = true;
 			btnRecipeSquareTube.IsEnabled = true;
+			btnReturn.IsEnabled = true;
 			List<TextBox> textBoxes = GetTextBoxesFromGrids();
 			foreach (var item in textBoxes)
 			{

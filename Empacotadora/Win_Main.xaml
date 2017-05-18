@@ -307,17 +307,17 @@
                     <DataGrid x:Name="datagridRecipes" AlternatingRowBackground="#FF976666" Margin="229,10,605,0" Background="{x:Null}" BorderBrush="{x:Null}" Height="683" UseLayoutRounding="True" FontSize="24" GridLinesVisibility="Vertical" VerticalGridLinesBrush="#FF838383" HeadersVisibility="Column" IsReadOnly="True" VerticalAlignment="Top" AlternationCount="2" SelectionMode="Single" CanUserReorderColumns="False" Width="600" SelectedCellsChanged="datagridRecipes_SelectedCellsChanged"/>
                     <Button x:Name="btnRecipeRoundTube" Content="Redondo" HorizontalAlignment="Left" Margin="47,192,0,0" VerticalAlignment="Top" Width="141" Height="96" FontSize="20" Click="btnRecipeRoundTube_Click"/>
                     <Button x:Name="btnRecipeSquareTube" Content="Quadrado" HorizontalAlignment="Left" Margin="47,326,0,0" VerticalAlignment="Top" Width="141" Height="96" FontSize="20" Click="btnRecipeSquareTube_Click"/>
-                    <Border BorderBrush="Black" BorderThickness="1" Margin="910,192,84,209">
+                    <Border BorderBrush="#FF4B4B4B" BorderThickness="2" Margin="910,192,84,209" Background="#FFA6A6A6">
                         <Grid x:Name="gridRecipes" HorizontalAlignment="Left" Margin="0" Width="439">
                             <Label Content="Nrº tubos" Margin="145,31,144,0" VerticalAlignment="Top" Height="36" FontSize="20" HorizontalAlignment="Center" Width="150"/>
                             <TextBox x:Name="tbRecipeTubes" Height="50" Margin="145,67,144,0" TextWrapping="Wrap" VerticalAlignment="Top" IsReadOnly="True" FontSize="25" Focusable="False"/>
-                            <Grid x:Name="gridRecipesSquareTube" HorizontalAlignment="Left" Height="123" Margin="10,101,0,0" VerticalAlignment="Center" Width="419" Background="#FFDDDDDD">
+                            <Grid x:Name="gridRecipesSquareTube" HorizontalAlignment="Left" Height="123" Margin="10,139,0,38" VerticalAlignment="Center" Width="419" Background="#FFA6A6A6">
                                 <Label Content="Colunas" Margin="46,14,223,0" VerticalAlignment="Top" Height="38" FontSize="20" HorizontalAlignment="Center" Width="150"/>
                                 <TextBox x:Name="tbRecipeColums" TextWrapping="Wrap" Margin="46,52,223,0" FontSize="25" HorizontalAlignment="Center" Width="150" TabIndex="1" Height="50" VerticalAlignment="Top" IsReadOnly="True" Focusable="False"/>
                                 <Label Content="Linhas" Margin="224,14,45,0" VerticalAlignment="Top" Height="38" FontSize="20" HorizontalAlignment="Center" Width="150"/>
                                 <TextBox x:Name="tbRecipeRows" TextWrapping="Wrap" Margin="224,52,45,0" FontSize="25" HorizontalAlignment="Center" Width="150" TabIndex="1" Height="50" VerticalAlignment="Top" IsReadOnly="True" Focusable="False"/>
                             </Grid>
-                            <Grid x:Name="gridRecipesRoundTube" HorizontalAlignment="Left" Margin="10,139,0,38" Width="419" Background="#FFDDDDDD" VerticalAlignment="Center" Height="123">
+                            <Grid x:Name="gridRecipesRoundTube" HorizontalAlignment="Left" Margin="10,139,0,38" Width="419" Background="#FFA6A6A6" VerticalAlignment="Center" Height="123">
                                 <Label Content="Linha grande" Margin="46,14,223,0" VerticalAlignment="Top" Height="38" FontSize="20" HorizontalAlignment="Center" Width="150"/>
                                 <TextBox x:Name="tbRecipeBigRow" TextWrapping="Wrap" Margin="46,52,223,0" FontSize="25" Width="150" TabIndex="1" Height="50" VerticalAlignment="Top" IsReadOnly="True" Focusable="False"/>
                                 <Label Content="Linha pequena" Margin="224,14,45,0" VerticalAlignment="Top" Height="38" FontSize="20" HorizontalAlignment="Center" Width="150"/>
@@ -326,8 +326,8 @@
                         </Grid>
                     </Border>
                     <Button x:Name="btnRecipeEdit" Content="Editar" HorizontalAlignment="Left" Margin="1038,135,0,0" VerticalAlignment="Top" Width="187" Height="52" FontSize="20" Click="btnRecipeEdit_Click"/>
-                    <Button Content="Guardar" HorizontalAlignment="Left" Margin="910,499,0,0" VerticalAlignment="Top" Width="210" Height="48" Click="btnRecipeSave"/>
-                    <Button x:Name="btnRecipeCancel" Content="Cancelar" HorizontalAlignment="Right" Margin="0,499,84,0" VerticalAlignment="Top" Width="210" Height="48" Click="btnRecipeCancel_Click"/>
+                    <Button Content="Guardar" HorizontalAlignment="Left" Margin="910,499,0,0" VerticalAlignment="Top" Width="210" Height="48" Click="btnRecipeSave" FontSize="16"/>
+                    <Button x:Name="btnRecipeCancel" Content="Cancelar" HorizontalAlignment="Right" Margin="0,499,84,0" VerticalAlignment="Top" Width="210" Height="48" Click="btnRecipeCancel_Click" FontSize="16"/>
                 </Grid>
             </TabItem>
         </TabControl>
