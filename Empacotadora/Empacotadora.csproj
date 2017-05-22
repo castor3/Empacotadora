@@ -56,6 +56,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Brushes.cs" />
+    <Compile Include="FER_MairCOMS7.cs" />
     <Compile Include="General.cs" />
     <Compile Include="History.cs" />
     <Compile Include="OrderDetails.cs" />
@@ -202,6 +203,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Manual\Active\Storage\A_StorageChains-Withdrawal.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="MAIRCOMS7.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

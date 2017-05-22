@@ -42,3 +42,4 @@ C:\Users\vs\Documents\Visual Studio 2017\Projects\Empacotadora\Empacotadora\obj\
 C:\Users\vs\Documents\Visual Studio 2017\Projects\Empacotadora\Empacotadora\obj\Debug\Empacotadora.csproj.GenerateResource.Cache
 C:\Users\vs\Documents\Visual Studio 2017\Projects\Empacotadora\Empacotadora\obj\Debug\Empacotadora.exe
 C:\Users\vs\Documents\Visual Studio 2017\Projects\Empacotadora\Empacotadora\obj\Debug\Empacotadora.pdb
+C:\Users\vs\Documents\Visual Studio 2017\Projects\Empacotadora\Empacotadora\obj\Debug\Empacotadora_Content.g.cs

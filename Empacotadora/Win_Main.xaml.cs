@@ -35,9 +35,9 @@ namespace Empacotadora {
 		string pathRectTubes = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\RectTubeRecipes.txt";
 		string pathRoundTubes = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\RoundTubeRecipes.txt";
 
-
 		const int defaultRoundTubeNmbr = 37, defaultdiameter = 65;
 		const int defaultSquareTubeNmbr = 64, defaultWidth = 60, defaultHeight = 60;
+
 
 		public Win_Main()
 		{
@@ -1358,7 +1358,7 @@ namespace Empacotadora {
 
 		private void Button_Click(object sender, RoutedEventArgs e)
 		{
-			UpdateStrapsValues(6000);
+			//lblOrderName.Content = FER_MairCOMS7.ValueOf("Order_
 		}
 	}
 }
