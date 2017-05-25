@@ -23,8 +23,8 @@ namespace Empacotadora
 	/// </summary>
 	public partial class Win_Orders : Window
 	{
-		public bool flagNewOrder = false;
-		public bool flagRecipes = false;
+		public static bool flagNewOrder = false;
+		public static bool flagRecipes = false;
 		
 		public Win_Orders()
 		{
@@ -57,8 +57,6 @@ namespace Empacotadora
 		}
 		private void btnDeleteOrder_Click(object sender, RoutedEventArgs e)
 		{
-			Win_Main WNMain = new Win_Main();
-			string path = WNMain.path;
 			OrderDetails datagridRow = GetDataFromGrid();
 			try
 			{
@@ -67,9 +65,9 @@ namespace Empacotadora
 												 "              " + datagridRow.Name, "Confirmar?", MessageBoxButton.YesNo);
 				if (answer == MessageBoxResult.Yes)
 				{
-					OrderDetails.DeactivateOrder(datagridRow.ID, path);
+					OrderDetails.DeactivateOrder(datagridRow.ID, ref Win_Main.path);
 					datagridOrders.ItemsSource = null;
-					datagridOrders.ItemsSource = OrderDetails.ReadOrdersFromFile(WNMain.path);
+					datagridOrders.ItemsSource = OrderDetails.ReadOrdersFromFile(ref Win_Main.path);
 				}
 			}
 			catch (NullReferenceException)
@@ -130,7 +128,6 @@ namespace Empacotadora
 			flagRecipes = true;
 			Close();
 		}
-		
 		private OrderDetails GetDataFromGrid()
 		{
 			OrderDetails datagridRow = null;
@@ -144,7 +141,6 @@ namespace Empacotadora
 			}
 			return datagridRow;
 		}
-
 		// Green label "load success" timer
 		private void Timer_Tick(object sender, EventArgs e)
 		{
@@ -152,7 +148,6 @@ namespace Empacotadora
 			lblLoadSuccess.Visibility = Visibility.Collapsed;
 			timer.Stop();
 		}
-
 		// Status bar update
 		private void SetStatusBarTimer()
 		{
@@ -193,12 +188,11 @@ namespace Empacotadora
 		}
 		private void SetOrdersListLayout()
 		{
-			Win_Main WNMain = new Win_Main();
 			tabOrders.SelectedItem = tabItemListOrders;
 			lblTitle.Content = "Ordens";
 			try
 			{
-				datagridOrders.ItemsSource = OrderDetails.ReadOrdersFromFile(WNMain.path);
+				datagridOrders.ItemsSource = OrderDetails.ReadOrdersFromFile(ref Win_Main.path);
 			}
 			catch (FileNotFoundException)
 			{

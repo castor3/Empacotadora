@@ -30,6 +30,7 @@ C:\Users\vs\Documents\Visual Studio 2017\Projects\Empacotadora\Empacotadora\obj\
 C:\Users\vs\Documents\Visual Studio 2017\Projects\Empacotadora\Empacotadora\obj\Debug\Win_Main.g.cs
 C:\Users\vs\Documents\Visual Studio 2017\Projects\Empacotadora\Empacotadora\obj\Debug\Win_Orders.g.cs
 C:\Users\vs\Documents\Visual Studio 2017\Projects\Empacotadora\Empacotadora\obj\Debug\App.g.cs
+C:\Users\vs\Documents\Visual Studio 2017\Projects\Empacotadora\Empacotadora\obj\Debug\Empacotadora_Content.g.cs
 C:\Users\vs\Documents\Visual Studio 2017\Projects\Empacotadora\Empacotadora\obj\Debug\Empacotadora_MarkupCompile.cache
 C:\Users\vs\Documents\Visual Studio 2017\Projects\Empacotadora\Empacotadora\obj\Debug\Empacotadora_MarkupCompile.lref
 C:\Users\vs\Documents\Visual Studio 2017\Projects\Empacotadora\Empacotadora\obj\Debug\Win_Calculator.baml
@@ -42,4 +43,3 @@ C:\Users\vs\Documents\Visual Studio 2017\Projects\Empacotadora\Empacotadora\obj\
 C:\Users\vs\Documents\Visual Studio 2017\Projects\Empacotadora\Empacotadora\obj\Debug\Empacotadora.csproj.GenerateResource.Cache
 C:\Users\vs\Documents\Visual Studio 2017\Projects\Empacotadora\Empacotadora\obj\Debug\Empacotadora.exe
 C:\Users\vs\Documents\Visual Studio 2017\Projects\Empacotadora\Empacotadora\obj\Debug\Empacotadora.pdb
-C:\Users\vs\Documents\Visual Studio 2017\Projects\Empacotadora\Empacotadora\obj\Debug\Empacotadora_Content.g.cs

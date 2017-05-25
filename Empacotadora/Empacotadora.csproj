@@ -55,10 +55,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Addresses.cs" />
     <Compile Include="Brushes.cs" />
-    <Compile Include="FER_MairCOMS7.cs" />
+    <Compile Include="FERP_MairCOMS7.cs" />
     <Compile Include="General.cs" />
     <Compile Include="History.cs" />
+    <Compile Include="IBHLinkComm.cs" />
     <Compile Include="OrderDetails.cs" />
     <Compile Include="Recipes.cs" />
     <Compile Include="Win_Calculator.xaml.cs">

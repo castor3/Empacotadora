@@ -59,11 +59,12 @@
     <Grid x:Name="gridGeneral" Height="83" Margin="0" VerticalAlignment="Bottom">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="130"/>
-            <ColumnDefinition Width="50*"/>
+            <ColumnDefinition/>
             <ColumnDefinition Width="130"/>
             <ColumnDefinition Width="130"/>
             <ColumnDefinition Width="130"/>
-            <ColumnDefinition Width="50*"/>
+            <ColumnDefinition Width="130"/>
+            <ColumnDefinition Width="278"/>
             <ColumnDefinition Width="130"/>
         </Grid.ColumnDefinitions>
         <Button x:Name="btnSaveNewOrder" FontSize="20" Click="btnSaveNewOrder_Click">
@@ -72,16 +73,17 @@
         <Button x:Name="btnStorage" Content="Armazém" Grid.Column="4" FontSize="20" Click="btnStorage_Click"/>
         <Button x:Name="btnWrapper" Content="Empacotadora" Grid.Column="2" FontSize="18" Click="btnWrapper_Click" BorderThickness="3"/>
         <Button x:Name="btnStrapper" Content="Cintadora" Grid.Column="3" FontSize="20" Click="btnStrapper_Click" BorderThickness="1,3"/>
+        <Button x:Name="btnPLCConnection" Content="Ligação PLC" Grid.Column="5" FontSize="20" BorderThickness="1,3,3,3" Click="btnPLCConnection_Click"/>
         <Button x:Name="btnOrders" Content="Ordens" FontSize="20" Click="btnOrders_Click"/>
         <Label x:Name="lblTitle" Content="Empacotadora" Grid.Column="2" Margin="113,-785,113,0" VerticalAlignment="Top" FontSize="22" Grid.ColumnSpan="3" Width="164" FontWeight="Bold"/>
-        <Button x:Name="btnReturn" Content="Voltar" Grid.Column="6" FontSize="20" Click="btnReturn_Click"/>
-        <Image x:Name="logoCalculator" Grid.Column="6" HorizontalAlignment="Left" Height="70" Margin="38,-804,0,0" VerticalAlignment="Top" Width="55" Source="Resources/calculadora.png" MouseLeftButtonUp="logoCalculator_MouseLeftButtonUp"/>
+        <Button x:Name="btnReturn" Content="Voltar" Grid.Column="7" FontSize="20" Click="btnReturn_Click"/>
+        <Image x:Name="logoCalculator" Grid.Column="7" HorizontalAlignment="Left" Height="70" Margin="38,-804,0,0" VerticalAlignment="Top" Width="55" Source="Resources/calculadora.png" MouseLeftButtonUp="logoCalculator_MouseLeftButtonUp"/>
         <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="60" Margin="0,-817,0,0" VerticalAlignment="Top" Width="120">
             <TextBlock x:Name="lblDateTime" TextAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" Height="40" Width="95" Padding="0,4,0,0" Margin="0" Background="White" PreviewMouseLeftButtonUp="lblDateTime_PreviewMouseLeftButtonUp"/>
         </Border>
-        <Calendar x:Name="cal" HorizontalAlignment="Left" Margin="120,-825,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Visibility="Collapsed"/>
-        <Button x:Name="btnAbout" Content="Sobre" Grid.Column="5" FontSize="20" Margin="265,0,0,0" Click="btnAbout_Click" BorderThickness="3,3,1,3"/>
-        <TabControl x:Name="tabLayout" HorizontalAlignment="Left" Height="731" Margin="0,-736,0,0" VerticalAlignment="Top" Width="1440" Grid.ColumnSpan="7" BorderBrush="{x:Null}" Background="{x:Null}">
+        <Calendar x:Name="cal" HorizontalAlignment="Left" Margin="120,-825,0,0" VerticalAlignment="Top" Visibility="Collapsed"/>
+        <Button x:Name="btnAbout" Content="Sobre" Grid.Column="6" FontSize="20" Margin="157.333,0,0,0" Click="btnAbout_Click" BorderThickness="3,3,1,3"/>
+        <TabControl x:Name="tabLayout" HorizontalAlignment="Left" Height="731" Margin="0,-736,0,0" VerticalAlignment="Top" Width="1440" Grid.ColumnSpan="8" BorderBrush="{x:Null}" Background="{x:Null}">
             <TabItem x:Name="tabItemWrapper" Header="TabItem">
                 <Grid>
                     <TabControl x:Name="tabWrapper" BorderThickness="0" HorizontalAlignment="Left" Height="670" Margin="3,32,0,0" VerticalAlignment="Top" Width="740" Background="{x:Null}">
@@ -330,6 +332,17 @@
                     <Button x:Name="btnRecipeCancel" Content="Cancelar" HorizontalAlignment="Right" Margin="0,499,84,0" VerticalAlignment="Top" Width="210" Height="48" Click="btnRecipeCancel_Click" FontSize="16"/>
                 </Grid>
             </TabItem>
+            <TabItem x:Name="tabItemPLCConnection" Header="TabItem" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="55">
+                <Grid>
+                    <Label Content="IP Address" HorizontalAlignment="Left" Margin="268,220,0,0" VerticalAlignment="Top" FontSize="20" Padding="5,0"/>
+                    <TextBox x:Name="tbIPAddress" HorizontalAlignment="Left" Height="37" Margin="268,247,0,0" TextWrapping="Wrap" Text="192.168.1.2" VerticalAlignment="Top" Width="171" HorizontalContentAlignment="Left" FontSize="20" VerticalScrollBarVisibility="Auto"/>
+                    <Label Content="MPI Address" HorizontalAlignment="Left" Margin="268,310,0,0" VerticalAlignment="Top" FontSize="20" Padding="5,0"/>
+                    <TextBox x:Name="tbMPIAddress" HorizontalAlignment="Left" Height="37" Margin="268,337,0,0" TextWrapping="Wrap" Text="2" VerticalAlignment="Top" Width="171" HorizontalContentAlignment="Left" FontSize="20" VerticalScrollBarVisibility="Auto"/>
+                    <Label x:Name="lblConnectionStatus" Content="&lt;estado&gt;" HorizontalAlignment="Left" Margin="444,288,0,0" VerticalAlignment="Top" Height="85" Width="151" FontSize="18"/>
+                    <Label Content="Estado" HorizontalAlignment="Left" Margin="444,246,0,0" VerticalAlignment="Top" Height="42" Width="151" FontSize="18" VerticalContentAlignment="Bottom" HorizontalContentAlignment="Left"/>
+
+                </Grid>
+            </TabItem>
         </TabControl>
         <StatusBar HorizontalAlignment="Left" Height="23" Margin="120,-817,0,0" VerticalAlignment="Top" Width="470" Grid.ColumnSpan="3" BorderThickness="0,1,0,0" BorderBrush="Black">
             <StatusBarItem>
@@ -343,7 +356,7 @@
                 <TextBlock><Run Text="Pronto"/></TextBlock>
             </StatusBarItem>
         </StatusBar>
-        <Button x:Name="btnExit" Content="Sair" Grid.Column="6" FontSize="20" Click="btnExit_Click"/>
+        <Button x:Name="btnExit" Content="Sair" Grid.Column="7" FontSize="20" Click="btnExit_Click"/>
         <Button x:Name="btnManual" Content="Manual" HorizontalAlignment="Left" Margin="0,-98,0,0" VerticalAlignment="Top" Width="130" Height="84" Click="btnManual_Click" FontSize="18"/>
         <Border x:Name="borderManualWrap" BorderBrush="Black" BorderThickness="5" HorizontalAlignment="Left" Height="358" Margin="13,-469,0,0" VerticalAlignment="Top" Width="480" Background="#FFDEDEDE" Grid.ColumnSpan="2" Visibility="Collapsed">
             <Border.Effect>
