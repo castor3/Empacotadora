@@ -50,7 +50,6 @@ namespace Empacotadora {
 			//double variableAddress = Addresses.Storage.iPackageNumber.Item1;
 			//string size = Addresses.Storage.iPackageNumber.Item2;
 			//FERP_MairCOMS7.ReadFromDB(ref DBAddress, ref variableAddress, ref size);
-			//MessageBox.Show(double.TryParse("472", NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double test).ToString());
 		}
 		// Main view
 		private void logoCalculator_MouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
@@ -1203,7 +1202,7 @@ namespace Empacotadora {
 			}
 			return textBoxes;
 		}
-		
+
 		private void Button_Click(object sender, RoutedEventArgs e) {
 			UpdateStrapsValues(6000);
 		}
