@@ -22,12 +22,12 @@ namespace Empacotadora {
 	/// </summary>
 	public partial class Win_Main : Window {
 		int lastTube = 0, currentPackage = 0, id;
-		byte margin = 2;
+		const byte margin = 2;
 		bool isRoundTubeActive = false, isSquareTubeActive = false, isHexagonalWrapActive = false, isSquareWrapActive = false;
 		bool isStrapsModifyActive = false;
 		bool isDefaultLayoutActive = false, isStrapperLayoutActive = false, isNewOrderLayoutActive = false, isStorageLayoutActive = false;
 		bool isRecipesLayoutActive = false, isHistoryLayoutActive = false;
-		bool textChanged = false;
+		bool textChanged = false, cellsArePopulated = false, editingRecipe=false;
 		bool isRoundTubeRecipeActive = false;
 		public static string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Orders.txt";
 		string historyPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\PackageHistory.txt";
@@ -107,7 +107,6 @@ namespace Empacotadora {
 				catch (NullReferenceException) { }
 			}
 		}
-
 		private void SetNewOrderEnvironment() {
 			SetNewOrderLayout();
 			SetSqrWrap();
@@ -124,7 +123,6 @@ namespace Empacotadora {
 			}
 			lblID.Content = (++id).ToString();
 		}
-
 		private void btnSaveNewOrder_Click(object sender, RoutedEventArgs e) {
 			UpdateStatusBar(General.WriteToFile(path, GatherTextBoxesValues()));
 			SetDefaultLayout();
@@ -1092,14 +1090,14 @@ namespace Empacotadora {
 			}
 			isRoundTubeRecipeActive = false;
 		}
-		private void ShowTubeRecipesOnDataGrid(ref string path) {
+		private void ShowTubeRecipesOnDataGrid(ref string pathRoundTube) {
 			datagridRecipes.ItemsSource = Recipes.ReadTubeRecipesFromFile(ref path);
 			btnRecipeRoundTube.Background = Brushes.active_back;
 			btnRecipeSquareTube.ClearValue(BackgroundProperty);
 			gridRecipesSquareTube.Visibility = Visibility.Collapsed;
 			gridRecipesRoundTube.Visibility = Visibility.Visible;
 		}
-		private void ShowTubeRecipesOnDataGrid(ref string path1, ref string path2) {
+		private void ShowTubeRecipesOnDataGrid(ref string pathSquareTube, ref string pathRectTube) {
 			datagridRecipes.ItemsSource = Recipes.ReadTubeRecipesFromFile(ref path1, ref path2);
 			btnRecipeSquareTube.Background = Brushes.active_back;
 			btnRecipeRoundTube.ClearValue(BackgroundProperty);
@@ -1107,11 +1105,12 @@ namespace Empacotadora {
 			gridRecipesSquareTube.Visibility = Visibility.Visible;
 		}
 		private void datagridRecipes_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e) {
-			GetDataFromSelectedCells();
+			if (!editingRecipe)
+				cellsArePopulated = GetDataFromSelectedCells();
 		}
 		private void btnRecipeEdit_Click(object sender, RoutedEventArgs e) {
-			try {
-				GetDataFromSelectedCells();
+			if (cellsArePopulated) {
+				editingRecipe = true;
 				List<TextBox> textBoxes = GetTextBoxesFromGrids();
 				foreach (var item in textBoxes) {
 					item.Background = Brushes.yellowBrush;
@@ -1122,18 +1121,26 @@ namespace Empacotadora {
 				btnRecipeRoundTube.IsEnabled = false;
 				btnRecipeSquareTube.IsEnabled = false;
 				btnReturn.IsEnabled = false;
+				btnRecipeSave.Visibility = Visibility.Visible;
+				btnRecipeCancel.Visibility = Visibility.Visible;
 			}
-			catch (ArgumentOutOfRangeException) {
-				UpdateStatusBar("Para editar selecione uma receita", 1);
+			else
+				UpdateStatusBar("Para editar selecione uma ordem", 1);
+		}
+		private void datagridRecipes_PreviewMouseDown(object sender, MouseButtonEventArgs e) {
+			if (editingRecipe) {
+				e.Handled = true;
+				UpdateStatusBar("Para mudar de receita termine de editar a atual", 1);
 			}
 		}
-		private void GetDataFromSelectedCells() {
+		private bool GetDataFromSelectedCells() {
 			if (isRoundTubeRecipeActive == true) {
 				RoundTubeRecipe datagridRow = GetRoundTubeRecipeFromGrid();
 				if (datagridRow != null) {
 					tbRecipeTubes.Text = datagridRow.TubeNumber;
 					tbRecipeBigRow.Text = datagridRow.BigRow;
 					tbRecipeSmallRow.Text = datagridRow.SmallRow;
+					return true;
 				}
 			}
 			else {
@@ -1142,8 +1149,10 @@ namespace Empacotadora {
 					tbRecipeTubes.Text = datagridRow.TubeNumber;
 					tbRecipeColums.Text = datagridRow.Colums;
 					tbRecipeRows.Text = datagridRow.Rows;
+					return true;
 				}
 			}
+			return false;
 		}
 		private RoundTubeRecipe GetRoundTubeRecipeFromGrid() {
 			RoundTubeRecipe datagridRow = null;
@@ -1165,7 +1174,7 @@ namespace Empacotadora {
 			}
 			return datagridRow;
 		}
-		private void btnRecipeSave(object sender, RoutedEventArgs e) {
+		private void btnRecipeSave_Click(object sender, RoutedEventArgs e) {
 			DisableTextBoxesModification();
 			List<string> newFileContent = new List<string>();
 			if (isRoundTubeRecipeActive == true) {
@@ -1190,6 +1199,9 @@ namespace Empacotadora {
 			btnRecipeRoundTube.IsEnabled = true;
 			btnRecipeSquareTube.IsEnabled = true;
 			btnReturn.IsEnabled = true;
+			btnRecipeSave.Visibility = Visibility.Collapsed;
+			btnRecipeCancel.Visibility = Visibility.Collapsed;
+			editingRecipe = false;
 		}
 		private void DisableTextBoxesModification() {
 			List<TextBox> textBoxes = GetTextBoxesFromGrids();
@@ -1231,17 +1243,19 @@ namespace Empacotadora {
 			}
 		}
 		private void btnRecipeCancel_Click(object sender, RoutedEventArgs e) {
+			List<TextBox> textBoxes = GetTextBoxesFromGrids();
+			foreach (var item in textBoxes) {
+				item.ClearValue(BackgroundProperty);
+				item.IsReadOnly = true;
+				item.Focusable = false;
+			}
 			btnRecipeEdit.IsEnabled = true;
 			btnRecipeRoundTube.IsEnabled = true;
 			btnRecipeSquareTube.IsEnabled = true;
 			btnReturn.IsEnabled = true;
-			List<TextBox> textBoxes = GetTextBoxesFromGrids();
-			foreach (var item in textBoxes) {
-				item.ClearValue(BackgroundProperty);
-				//MessageBox.Show(item.Name);
-				item.IsReadOnly = true;
-				item.Focusable = false;
-			}
+			btnRecipeSave.Visibility = Visibility.Collapsed;
+			btnRecipeCancel.Visibility = Visibility.Collapsed;
+			editingRecipe = false;
 		}
 		private List<TextBox> GetTextBoxesFromGrids() {
 			List<TextBox> textBoxes = new List<TextBox>();

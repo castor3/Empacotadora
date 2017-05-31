@@ -23,8 +23,7 @@ namespace Empacotadora {
 		public string Weight { get; set; }
 		public string Created { get; set; }
 		// Methods
-		public double CalculateWeight(string hei, string wid, string thick, string leng, string dens)
-		{
+		public double CalculateWeight(string hei, string wid, string thick, string leng, string dens) {
 			Double.TryParse(wid, out double width);
 			Double.TryParse(hei, out double height);
 			Double.TryParse(thick, out double thickness);
@@ -34,8 +33,7 @@ namespace Empacotadora {
 							(width - (2 * thickness))) * length)) * (density * 1000) * 0.000000001);
 			return weight;
 		}
-		public double CalculateWeight(string diam, string thick, string leng, string dens)
-		{
+		public double CalculateWeight(string diam, string thick, string leng, string dens) {
 			Double.TryParse(diam, out double diameter);
 			Double.TryParse(thick, out double thickness);
 			Double.TryParse(leng, out double length);
@@ -46,17 +44,13 @@ namespace Empacotadora {
 							(Math.Pow((0.5 * diameter_in), 2)))) * length * (density * 0.000001));
 			return weight;
 		}
-		public static List<OrderDetails> ReadOrdersFromFile(ref string path)
-		{
+		public static List<OrderDetails> ReadOrdersFromFile(ref string path) {
 			List<OrderDetails> orders = new List<OrderDetails>();
 			var linesFromFile = File.ReadLines(path);
-			foreach (var line in linesFromFile)
-			{
+			foreach (var line in linesFromFile) {
 				string[] array = line.Split(',');
-				try
-				{
-					if (array[1] == "1")
-					{
+				try {
+					if (array[1] == "1") {
 						orders.Add(new OrderDetails() {
 							ID = array[0],
 							Name = array[2],
@@ -76,27 +70,22 @@ namespace Empacotadora {
 						});
 					}
 				}
-				catch (IndexOutOfRangeException)
-				{
+				catch (IndexOutOfRangeException) {
 					MessageBox.Show("Erro de index ao ler do ficheiro");
 					continue;
 				}
 			}
 			return orders;
 		}
-		public static void DeactivateOrder(string orderID, ref string path)
-		{
+		public static void DeactivateOrder(string orderID, ref string path) {
 			var linesFromFile = File.ReadAllLines(path);
 			List<string> newFileContent = new List<string>();
-			foreach (var line in linesFromFile)
-			{
+			foreach (var line in linesFromFile) {
 				string newline = "";
 				// splits the order read from the line
 				string[] array = line.Split(',');
-				if (array[0] == orderID)
-				{
+				if (array[0] == orderID) {
 					array[1] = "0";
-					// foreach array[x] adds its value and a "," to the new line
 					foreach (var value in array)
 						newline += value + ",";
 					// removes "," in the end of the line
@@ -104,12 +93,10 @@ namespace Empacotadora {
 				}
 				newFileContent.Add(newline == "" ? line : newline);
 			}
-			try
-			{
+			try {
 				File.WriteAllLines(path, newFileContent);
 			}
-			catch (IOException)
-			{
+			catch (IOException) {
 				MessageBox.Show("Não foi possível escrever no ficheiro");
 			}
 		}

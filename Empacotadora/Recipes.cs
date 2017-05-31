@@ -6,24 +6,18 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.IO;
 
-namespace Empacotadora
-{
-	class Recipes
-	{
-		public static Dictionary<string, int> GetRoundTubeRecipe(ref int tubeNmbr)
-		{
+namespace Empacotadora {
+	class Recipes {
+		public static Dictionary<string, int> GetRoundTubeRecipe(ref int tubeNmbr) {
 			byte bigRow = 0, smallRow = 0, shapeSize = 0;
 			int Vpos = 0, Hpos = 0;
 			string RoundTubeRecipePath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\RoundTubeRecipes.txt";
 
 			var linesFromFile = File.ReadLines(RoundTubeRecipePath);
-			foreach (var line in linesFromFile)
-			{
+			foreach (var line in linesFromFile) {
 				string[] array = line.Split(',');
-				try
-				{
-					if (array[0] == tubeNmbr.ToString())
-					{
+				try {
+					if (array[0] == tubeNmbr.ToString()) {
 						byte.TryParse(array[1], out bigRow);
 						byte.TryParse(array[2], out smallRow);
 						int.TryParse(array[3], out Vpos);
@@ -31,8 +25,7 @@ namespace Empacotadora
 						byte.TryParse(array[5], out shapeSize);
 					}
 				}
-				catch (IndexOutOfRangeException)
-				{
+				catch (IndexOutOfRangeException) {
 					MessageBox.Show("Erro de index ao ler do ficheiro");
 					continue;
 				}
@@ -47,8 +40,7 @@ namespace Empacotadora
 			};
 			return details;
 		}
-		public static Dictionary<string, int> GetSquareTubeRecipe(ref int tubeNmbr)
-		{
+		public static Dictionary<string, int> GetSquareTubeRecipe(ref int tubeNmbr) {
 			byte shapeSize = 0;
 			bool found = false;
 			int Vpos = 0, Hpos = 0;
@@ -56,42 +48,33 @@ namespace Empacotadora
 			string RectTubeRecipePath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\RectTubeRecipes.txt";
 
 			var linesFromFile = File.ReadLines(SquareTubeRecipePath);
-			foreach (var line in linesFromFile)
-			{
+			foreach (var line in linesFromFile) {
 				string[] array = line.Split(',');
-				try
-				{
-					if (array[0] == tubeNmbr.ToString())
-					{
+				try {
+					if (array[0] == tubeNmbr.ToString()) {
 						int.TryParse(array[1], out Vpos);
 						int.TryParse(array[2], out Hpos);
 						byte.TryParse(array[3], out shapeSize);
 						found = true;
 					}
 				}
-				catch (IndexOutOfRangeException)
-				{
+				catch (IndexOutOfRangeException) {
 					MessageBox.Show("Erro de index ao ler do ficheiro");
 					continue;
 				}
 			}
-			if (found == false)
-			{
+			if (found == false) {
 				linesFromFile = File.ReadLines(RectTubeRecipePath);
-				foreach (var line in linesFromFile)
-				{
+				foreach (var line in linesFromFile) {
 					string[] array = line.Split(',');
-					try
-					{
-						if (array[0] == tubeNmbr.ToString())
-						{
+					try {
+						if (array[0] == tubeNmbr.ToString()) {
 							int.TryParse(array[1], out Vpos);
 							int.TryParse(array[2], out Hpos);
 							byte.TryParse(array[3], out shapeSize);
 						}
 					}
-					catch (IndexOutOfRangeException)
-					{
+					catch (IndexOutOfRangeException) {
 						MessageBox.Show("Erro de index ao ler do ficheiro");
 						continue;
 					}
@@ -107,18 +90,14 @@ namespace Empacotadora
 			return values;
 		}
 
-		public static List<RoundTubeRecipe> ReadTubeRecipesFromFile(ref string path)
-		{
+		public static List<RoundTubeRecipe> ReadTubeRecipesFromFile(ref string path) {
 			List<RoundTubeRecipe> recipes = new List<RoundTubeRecipe>();
 			var linesFromFile = File.ReadLines(path);
 
-			foreach (var line in linesFromFile)
-			{
+			foreach (var line in linesFromFile) {
 				string[] array = line.Split(',');
-				try
-				{
-					recipes.Add(new RoundTubeRecipe()
-					{
+				try {
+					recipes.Add(new RoundTubeRecipe() {
 						TubeNumber = array[0],
 						BigRow = array[1],
 						SmallRow = array[2],
@@ -127,26 +106,21 @@ namespace Empacotadora
 						ShapeSize = array[5],
 					});
 				}
-				catch (IndexOutOfRangeException)
-				{
+				catch (IndexOutOfRangeException) {
 					continue;
 				}
 			}
 			return recipes;
 		}
-		public static List<SquareTubeRecipe> ReadTubeRecipesFromFile(ref string pathSquareTubes, ref string pathRectTubes)
-		{
+		public static List<SquareTubeRecipe> ReadTubeRecipesFromFile(ref string pathSquareTubes, ref string pathRectTubes) {
 			List<SquareTubeRecipe> recipes = new List<SquareTubeRecipe>();
 			IEnumerable<string> linesFromFile;
 
 			linesFromFile = File.ReadLines(pathSquareTubes);
-			foreach (var line in linesFromFile)
-			{
+			foreach (var line in linesFromFile) {
 				string[] array = line.Split(',');
-				try
-				{
-					recipes.Add(new SquareTubeRecipe()
-					{
+				try {
+					recipes.Add(new SquareTubeRecipe() {
 						TubeNumber = array[0],
 						Vpos = array[1],
 						Hpos = array[2],
@@ -155,20 +129,16 @@ namespace Empacotadora
 						Rows = (array[5] != "" ? array[5] : "Auto"),
 					});
 				}
-				catch (IndexOutOfRangeException)
-				{
+				catch (IndexOutOfRangeException) {
 					continue;
 				}
 			}
 
 			linesFromFile = File.ReadLines(pathRectTubes);
-			foreach (var line in linesFromFile)
-			{
+			foreach (var line in linesFromFile) {
 				string[] array = line.Split(',');
-				try
-				{
-					recipes.Add(new SquareTubeRecipe()
-					{
+				try {
+					recipes.Add(new SquareTubeRecipe() {
 						TubeNumber = array[0],
 						Vpos = array[1],
 						Hpos = array[2],
@@ -177,8 +147,7 @@ namespace Empacotadora
 						Rows = (array[5] != "" ? array[5] : "Auto"),
 					});
 				}
-				catch (IndexOutOfRangeException)
-				{
+				catch (IndexOutOfRangeException) {
 					continue;
 				}
 			}
@@ -186,16 +155,14 @@ namespace Empacotadora
 			return recipes;
 		}
 
-		public static int[] GetStrapsPositionFromRecipe(ref int length, ref byte strapsNmbr)
-		{
+		public static int[] GetStrapsPositionFromRecipe(ref int length, ref byte strapsNmbr) {
 			// 1st[0] and last[x] straps always sit at 400 mm off the edges
 			int edge = 400;
 			int[] position = new int[strapsNmbr];
 			position[0] = edge;
 
 			int trimmed_length = (length - (edge * 2));
-			switch (strapsNmbr)
-			{
+			switch (strapsNmbr) {
 				case 2:
 					position[1] = length - edge;
 					break;
@@ -228,8 +195,7 @@ namespace Empacotadora
 			return position;
 		}
 	}
-	class RoundTubeRecipe : Recipes
-	{
+	class RoundTubeRecipe : Recipes {
 		public string TubeNumber { get; set; }
 		public string BigRow { get; set; }
 		public string SmallRow { get; set; }
@@ -237,8 +203,7 @@ namespace Empacotadora
 		public string Hpos { get; set; }
 		public string ShapeSize { get; set; }
 	}
-	class SquareTubeRecipe : Recipes
-	{
+	class SquareTubeRecipe : Recipes {
 		public string TubeNumber { get; set; }
 		public string Colums { get; set; }
 		public string Rows { get; set; }
