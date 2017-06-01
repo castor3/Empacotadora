@@ -13,17 +13,15 @@ namespace Empacotadora {
 	/// </summary>
 	class FERP_MairCOMS7 {
 		// Definition of IBHNet references
-		private IIBHnetClass SPS = null;
-		private IIIBHnet2 SPS_2 = null;
+		private IIIBHnet SPS = null;
 		private IIIBHnet3 SPS_3 = null;
 		private bool isConnected = false;
 		private string message;
 
 		public void Init() {
 			// PLC Object Initialize and create a reference to all interfaces.
-			SPS1 = new IIBHnetClass();
-			SPS_2 = SPS1;
-			SPS_3 = SPS1;
+			SPS = new IIBHnet();
+			SPS_3 = (IIIBHnet3)SPS;
 		}
 
 		#region Connection
@@ -54,7 +52,7 @@ namespace Empacotadora {
 					// Rack   :	Always 0
 					// Slot   : With MPI always 0, with Profibus the slot of the CPU
 
-					SPS_3.Connect_DP(IPAddr, nMpi, nRack, nSlot);
+					//SPS_3.Connect_DP(IPAddr, nMpi, nRack, nSlot);
 					isConnected = true;
 					message = "Connected";
 				}
@@ -74,7 +72,7 @@ namespace Empacotadora {
 			// Disconnect the connection to the PLC
 			if (isConnected) {
 				try {
-					SPS1.Disconnect();
+					SPS.Disconnect();
 					isConnected = false;
 					message = "Disconnected";
 				}
@@ -90,16 +88,20 @@ namespace Empacotadora {
 		#endregion
 
 		#region Bool
-		public string ReadBool(int DBAddress, int varAddress) {
+		public string ReadBool(int DB, Tuple<int, int, string> variable) {
 			string valueRead = "";
 			if (isConnected) {
 				try {
 					// SPS.get_DW(int DBNr, int nr);
 					// DBNr     : The number of the data block
 					// nr       : The byte address within the DB
+					int DBAddress = DB;
+					int variableAddress = variable.Item1;
+					int bitToChange = variable.Item2;
 
-					valueRead = SPS1.get_DW(DBAddress, varAddress).ToString();
-					message = "Success 'ReadBool()'";
+					valueRead = SPS.get_D(DBAddress, variableAddress, bitToChange).ToString();
+					if (valueRead.ToString() != "")
+						message = "Success 'ReadBool()'";
 				}
 				catch {
 					message = "Error 'ReadBool()'";
@@ -110,15 +112,18 @@ namespace Empacotadora {
 			MessageBox.Show(message);
 			return valueRead;
 		}
-		private void WriteBool(int DBAddress, int varAddress, bool valueToWrite) {
+		public void WriteBool(int DBAddress, int varAddress, int bitAddress, int valueToWrite) {
 			if (isConnected) {
 				try {
-					// SPS.set_DW(int DBNr, int nr, int pVal);
+					// SPS.set_D(int DBNr, int nr, int bit, int pVal);
 					// DBNr : The number of the data block
 					// nr   : The byte address within the DB
+					// bit	: Address of bit to change
 					// pVal : The new value
 
-					//SPS.set_DW(DBAddress, varAddress, Convert.ToInt32(valueToWrite);
+					SPS.set_D(DBAddress, varAddress, bitAddress, valueToWrite);
+					MessageBox.Show(DBAddress.ToString() + " -> " + varAddress.ToString() + " -> " +
+									bitAddress.ToString() + " -> " + valueToWrite.ToString());
 					message = "Success 'WriteBool()'";
 				}
 				catch {
@@ -140,7 +145,7 @@ namespace Empacotadora {
 					// DBNr     : The number of the data block
 					// nr       : The byte address within the DB
 
-					valueRead = SPS1.get_DW(DBAddress, varAddress).ToString();
+					valueRead = SPS.get_DW(DBAddress, varAddress).ToString();
 					message = "Success'ReadInt()'";
 				}
 				catch {
@@ -152,7 +157,7 @@ namespace Empacotadora {
 			MessageBox.Show(message);
 			return valueRead;
 		}
-		private void WriteInt(int DBAddress, int varAddress, int valueToWrite) {
+		public void WriteInt(int DBAddress, int varAddress, int valueToWrite) {
 			if (isConnected) {
 				try {
 					// SPS.set_DW(int DBNr, int nr, int pVal);
@@ -160,7 +165,7 @@ namespace Empacotadora {
 					// nr   : The byte address within the DB
 					// pVal : The new value
 
-					//SPS.set_DW(DBAddress, varAddress, Convert.ToInt32(valueToWrite);
+					SPS.set_DW(DBAddress, varAddress, Convert.ToInt32(valueToWrite));
 					message = "Success 'WriteInt()'";
 				}
 				catch {
@@ -182,7 +187,7 @@ namespace Empacotadora {
 					// DBNr     : The number of the data block
 					// nr       : The byte address within the DB
 
-					valueRead = SPS1.get_DW(DBAddress, varAddress).ToString();
+					valueRead = SPS.get_DW(DBAddress, varAddress).ToString();
 					message = "Success'ReadInt()'";
 				}
 				catch {
@@ -194,7 +199,7 @@ namespace Empacotadora {
 			MessageBox.Show(message);
 			return valueRead;
 		}
-		private void WriteReal(int DBAddress, int varAddress, double valueToWrite) {
+		public void WriteReal(int DBAddress, int varAddress, double valueToWrite) {
 			if (isConnected) {
 				try {
 					// SPS.set_DW(int DBNr, int nr, int pVal);
@@ -202,7 +207,7 @@ namespace Empacotadora {
 					// nr   : The byte address within the DB
 					// pVal : The new value
 
-					//SPS.set_DW(DBAddress, varAddress, Convert.ToInt32(value);
+					//SPS.set_DW(DBAddress, varAddress, Convert.ToInt32(valueToWrite);
 					message = "Success 'WriteInt()'";
 				}
 				catch {

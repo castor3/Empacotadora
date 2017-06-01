@@ -27,13 +27,14 @@ namespace Empacotadora {
 		bool isStrapsModifyActive = false;
 		bool isDefaultLayoutActive = false, isStrapperLayoutActive = false, isNewOrderLayoutActive = false, isStorageLayoutActive = false;
 		bool isRecipesLayoutActive = false, isHistoryLayoutActive = false;
-		bool textChanged = false, cellsArePopulated = false, editingRecipe=false;
+		bool textChanged = false, cellsArePopulated = false, editingRecipe = false;
 		bool isRoundTubeRecipeActive = false;
 		public static string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Orders.txt";
 		string historyPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\PackageHistory.txt";
 		string pathSquareTubes = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\SquareTubeRecipes.txt";
 		string pathRectTubes = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\RectTubeRecipes.txt";
 		string pathRoundTubes = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\RoundTubeRecipes.txt";
+		FERP_MairCOMS7 PLC = new FERP_MairCOMS7();
 
 		const int defaultRoundTubeNmbr = 37, defaultdiameter = 65;
 		const int defaultSquareTubeNmbr = 64, defaultWidth = 60, defaultHeight = 60;
@@ -51,7 +52,10 @@ namespace Empacotadora {
 			//string size = Addresses.Storage.iPackageNumber.Item2;
 			//FERP_MairCOMS7.ReadFromDB(ref DBAddress, ref variableAddress, ref size);
 			//MessageBox.Show(double.TryParse("472", NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double test).ToString());
+			FERP_MairCOMS7 PLC = new FERP_MairCOMS7();
+			lblCurrentTubes.Content = PLC.ReadBool(Addresses.PackPipe.DBNumber, Addresses.PackPipe.Mode.bAdjustment);
 		}
+
 		#region MainView
 		private void logoCalculator_MouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
 			Win_Calculator WNCalculator = new Win_Calculator();
@@ -1091,14 +1095,14 @@ namespace Empacotadora {
 			isRoundTubeRecipeActive = false;
 		}
 		private void ShowTubeRecipesOnDataGrid(ref string pathRoundTube) {
-			datagridRecipes.ItemsSource = Recipes.ReadTubeRecipesFromFile(ref path);
+			datagridRecipes.ItemsSource = Recipes.ReadTubeRecipesFromFile(ref pathRoundTube);
 			btnRecipeRoundTube.Background = Brushes.active_back;
 			btnRecipeSquareTube.ClearValue(BackgroundProperty);
 			gridRecipesSquareTube.Visibility = Visibility.Collapsed;
 			gridRecipesRoundTube.Visibility = Visibility.Visible;
 		}
 		private void ShowTubeRecipesOnDataGrid(ref string pathSquareTube, ref string pathRectTube) {
-			datagridRecipes.ItemsSource = Recipes.ReadTubeRecipesFromFile(ref path1, ref path2);
+			datagridRecipes.ItemsSource = Recipes.ReadTubeRecipesFromFile(ref pathRectTube, ref pathRectTube);
 			btnRecipeSquareTube.Background = Brushes.active_back;
 			btnRecipeRoundTube.ClearValue(BackgroundProperty);
 			gridRecipesRoundTube.Visibility = Visibility.Collapsed;
@@ -1275,6 +1279,14 @@ namespace Empacotadora {
 				}
 			}
 			return textBoxes;
+		}
+		#endregion
+
+		#region PLC_COM
+		private void PLC_Connect() {
+		}
+		private void btnWriteData_Click(object sender, RoutedEventArgs e) {
+			//PLC.WriteBool(400, 52, 6, true);
 		}
 		#endregion
 
