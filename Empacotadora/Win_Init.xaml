@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Empacotadora"
         mc:Ignorable="d"
-        Title="Ferpinta, S.A. - Empacotadora" Height="900" Width="1440" FontSize="20" WindowState="Maximized" ResizeMode="NoResize">
+        Title="Ferpinta, S.A. - Empacotadora" Height="900" Width="1440" FontSize="20" WindowState="Maximized" ResizeMode="NoResize" WindowStyle="None">
     <Window.Resources>
         <Style TargetType="Button">
             <Setter Property="Background" Value="#FFC1C1C1"/>

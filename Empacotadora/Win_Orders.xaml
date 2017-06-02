@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Empacotadora"
         mc:Ignorable="d"
-        Title="Ordens" Height="700" Width="1200" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" ShowInTaskbar="False" Background="#FFDEDEDE">
+        Title="Ordens" Height="700" Width="1200" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" ShowInTaskbar="False" Background="#FFDEDEDE" Icon="Resources/Ferpinta.png">
     <Window.Resources>
         <Style TargetType="Button">
             <Setter Property="Background" Value="#FFC1C1C1"/>

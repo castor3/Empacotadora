@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Empacotadora"
         mc:Ignorable="d"
-        Title="Calculadora" Height="381.916" Width="305.084" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" ShowInTaskbar="False">
+        Title="Calculadora" Height="381.916" Width="305.084" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" ShowInTaskbar="False" Icon="Resources/Ferpinta.png">
     <Grid Background="White" Margin="0">
         <Button Content="7" HorizontalAlignment="Left" Margin="11,131,0,0" VerticalAlignment="Top" Width="61" Height="45" FontSize="18" BorderThickness="2,2,2,1" Click="Button_Click_1"></Button>
         <TextBox Height="51" TextWrapping="Wrap" VerticalAlignment="Top" Margin="10,15,0,0" HorizontalAlignment="Left" Width="267" FontSize="22" Background="#FFDDDDDD" BorderThickness="2" Name="tbResult" Text="" BorderBrush="#FF707070"></TextBox>

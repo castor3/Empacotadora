@@ -29,7 +29,7 @@ namespace Empacotadora {
 			tabItemCurrentOrder.Visibility = Visibility.Collapsed;
 			tabItemListOrders.Visibility = Visibility.Collapsed;
 			errorImage.Source = Imaging.CreateBitmapSourceFromHIcon(SystemIcons.Error.Handle‌​, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
-			btnCurrentOrder.Background = Brushes.active_back;
+			btnCurrentOrder.Background = Brushes.lightRed;
 		}
 
 		private void btnReturn_Click(object sender, RoutedEventArgs e) {
@@ -55,9 +55,9 @@ namespace Empacotadora {
 												 "             remover a seguinte ordem?\n\t" +
 												 "              " + datagridRow.Name, "Confirmar?", MessageBoxButton.YesNo);
 				if (answer == MessageBoxResult.Yes) {
-					OrderDetails.DeactivateOrder(datagridRow.ID, ref Win_Main.path);
+					OrderDetails.DeactivateOrder(datagridRow.ID, Win_Main.path);
 					datagridOrders.ItemsSource = null;
-					datagridOrders.ItemsSource = OrderDetails.ReadOrdersFromFile(ref Win_Main.path);
+					datagridOrders.ItemsSource = OrderDetails.ReadOrdersFromFile(Win_Main.path);
 				}
 			}
 			catch (NullReferenceException) {
@@ -69,7 +69,7 @@ namespace Empacotadora {
 			btnLoadOrder.Visibility = Visibility.Visible;
 			SetOrdersListLayout();
 			btnListOrders.ClearValue(BackgroundProperty);
-			btnCurrentOrder.Background = Brushes.active_back;
+			btnCurrentOrder.Background = Brushes.lightRed;
 		}
 		private void btnLoadOrder_Click(object sender, RoutedEventArgs e) {
 			OrderDetails datagridRow = GetDataFromGrid();
@@ -157,18 +157,18 @@ namespace Empacotadora {
 			btnListOrders.ClearValue(BackgroundProperty);
 			btnReturn.ClearValue(BackgroundProperty);
 			btnNewOrder.ClearValue(BackgroundProperty);
-			btnCurrentOrder.Background = Brushes.active_back;
+			btnCurrentOrder.Background = Brushes.lightRed;
 		}
 		private void SetOrdersListLayout() {
 			tabOrders.SelectedItem = tabItemListOrders;
 			lblTitle.Content = "Ordens";
 			try {
-				datagridOrders.ItemsSource = OrderDetails.ReadOrdersFromFile(ref Win_Main.path);
+				datagridOrders.ItemsSource = OrderDetails.ReadOrdersFromFile(Win_Main.path);
 			}
 			catch (FileNotFoundException) {
 				UpdateStatusBar("Ficheiro das ordens não encontrado", 1);
 			}
-			btnListOrders.Background = Brushes.active_back;
+			btnListOrders.Background = Brushes.lightRed;
 			btnReturn.ClearValue(BackgroundProperty);
 			btnNewOrder.ClearValue(BackgroundProperty);
 			btnCurrentOrder.ClearValue(BackgroundProperty);

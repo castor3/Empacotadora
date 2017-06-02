@@ -59,7 +59,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Addresses.cs" />
+    <Compile Include="Address.cs" />
     <Compile Include="Brushes.cs" />
     <Compile Include="FERP_MairCOMS7.cs" />
     <Compile Include="General.cs" />
@@ -210,6 +210,7 @@
     <Resource Include="Resources\Manual\Active\Storage\A_StorageChains-Withdrawal.bmp" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\Ferpinta.png" />
     <Content Include="Resources\MAIRCOMS7.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

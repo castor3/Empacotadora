@@ -4,7 +4,7 @@ namespace Empacotadora {
 	/// <summary>
 	/// Contains PLC address (as double) of variables
 	/// </summary>
-	class Addresses {
+	class Address {
 		// b->bool	(1 bit)
 		// i->int	(16 bits)
 		// r->real	(32 bits, double)

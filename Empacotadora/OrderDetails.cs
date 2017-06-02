@@ -44,7 +44,7 @@ namespace Empacotadora {
 							(Math.Pow((0.5 * diameter_in), 2)))) * length * (density * 0.000001));
 			return weight;
 		}
-		public static List<OrderDetails> ReadOrdersFromFile(ref string path) {
+		public static List<OrderDetails> ReadOrdersFromFile(string path) {
 			List<OrderDetails> orders = new List<OrderDetails>();
 			var linesFromFile = File.ReadLines(path);
 			foreach (var line in linesFromFile) {
@@ -77,7 +77,7 @@ namespace Empacotadora {
 			}
 			return orders;
 		}
-		public static void DeactivateOrder(string orderID, ref string path) {
+		public static void DeactivateOrder(string orderID, string path) {
 			var linesFromFile = File.ReadAllLines(path);
 			List<string> newFileContent = new List<string>();
 			foreach (var line in linesFromFile) {

@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.IO;
+using System.Windows;
 
 namespace Empacotadora {
 	class Recipes {
-		public static Dictionary<string, int> GetRoundTubeRecipe(ref int tubeNmbr) {
+		public static Dictionary<string, int> GetRoundTubeRecipe(int tubeNmbr) {
 			byte bigRow = 0, smallRow = 0, shapeSize = 0;
 			int Vpos = 0, Hpos = 0;
 			string RoundTubeRecipePath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\RoundTubeRecipes.txt";
@@ -40,7 +37,7 @@ namespace Empacotadora {
 			};
 			return details;
 		}
-		public static Dictionary<string, int> GetSquareTubeRecipe(ref int tubeNmbr) {
+		public static Dictionary<string, int> GetSquareTubeRecipe(int tubeNmbr) {
 			byte shapeSize = 0;
 			bool found = false;
 			int Vpos = 0, Hpos = 0;
@@ -90,7 +87,7 @@ namespace Empacotadora {
 			return values;
 		}
 
-		public static List<RoundTubeRecipe> ReadTubeRecipesFromFile(ref string path) {
+		public static List<RoundTubeRecipe> ReadTubeRecipesFromFile(string path) {
 			List<RoundTubeRecipe> recipes = new List<RoundTubeRecipe>();
 			var linesFromFile = File.ReadLines(path);
 
@@ -112,7 +109,7 @@ namespace Empacotadora {
 			}
 			return recipes;
 		}
-		public static List<SquareTubeRecipe> ReadTubeRecipesFromFile(ref string pathSquareTubes, ref string pathRectTubes) {
+		public static List<SquareTubeRecipe> ReadTubeRecipesFromFile(string pathSquareTubes, string pathRectTubes) {
 			List<SquareTubeRecipe> recipes = new List<SquareTubeRecipe>();
 			IEnumerable<string> linesFromFile;
 
@@ -155,7 +152,7 @@ namespace Empacotadora {
 			return recipes;
 		}
 
-		public static int[] GetStrapsPositionFromRecipe(ref int length, ref byte strapsNmbr) {
+		public static int[] GetStrapsPositionFromRecipe(int length, byte strapsNmbr) {
 			// 1st[0] and last[x] straps always sit at 400 mm off the edges
 			int edge = 400;
 			int[] position = new int[strapsNmbr];

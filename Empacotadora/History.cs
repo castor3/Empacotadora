@@ -14,7 +14,7 @@ namespace Empacotadora {
 		public string Weight { get; set; }
 		public string Created { get; set; }
 		//Methods
-		public static List<History> ReadHistoryFromFile(ref string path) {
+		public static List<History> ReadHistoryFromFile(string path) {
 			List<History> history = new List<History>();
 			var linesFromFile = File.ReadLines(path);
 			foreach (var line in linesFromFile) {

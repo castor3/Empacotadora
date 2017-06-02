@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Empacotadora"
         mc:Ignorable="d"
-        Title="Ferpinta, S.A. - Empacotadora" Height="900" Width="1440" ResizeMode="NoResize" WindowState="Maximized" WindowStyle="None" Background="#FFDEDEDE">
+        Title="Ferpinta, S.A. - Empacotadora" Height="900" Width="1440" ResizeMode="NoResize" WindowState="Maximized" WindowStyle="None" Background="#FFDEDEDE" Icon="Resources/Ferpinta.png">
     <Window.Resources>
         <Style TargetType="Button">
             <Setter Property="Background" Value="#FFC1C1C1"/>
@@ -301,8 +301,8 @@
             </TabItem>
             <TabItem x:Name="tabItemHistory" Header="TabItem" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="55">
                 <Grid>
-                    <DataGrid x:Name="datagridHistory" AlternatingRowBackground="#FF976666" Margin="10,10,952,0" Background="{x:Null}" BorderBrush="{x:Null}" Height="683" UseLayoutRounding="True" FontSize="24" GridLinesVisibility="Vertical" VerticalGridLinesBrush="#FF838383" HeadersVisibility="Column" IsReadOnly="True" VerticalAlignment="Top" AlternationCount="2" SelectionMode="Single" CanUserReorderColumns="False"/>
-                    <Viewbox HorizontalAlignment="Left" Height="534" Margin="594,66,0,0" VerticalAlignment="Top" Width="582">
+                    <DataGrid x:Name="datagridHistory" AlternatingRowBackground="#FF976666" Margin="10,10,950,0" Background="{x:Null}" BorderBrush="{x:Null}" Height="683" UseLayoutRounding="True" FontSize="24" GridLinesVisibility="Vertical" VerticalGridLinesBrush="#FF838383" HeadersVisibility="Column" IsReadOnly="True" VerticalAlignment="Top" AlternationCount="2" SelectionMode="Single" CanUserReorderColumns="False"/>
+                    <Viewbox HorizontalAlignment="Left" Height="478" Margin="594,66,0,0" VerticalAlignment="Top" Width="498">
                         <Calendar HorizontalAlignment="Left" VerticalAlignment="Top" Height="165"/>
                     </Viewbox>
                 </Grid>
@@ -341,17 +341,16 @@
                     <TextBox x:Name="tbIPAddress" HorizontalAlignment="Left" Height="37" Margin="268,247,0,0" TextWrapping="Wrap" Text="192.168.1.2" VerticalAlignment="Top" Width="171" HorizontalContentAlignment="Left" FontSize="20" VerticalScrollBarVisibility="Auto"/>
                     <Label Content="MPI Address" HorizontalAlignment="Left" Margin="268,310,0,0" VerticalAlignment="Top" FontSize="20" Padding="5,0"/>
                     <TextBox x:Name="tbMPIAddress" HorizontalAlignment="Left" Height="37" Margin="268,337,0,0" TextWrapping="Wrap" Text="2" VerticalAlignment="Top" Width="171" HorizontalContentAlignment="Left" FontSize="20" VerticalScrollBarVisibility="Auto"/>
-                    <Label x:Name="lblConnectionStatus" Content="&lt;estado&gt;" HorizontalAlignment="Left" Margin="439,262,0,0" VerticalAlignment="Top" Height="46" Width="151" FontSize="18"/>
-                    <Label Content="Estado" HorizontalAlignment="Left" Margin="439,220,0,0" VerticalAlignment="Top" Height="42" Width="151" FontSize="18" VerticalContentAlignment="Bottom" HorizontalContentAlignment="Center"/>
-                    <RadioButton Content="Bool" HorizontalAlignment="Left" Margin="595,221,0,0" VerticalAlignment="Top" FontSize="22" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0" IsChecked="True"/>
-                    <RadioButton Content="Int" HorizontalAlignment="Left" Margin="595,250,0,0" VerticalAlignment="Top" FontSize="22" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="0"/>
-                    <RadioButton Content="Real" HorizontalAlignment="Left" Margin="595,279,0,0" VerticalAlignment="Top" FontSize="22" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="0"/>
-                    <Button x:Name="btnConnect" Content="Connect" HorizontalAlignment="Left" Margin="268,398,0,0" VerticalAlignment="Top" Width="194" Height="57"/>
-                    <Button x:Name="btnDisconnect" Content="Disconnect" HorizontalAlignment="Left" Margin="459,398,0,0" VerticalAlignment="Top" Width="195" Height="57"/>
+                    <Label x:Name="lblConnectionStatus" Content="Desligado" Background="#FFCD5353" HorizontalAlignment="Left" Margin="439,220,0,0" VerticalAlignment="Top" Height="88" Width="215" FontSize="18"/>
+                    <RadioButton Content="Bool" HorizontalAlignment="Left" Margin="595,310,0,0" VerticalAlignment="Top" FontSize="22" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0" IsChecked="True"/>
+                    <RadioButton Content="Int" HorizontalAlignment="Left" Margin="595,339,0,0" VerticalAlignment="Top" FontSize="22" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="0"/>
+                    <RadioButton Content="Real" HorizontalAlignment="Left" Margin="595,368,0,0" VerticalAlignment="Top" FontSize="22" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="0"/>
+                    <Button x:Name="btnConnect" Content="Connect" HorizontalAlignment="Left" Margin="268,398,0,0" VerticalAlignment="Top" Width="194" Height="57" Click="btnConnect_Click"/>
+                    <Button x:Name="btnDisconnect" Content="Disconnect" HorizontalAlignment="Left" Margin="459,398,0,0" VerticalAlignment="Top" Width="195" Height="57" Click="btnDisconnect_Click"/>
                     <Label x:Name="lblMessage" Content="Label" HorizontalAlignment="Left" Margin="268,173,0,0" VerticalAlignment="Top" BorderBrush="#FF8B8B8B" BorderThickness="3" Height="47" Width="386"/>
-                    <TextBox HorizontalAlignment="Left" Height="29" Margin="507,308,0,0" TextWrapping="Wrap" Text="&lt;data&gt;" VerticalAlignment="Top" Width="147" FontSize="18"/>
-                    <Button x:Name="btnWriteData" Content="Write" HorizontalAlignment="Left" Margin="507,337,0,0" VerticalAlignment="Top" Width="75" Padding="0" BorderThickness="2" Height="24" Click="btnWriteData_Click"/>
-                    <Button x:Name="btnReadData" Content="Read" HorizontalAlignment="Left" Margin="580,337,0,0" VerticalAlignment="Top" Width="74" Padding="0" BorderThickness="2" Height="24"/>
+                    <TextBox HorizontalAlignment="Left" Height="29" Margin="439,308,0,0" TextWrapping="Wrap" Text="&lt;data&gt;" VerticalAlignment="Top" Width="147" FontSize="18"/>
+                    <Button x:Name="btnWriteData" Content="Write" HorizontalAlignment="Left" Margin="439,337,0,0" VerticalAlignment="Top" Width="75" Padding="0" BorderThickness="2" Height="24" Click="btnWriteData_Click"/>
+                    <Button x:Name="btnReadData" Content="Read" HorizontalAlignment="Left" Margin="512,337,0,0" VerticalAlignment="Top" Width="74" Padding="0" BorderThickness="2" Height="24"/>
 
                 </Grid>
             </TabItem>
