@@ -210,6 +210,7 @@ namespace Empacotadora {
 			SetStatusBarTimer();
 		}
 		private void UpdateStatusBar(string msg, byte error) {
+			// pass any number (0 <-> 255) through "error" to show the error icon with the message
 			status.Content = msg;
 			sbIcon.Visibility = Visibility.Visible;
 			SetStatusBarTimer();
