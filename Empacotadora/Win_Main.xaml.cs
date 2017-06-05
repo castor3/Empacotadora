@@ -15,26 +15,44 @@ using System.Windows.Threading;
 using System.IO;
 using System.Globalization;
 using System.Windows.Interop;
+using Empacotadora.Address;
 
 namespace Empacotadora {
 	/// <summary>
 	/// Lógica interna para Win_Main.xaml
 	/// </summary>
 	public partial class Win_Main : Window {
+		FERP_MairCOMS7 PLC = new FERP_MairCOMS7();
+		// Wrapper
 		int lastTube = 0, currentPackage = 0, id;
 		const byte margin = 2;
+		// New Order
 		bool isRoundTubeActive = false, isSquareTubeActive = false, isHexagonalWrapActive = false, isSquareWrapActive = false;
-		bool isStrapsModifyActive = false;
+		// UI control
 		bool isDefaultLayoutActive = false, isStrapperLayoutActive = false, isNewOrderLayoutActive = false, isStorageLayoutActive = false;
 		bool isRecipesLayoutActive = false, isHistoryLayoutActive = false;
-		bool textChanged = false, cellsArePopulated = false, editingRecipe = false;
+		// Strapper
+		bool textChanged = false, cellsArePopulated = false, editingRecipe = false, isStrapsModifyActive = false;
+		// Recipe
 		bool isRoundTubeRecipeActive = false;
+		// PLC
+		int[] PLCArrayPackageRows;
+		int tubeNumber;
+		bool changeOn, tubeChange, pageActive;
+		struct StructTubeChange {
+			public string OldLength;
+			public string OldThickness;
+			public string OldTi;
+			public string OldWidth;
+			public string OldHeight;
+		}
+		StructTubeChange OldTube = new StructTubeChange();
+		// Diretories
 		public static string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Orders.txt";
 		string historyPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\PackageHistory.txt";
 		string pathSquareTubes = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\SquareTubeRecipes.txt";
 		string pathRectTubes = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\RectTubeRecipes.txt";
 		string pathRoundTubes = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\RoundTubeRecipes.txt";
-		FERP_MairCOMS7 PLC = new FERP_MairCOMS7();
 
 		const int defaultRoundTubeNmbr = 37, defaultdiameter = 65;
 		const int defaultSquareTubeNmbr = 36, defaultWidth = 60, defaultHeight = 60;
@@ -45,8 +63,7 @@ namespace Empacotadora {
 			InitializeLayout();
 			//DrawSquareWrap(defaultSquareTubeNmbr, defaultWidth, defaultHeight);
 			DrawHexagonalWrap(defaultRoundTubeNmbr, defaultdiameter);
-			BitmapSource errorIcon = Imaging.CreateBitmapSourceFromHIcon(System.Drawing.SystemIcons.Error.Handle‌​, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
-			errorImage.Source = errorIcon;
+			errorImage.Source = Imaging.CreateBitmapSourceFromHIcon(System.Drawing.SystemIcons.Error.Handle‌​, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
 			//ushort DBAddress = Addresses.Storage.DBNumber;
 			//double variableAddress = Addresses.Storage.iPackageNumber.Item1;
 			//string size = Addresses.Storage.iPackageNumber.Item2;
@@ -54,20 +71,16 @@ namespace Empacotadora {
 			//MessageBox.Show(double.TryParse("472", NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double test).ToString());
 			//lblCurrentTubes.Content = PLC.ReadBool(Address.PackPipe.DBNumber, Address.PackPipe.Mode.bAdjustment);
 		}
-
-		#region MainView
+		#region General
+		private void lblDateTime_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
+			if (cal.IsVisible == true)
+				cal.Visibility = Visibility.Collapsed;
+			else
+				cal.Visibility = Visibility.Visible;
+		}
 		private void logoCalculator_MouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
 			Win_Calculator WNCalculator = new Win_Calculator();
 			WNCalculator.ShowDialog();
-		}
-		private void btnAddTube_Click(object sender, RoutedEventArgs e) {
-			++lastTube;
-			//DrawSquareWrap(defaultSquareTubeNmbr, defaultWidth, defaultHeight);
-			DrawHexagonalWrap(defaultRoundTubeNmbr, defaultdiameter);
-		}
-		private void btnResetPackages_Click(object sender, RoutedEventArgs e) {
-			currentPackage = 0;
-			lblCurrentPackage.Content = currentPackage.ToString();
 		}
 		private void btnOrders_Click(object sender, RoutedEventArgs e) {
 			Win_Orders WNOrders = new Win_Orders();
@@ -189,6 +202,23 @@ namespace Empacotadora {
 			}
 			borderManualWrap.Visibility = value;
 		}
+		private void SetOneSecondTimer() {
+			// Used in:
+			// - date &time label
+			// - update canvas (cnvAtado)
+			//  DispatcherTimer setup
+			DispatcherTimer timer = new DispatcherTimer();
+			timer.Tick += new EventHandler(Timer_Tick);
+			timer.Interval = new TimeSpan(0, 0, 0, 1);
+			timer.Start();
+		}
+		private void Timer_Tick(object sender, EventArgs e) {
+			lblDateTime.Text = DateTime.Now.ToString("HH\\hmm:ss \n ddd dd/MM/yyyy");
+			// PLC_UpdateTubesOnPackage();
+			// Controlli_di_pagina F900000_Kernel, "POLMONE_1"
+			//if (isStrapperLayoutActive)
+			//	UpdateStrapperPage();
+		}
 		#region StatusBar
 		// Status bar update
 		private void SetStatusBarTimer() {
@@ -216,25 +246,7 @@ namespace Empacotadora {
 			SetStatusBarTimer();
 		}
 		#endregion
-		#region DateAndTimeLabel
-		// Manage label with system date and time
-		private void SetDateTimeTimer() {
-			//  DispatcherTimer setup
-			DispatcherTimer timer = new DispatcherTimer();
-			timer.Tick += new EventHandler(Timer_Tick);
-			timer.Interval = new TimeSpan(0, 0, 0, 0, 500);
-			timer.Start();
-		}
-		private void Timer_Tick(object sender, EventArgs e) {
-			lblDateTime.Text = DateTime.Now.ToString("HH\\hmm:ss \n ddd dd/MM/yyyy");
-		}
-		private void lblDateTime_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
-			if (cal.IsVisible == true)
-				cal.Visibility = Visibility.Collapsed;
-			else
-				cal.Visibility = Visibility.Visible;
-		}
-		#endregion
+
 		#endregion
 
 		#region UI control methods
@@ -462,10 +474,55 @@ namespace Empacotadora {
 			tabManualWrapper.Visibility = Visibility.Hidden;
 			tabManualStrapper.Visibility = Visibility.Hidden;
 			tabManualStorage.Visibility = Visibility.Hidden;
-			SetDateTimeTimer();
+			SetOneSecondTimer();
 		}
 		#endregion
 
+		#region Wrapper
+		private void btnAddTube_Click(object sender, RoutedEventArgs e) {
+			++lastTube;
+			//DrawSquareWrap(defaultSquareTubeNmbr, defaultWidth, defaultHeight);
+			DrawHexagonalWrap(defaultRoundTubeNmbr, defaultdiameter);
+		}
+		private void btnResetPackages_Click(object sender, RoutedEventArgs e) {
+			currentPackage = 0;
+			lblCurrentPackage.Content = currentPackage.ToString();
+		}
+		private void PLC_UpdateTubesAndPackageData() {
+			// checks if tubes per row has changed
+			changeOn = (PLCArrayPackageRows != PLC.ReadArrayInt(Accumulator_1.DBNumber, Accumulator_1.Rows.Item1, Accumulator_1.Rows.Item2));
+			PLCArrayPackageRows = PLC.ReadArrayInt(Accumulator_1.DBNumber, Accumulator_1.Rows.Item1, Accumulator_1.Rows.Item2);
+			// check if tube data has changed
+			tubeChange = false;
+			if (OldTube.OldHeight != PLC.ReadReal(Accumulator_1.DBNumber, Accumulator_1.Order.Tube.rHeight.Item1) ||
+				OldTube.OldWidth != PLC.ReadReal(Accumulator_1.DBNumber, Accumulator_1.Order.Tube.rWidth.Item1) ||
+				OldTube.OldThickness != PLC.ReadReal(Accumulator_1.DBNumber, Accumulator_1.Order.Tube.rThickness.Item1)) {
+				tubeChange = true;
+			}
+
+			OldTube.OldHeight = PLC.ReadReal(Accumulator_1.DBNumber, Accumulator_1.Order.Tube.rHeight.Item1);
+			OldTube.OldWidth = PLC.ReadReal(Accumulator_1.DBNumber, Accumulator_1.Order.Tube.rWidth.Item1);
+			OldTube.OldThickness = PLC.ReadReal(Accumulator_1.DBNumber, Accumulator_1.Order.Tube.rThickness.Item1);
+
+			// tube number in package
+			lblCurrentTubes.Content = PLC.ReadInt(PackPipe.DBNumber, PackPipe.PC.iTubesOnPackage.Item1);
+			lblCurrentPackage.Content = PLC.ReadInt(PackPipe.DBNumber, PackPipe.PC.iPackageNumber.Item1);
+			lblTotalTubes.Content = PLC.ReadInt(Accumulator_1.DBNumber, Accumulator_1.Order.Package.bTubeNumber.Item1);
+			/*
+			da lasciare??
+			bundleCounter = tools.OpenTextFile(path_Reports & "BundleNumber.txt", False)
+			BundlesTotalDisplay.Caption = bundleCounter
+			*/
+
+			if (tubeNumber.ToString() != PLC.ReadInt(PackPipe.DBNumber, PackPipe.PC.iTubesOnPackage.Item1) ||
+				/*pageActive ||*/ changeOn || tubeChange) {
+				RefreshCanvas();
+				//pageActive = false;
+			}
+		}
+		private void RefreshCanvas() {
+			//##//
+		}
 		#region Draw shapes in canvas
 		// Shapes
 		private void DrawHexagonalWrap(int tubeAmount, double diameter) {
@@ -609,7 +666,7 @@ namespace Empacotadora {
 			// divides the number of tubes until the number of rows and collums is even (+/-)
 			double start, result = 0, temp1 = 0, temp2 = 0;
 
-			start = (tubeAmount > 300) ? 30 : 15;	// will likely be less than 300 tubes, no need to always start on 30
+			start = (tubeAmount > 300) ? 30 : 15;   // will likely be less than 300 tubes, no need to always start on 30
 			packageWidth = width * (int)(start + 1);
 			packageHeight = height * (int)result;
 			// packagewidth can never be higher than packageHeight
@@ -637,6 +694,8 @@ namespace Empacotadora {
 			lblTotalTubes.Content = tubeAmount.ToString();
 			lblCurrentPackage.Content = currentPackage.ToString();
 		}
+		#endregion
+
 		#endregion
 
 		#region NewOrder TextBoxe's Values
@@ -963,6 +1022,27 @@ namespace Empacotadora {
 				++i;
 			}
 		}
+		private void Button_Click(object sender, RoutedEventArgs e) {
+			UpdateStrapsValues(6000);
+		}
+		private void UpdateStrapperPage() {
+			double oldWidth, oldHeight, oldThickness;
+			bool oldTubeType, toChange;
+
+			if (oldWidth.ToString() != PLC.ReadReal(Strapper.DBNumber, Strapper.Order.Tube.rTubeWidth.Item1) ||
+				oldHeight.ToString() != PLC.ReadReal(Strapper.DBNumber, Strapper.Order.Tube.rTubeHeight.Item1) ||
+				oldThickness.ToString() != PLC.ReadReal(Strapper.DBNumber, Strapper.Order.Tube.rTubeThickness.Item1) ||
+				oldTubeType.ToString() != PLC.ReadBool(Strapper.DBNumber, Strapper.Order.Tube.bRoundTube))
+			{
+				double.TryParse(PLC.ReadReal(Strapper.DBNumber, Strapper.Order.Tube.rTubeWidth.Item1), out oldWidth);
+				double.TryParse(PLC.ReadReal(Strapper.DBNumber, Strapper.Order.Tube.rTubeHeight.Item1), out oldHeight);
+				double.TryParse(PLC.ReadReal(Strapper.DBNumber, Strapper.Order.Tube.rTubeThickness.Item1), out oldThickness);
+				bool.TryParse(PLC.ReadBool(Strapper.DBNumber, Strapper.Order.Tube.bRoundTube), out oldTubeType);
+			}
+			lblPackPosition.Content = PLC.ReadReal(LateralConveyor.DBNumber, LateralConveyor.PCData.rPackagePositionInStrapper.Item1);
+			tbStrapNmbr.Text = PLC.ReadInt(Strapper.DBNumber, Strapper.Strap.iNumberOfStraps.Item1);
+			
+		}
 		#endregion
 
 		#region Storage
@@ -987,93 +1067,6 @@ namespace Empacotadora {
 		// History
 		private void btnHistory_Click(object sender, RoutedEventArgs e) {
 			SetHistoryLayout();
-		}
-		#endregion
-
-		#region Manual
-		//Manual
-		private void btnInsideManualBorder_Click(object sender, RoutedEventArgs e) {
-			Button origin = (Button)sender;
-			Image image = new Image();
-			string button = origin.Name.ToString();
-			bool noImageUpdate = false;
-			switch (button) {
-				case "btnTransportChain":
-					image = (origin.Content == (Image)FindResource("TransportChain") ? (Image)FindResource("A_TransportChain") : (Image)FindResource("TransportChain"));
-					break;
-				case "btnAlignmentRolls":
-					image = (origin.Content == (Image)FindResource("AlignmentRolls") ? (Image)FindResource("A_AlignmentRolls") : (Image)FindResource("AlignmentRolls"));
-					break;
-				case "btnTrasportQueue":
-					image = (origin.Content == (Image)FindResource("TrasportQueue") ? (Image)FindResource("A_TrasportQueue") : (Image)FindResource("TrasportQueue"));
-					break;
-				case "btnBatenteAllinFile":
-					image = (origin.Content == (Image)FindResource("BatenteAllinFile") ? (Image)FindResource("A_BatenteAllinFile") : (Image)FindResource("BatenteAllinFile"));
-					break;
-				case "btnLoader":
-					image = (origin.Content == (Image)FindResource("Loader") ? (Image)FindResource("A_Loader") : (Image)FindResource("Loader"));
-					break;
-				case "btnControsagomeMecc":
-					image = (origin.Content == (Image)FindResource("ControsagomeMecc") ? (Image)FindResource("A_ControsagomeMecc") : (Image)FindResource("ControsagomeMecc"));
-					break;
-				case "btnControsagomePneum_lower":
-					noImageUpdate = true;
-					gridLowerActive.Visibility = gridLowerActive.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
-					break;
-				case "btnControsagomePneum_upper":
-					noImageUpdate = true;
-					gridUpperActive.Visibility = gridUpperActive.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
-					break;
-				case "btnControsagomePneum_lateral":
-					noImageUpdate = true;
-					gridLateralActive.Visibility = gridLateralActive.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
-					break;
-				case "btnShelves":
-					image = (origin.Content == (Image)FindResource("Shelves") ? (Image)FindResource("A_Shelves") : (Image)FindResource("Shelves"));
-					break;
-				case "btnCar":
-					image = (origin.Content == (Image)FindResource("Car") ? (Image)FindResource("A_Car") : (Image)FindResource("Car"));
-					break;
-				case "btnCarRolls":
-					image = (origin.Content == (Image)FindResource("CarRolls") ? (Image)FindResource("A_CarRolls") : (Image)FindResource("CarRolls"));
-					break;
-				case "btnTrasportLat":
-					image = (origin.Content == (Image)FindResource("TrasportLat") ? (Image)FindResource("A_TrasportLat") : (Image)FindResource("TrasportLat"));
-					break;
-				case "btnUpperRolls":
-					noImageUpdate = true;
-					if (tbUpperRolls.Background == Brushes.yellowBrush)
-						tbUpperRolls.ClearValue(BackgroundProperty);
-					else
-						tbUpperRolls.Background = Brushes.yellowBrush;
-					break;
-				case "btnLiftChains":
-					image = (origin.Content == (Image)FindResource("LiftChains") ? (Image)FindResource("A_LiftChains") : (Image)FindResource("LiftChains"));
-					break;
-				case "btnStorageChains":
-					image = (origin.Content == (Image)FindResource("StorageChains") ? (Image)FindResource("A_StorageChains") : (Image)FindResource("StorageChains"));
-					break;
-				case "btnStorageChains_Withdrawal":
-					image = (origin.Content == (Image)FindResource("StorageChains-Withdrawal") ? (Image)FindResource("A_StorageChains-Withdrawal") : (Image)FindResource("StorageChains-Withdrawal"));
-					break;
-				case "btnDrain12":
-					noImageUpdate = true;
-					gridDrain12Active.Visibility = gridDrain12Active.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
-					break;
-				case "btnDrain123":
-					noImageUpdate = true;
-					gridDrain123Active.Visibility = gridDrain123Active.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
-					break;
-				case "btnDrain1234":
-					noImageUpdate = true;
-					gridDrain1234Active.Visibility = gridDrain1234Active.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
-					break;
-				default:
-					UpdateStatusBar("Botão não reconhecido", 1);
-					break;
-			}
-			if (noImageUpdate == false)
-				origin.Content = image;
 		}
 		#endregion
 
@@ -1283,6 +1276,93 @@ namespace Empacotadora {
 		}
 		#endregion
 
+		#region Manual
+		//Manual
+		private void btnInsideManualBorder_Click(object sender, RoutedEventArgs e) {
+			Button origin = (Button)sender;
+			Image image = new Image();
+			string button = origin.Name.ToString();
+			bool noImageUpdate = false;
+			switch (button) {
+				case "btnTransportChain":
+					image = (origin.Content == (Image)FindResource("TransportChain") ? (Image)FindResource("A_TransportChain") : (Image)FindResource("TransportChain"));
+					break;
+				case "btnAlignmentRolls":
+					image = (origin.Content == (Image)FindResource("AlignmentRolls") ? (Image)FindResource("A_AlignmentRolls") : (Image)FindResource("AlignmentRolls"));
+					break;
+				case "btnTrasportQueue":
+					image = (origin.Content == (Image)FindResource("TrasportQueue") ? (Image)FindResource("A_TrasportQueue") : (Image)FindResource("TrasportQueue"));
+					break;
+				case "btnBatenteAllinFile":
+					image = (origin.Content == (Image)FindResource("BatenteAllinFile") ? (Image)FindResource("A_BatenteAllinFile") : (Image)FindResource("BatenteAllinFile"));
+					break;
+				case "btnLoader":
+					image = (origin.Content == (Image)FindResource("Loader") ? (Image)FindResource("A_Loader") : (Image)FindResource("Loader"));
+					break;
+				case "btnControsagomeMecc":
+					image = (origin.Content == (Image)FindResource("ControsagomeMecc") ? (Image)FindResource("A_ControsagomeMecc") : (Image)FindResource("ControsagomeMecc"));
+					break;
+				case "btnControsagomePneum_lower":
+					noImageUpdate = true;
+					gridLowerActive.Visibility = gridLowerActive.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+					break;
+				case "btnControsagomePneum_upper":
+					noImageUpdate = true;
+					gridUpperActive.Visibility = gridUpperActive.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+					break;
+				case "btnControsagomePneum_lateral":
+					noImageUpdate = true;
+					gridLateralActive.Visibility = gridLateralActive.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+					break;
+				case "btnShelves":
+					image = (origin.Content == (Image)FindResource("Shelves") ? (Image)FindResource("A_Shelves") : (Image)FindResource("Shelves"));
+					break;
+				case "btnCar":
+					image = (origin.Content == (Image)FindResource("Car") ? (Image)FindResource("A_Car") : (Image)FindResource("Car"));
+					break;
+				case "btnCarRolls":
+					image = (origin.Content == (Image)FindResource("CarRolls") ? (Image)FindResource("A_CarRolls") : (Image)FindResource("CarRolls"));
+					break;
+				case "btnTrasportLat":
+					image = (origin.Content == (Image)FindResource("TrasportLat") ? (Image)FindResource("A_TrasportLat") : (Image)FindResource("TrasportLat"));
+					break;
+				case "btnUpperRolls":
+					noImageUpdate = true;
+					if (tbUpperRolls.Background == Brushes.yellowBrush)
+						tbUpperRolls.ClearValue(BackgroundProperty);
+					else
+						tbUpperRolls.Background = Brushes.yellowBrush;
+					break;
+				case "btnLiftChains":
+					image = (origin.Content == (Image)FindResource("LiftChains") ? (Image)FindResource("A_LiftChains") : (Image)FindResource("LiftChains"));
+					break;
+				case "btnStorageChains":
+					image = (origin.Content == (Image)FindResource("StorageChains") ? (Image)FindResource("A_StorageChains") : (Image)FindResource("StorageChains"));
+					break;
+				case "btnStorageChains_Withdrawal":
+					image = (origin.Content == (Image)FindResource("StorageChains-Withdrawal") ? (Image)FindResource("A_StorageChains-Withdrawal") : (Image)FindResource("StorageChains-Withdrawal"));
+					break;
+				case "btnDrain12":
+					noImageUpdate = true;
+					gridDrain12Active.Visibility = gridDrain12Active.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+					break;
+				case "btnDrain123":
+					noImageUpdate = true;
+					gridDrain123Active.Visibility = gridDrain123Active.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+					break;
+				case "btnDrain1234":
+					noImageUpdate = true;
+					gridDrain1234Active.Visibility = gridDrain1234Active.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+					break;
+				default:
+					UpdateStatusBar("Botão não reconhecido", 1);
+					break;
+			}
+			if (noImageUpdate == false)
+				origin.Content = image;
+		}
+		#endregion
+
 		#region PLC_COM
 		private void btnConnect_Click(object sender, RoutedEventArgs e) {
 			string status = PLC.Connect(tbIPAddress.Text, 2);
@@ -1307,8 +1387,5 @@ namespace Empacotadora {
 		}
 		#endregion
 
-		private void Button_Click(object sender, RoutedEventArgs e) {
-			UpdateStrapsValues(6000);
-		}
 	}
 }

@@ -130,7 +130,7 @@
                 <TextBlock>Pronto</TextBlock>
             </StatusBarItem>
         </StatusBar>
-        <Button x:Name="btnCurrentOrder" Content="Ordem atual" FontSize="20" Height="75" Grid.Column="3" Click="btnCurrentOrder_Click"/>
+        <Button x:Name="btnCurrentOrder" Content="Ordem atual" FontSize="20" Height="75" Grid.Column="3" Click="btnCurrentOrder_Click" Background="#FFCD5353"/>
         <Button x:Name="btnListOrders" Content="Listar Ordens" FontSize="20" Height="75" Grid.Column="4" Click="btnListOrders_Click" BorderThickness="2,3"/>
         <Button x:Name="btnRecipes" Content="Receitas" FontSize="20" Height="75" Grid.Column="5" Margin="0,0,142,0" Click="btnRecipes_Click"/>
     </Grid>

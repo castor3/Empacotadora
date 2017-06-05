@@ -4,14 +4,14 @@ namespace Empacotadora {
 	/// <summary>
 	/// Contains PLC address (as double) of variables
 	/// </summary>
-	class Address {
+	namespace Address {
 		// b->bool	(1 bit)
 		// i->int	(16 bits)
 		// r->real	(32 bits, double)
 		// d->dint	(32 bits, double int)
 		// a->array	(32bits * 22values) -> array of 22 "real" values
 		/// <summary>
-		/// Variables used to communicate PC <valid attribute="<"/>=<valid attribute=">"/> PLC
+		/// Variables used to communicate PC -- PLC
 		/// </summary>
 		public class PCPLC {
 			public const int DBNumber = 402;
@@ -59,9 +59,6 @@ namespace Empacotadora {
 				public static Tuple<int, int, string> bIncrementsFIFO = Tuple.Create(66, 4, "bool");        //PULSANTE: incrementa fifo
 			}
 		}
-		/// <summary>
-		/// Variables used while in the program's "..." page
-		/// </summary>
 		public class PackPipe {
 			public const int DBNumber = 440;
 			public class Mode {
@@ -83,7 +80,7 @@ namespace Empacotadora {
 			public class PC {
 				// DatiPC
 				public static Tuple<int, string> iTubesOnPackage = Tuple.Create(30, "integer");         //numero di tubi confezionati [pacco in corso]
-				public static Tuple<int, string> iPacksMade = Tuple.Create(32, "integer");              //numero pacco in formazione su PP (Numero pacchi fatti + 1)
+				public static Tuple<int, string> iPackageNumber = Tuple.Create(32, "integer");              //numero pacco in formazione su PP (Numero pacchi fatti + 1)
 				public static Tuple<int, string> iTubesInCurrentRow = Tuple.Create(34, "integer");      //tubi contati per fila in corso
 				public static Tuple<int, string> iNumberOfCurrentRow = Tuple.Create(36, "integer");     //numero di fila in corso
 				public static Tuple<int, string> rBlowingCartPosition = Tuple.Create(38, "real");       //Posizione Carrello Soffio
@@ -93,9 +90,6 @@ namespace Empacotadora {
 				public static Tuple<int, string> rFinalWidthInFormation = Tuple.Create(54, "real");     //VALORE: Larghezza finale fila in formazione
 			}
 		}
-		/// <summary>
-		/// Variables used while in the program's "..." page
-		/// </summary>
 		public class LateralConveyor {
 			public const int DBNumber = 442;
 			public class Mode {
@@ -117,7 +111,7 @@ namespace Empacotadora {
 			public class PCData {
 				//DatiPC
 				public static Tuple<int, string> iNumberOfRegimentsExecuted = Tuple.Create(36, "integer"); //numero di regge eseguite
-				public static Tuple<int, string> rPackagePositionStrapper = Tuple.Create(38, "real");      //posizione pacco in reggiatura
+				public static Tuple<int, string> rPackagePositionInStrapper = Tuple.Create(38, "real");      //posizione pacco in reggiatura
 			}
 			public class PLC_TrLaterali {
 				// PLC_TrLaterali
@@ -137,9 +131,114 @@ namespace Empacotadora {
 				}
 			}
 		}
-		/// <summary>
-		/// Variables used while in the program's "..." page
-		/// </summary>
+		public class Accumulator_1{
+			public const int DBNumber = 480;
+			public class OrderChange {
+				//CAMBIO_ORDINE
+				public static Tuple<int, int, string> bModifiedData = Tuple.Create(0, 0, "bool");              //COMANDO: dati modificati [da PC o tracking]
+				public static Tuple<int, int, string> bRequestOrderChange = Tuple.Create(0, 1, "bool");        //COMANDO: richiesta pop-up forzatura cambio ordine
+				public static Tuple<int, int, string> bForceOrderChange = Tuple.Create(0, 2, "bool");          //COMANDO: forzatura cambio ordine
+				public static Tuple<int, int, string> bEmptyArea = Tuple.Create(0, 3, "bool");                 //STATO: zona vuota, pronta a ricevere dati
+				public static Tuple<int, int, string> bEmptyingAreaInProgress = Tuple.Create(0, 4, "bool");    //STATO: svuotamento zona in corso
+			}
+			public class Order {
+				//ORDINE
+				public static Tuple<int, string> iOrderCode = Tuple.Create(2, "integer");               //VALORE: codice ordine
+				public class Tube {
+					//DATI DEL TUBO
+					public static Tuple<int, int, string> bRound = Tuple.Create(4, 0, "bool");          //STATO: tubo tondo
+					public static Tuple<int, string> rLength = Tuple.Create(8, "real");                 //VALORE: lunghezza tubo [mm]
+					public static Tuple<int, string> rWidth = Tuple.Create(12, "real");                 //VALORE: larghezza tubo [mm]
+					public static Tuple<int, string> rHeight = Tuple.Create(16, "real");                //VALORE: altezza tubo [mm]
+					public static Tuple<int, string> rThickness = Tuple.Create(20, "real");             //VALORE: spessore tubo [mm]
+					public static Tuple<int, string> rCalculatedWeight = Tuple.Create(24, "real");      //VALORE: peso tubo calcolato [Kg]
+					public static Tuple<int, string> rLenghtBeforeCutting = Tuple.Create(28, "real");   //VALORE: lunghezza tubo prima del taglio [mm]
+					public static Tuple<int, string> rInternalVolume = Tuple.Create(32, "real");        //VALORE: volume interno tubo [litri]
+					public static Tuple<int, string> rPercentualLineSpeed = Tuple.Create(36, "real");   //VALORE: (0-1) percentuale velocità linea rispetto alla massima
+				}
+				public class Package {
+					//DATI DEL PACCO
+					public static Tuple<int, int, string> bHexagonal = Tuple.Create(40, 0, "bool");     //STATO: pacco esagono
+					public static Tuple<int, string> bTubeNumber = Tuple.Create(42, "integer");         //VALORE: numero tubi per pacco
+					public static Tuple<int, string> iProfileOutput = Tuple.Create(44, "integer");      //VALORE: fila uscita controsagoma
+					public static Tuple<int, string> rTheoreticalWeight = Tuple.Create(46, "real");     //VALORE: peso teorico [Kg]
+					public static Tuple<int, string> rPackageBaseWidth = Tuple.Create(50, "real");      //VALORE: larghezza base pacco [mm]
+					public static Tuple<int, string> rBigRowWidth = Tuple.Create(54, "real");           //VALORE: larghezza fila massima pacco [mm]
+					public static Tuple<int, string> rPackageSideWidth = Tuple.Create(58, "real");      //VALORE: larghezza lato pacco [mm]
+					public static Tuple<int, string> rPackageHeight = Tuple.Create(62, "real");         //VALORE: altezza pacco [mm]
+				}
+			}
+			public class ProductionData {
+				//DATI DI PRODUZIONE
+				public static Tuple<int, int, string> bTubePresence = Tuple.Create(90, 0, "bool");             //STATO: presenza tubi
+				public static Tuple<int, int, string> bEndRow = Tuple.Create(90, 1, "bool");                   //STATO: fine fila
+				public static Tuple<int, int, string> bEndPackage = Tuple.Create(90, 2, "bool");               //STATO: fine pacco
+				public static Tuple<int, int, string> bLateralOutputProfile = Tuple.Create(90, 3, "bool");     //STATO: uscita controsagoma laterale
+				public static Tuple<int, int, string> bEvenRow = Tuple.Create(90, 4, "bool");                  //STATO: fila pari
+				public static Tuple<int, int, string> bTubesInFirstRow = Tuple.Create(90, 5, "bool");          //STATO: prima fila del pacco
+				public static Tuple<int, string> iPackageNumber = Tuple.Create(92, "integer");         //VALORE: numero progressivo pacco
+				public static Tuple<int, string> iTubesInPackage = Tuple.Create(94, "integer");        //VALORE: tubi su pacco
+				public static Tuple<int, string> iTubesInLastRow = Tuple.Create(96, "integer");        //VALORE: tubi ultima fila
+				public static Tuple<int, string> iFilesInPackage = Tuple.Create(98, "integer");        //VALORE: file su pacco
+			}
+			public static Tuple<int, int, string> Rows = Tuple.Create(110, 308, "Array[int]");	//ARRAY: numero tubi per fila [1..100]
+			public class Setup {
+				public static Tuple<int, string> timeTubeAlignment = Tuple.Create(310, "real");	//VALORE: tempo allineamento tubo
+				public static Tuple<int, string> shelvesAditionalDescentTimeCalculatingCoefficient = Tuple.Create(314, "real"); //VALORE: coefficiente calcolo tempo discesa supplementare mensole (shelves) [s/mm]
+			}
+		}
+		public class Accumulator_2 {
+			public const int DBNumber = 481;
+			public class OrderChange {
+				//CAMBIO_ORDINE
+				public static Tuple<int, int, string> bModifiedData = Tuple.Create(0, 0, "bool");              //COMANDO: dati modificati [da PC o tracking]
+				public static Tuple<int, int, string> bRequestOrderChange = Tuple.Create(0, 1, "bool");        //COMANDO: richiesta pop-up forzatura cambio ordine
+				public static Tuple<int, int, string> bForceOrderChange = Tuple.Create(0, 2, "bool");          //COMANDO: forzatura cambio ordine
+				public static Tuple<int, int, string> bEmptyArea = Tuple.Create(0, 3, "bool");                 //STATO: zona vuota, pronta a ricevere dati
+				public static Tuple<int, int, string> bEmptyingAreaInProgress = Tuple.Create(0, 4, "bool");    //STATO: svuotamento zona in corso
+			}
+			public class Order {
+				//ORDINE
+				public static Tuple<int, string> iOrderCode = Tuple.Create(2, "integer");               //VALORE: codice ordine
+				public class Tube {
+					//DATI DEL TUBO
+					public static Tuple<int, int, string> bRound = Tuple.Create(4, 0, "bool");          //STATO: tubo tondo
+					public static Tuple<int, string> rLength = Tuple.Create(8, "real");                 //VALORE: lunghezza tubo [mm]
+					public static Tuple<int, string> rWidth = Tuple.Create(12, "real");                 //VALORE: larghezza tubo [mm]
+					public static Tuple<int, string> rHeight = Tuple.Create(16, "real");                //VALORE: altezza tubo [mm]
+					public static Tuple<int, string> rThickness = Tuple.Create(20, "real");             //VALORE: spessore tubo [mm]
+					public static Tuple<int, string> rCalculatedWeight = Tuple.Create(24, "real");      //VALORE: peso tubo calcolato [Kg]
+					public static Tuple<int, string> rLenghtBeforeCutting = Tuple.Create(28, "real");   //VALORE: lunghezza tubo prima del taglio [mm]
+					public static Tuple<int, string> rInternalVolume = Tuple.Create(32, "real");        //VALORE: volume interno tubo [litri]
+					public static Tuple<int, string> rPercentualLineSpeed = Tuple.Create(36, "real");   //VALORE: (0-1) percentuale velocità linea rispetto alla massima
+				}
+				public class Package {
+					//DATI DEL PACCO
+					public static Tuple<int, int, string> bHexagonal = Tuple.Create(40, 0, "bool");     //STATO: pacco esagono
+					public static Tuple<int, string> bTubeNumber = Tuple.Create(42, "integer");         //VALORE: numero tubi per pacco
+					public static Tuple<int, string> iProfileOutput = Tuple.Create(44, "integer");      //VALORE: fila uscita controsagoma
+					public static Tuple<int, string> rTheoreticalWeight = Tuple.Create(46, "real");     //VALORE: peso teorico [Kg]
+					public static Tuple<int, string> rPackageBaseWidth = Tuple.Create(50, "real");      //VALORE: larghezza base pacco [mm]
+					public static Tuple<int, string> rBigRowWidth = Tuple.Create(54, "real");           //VALORE: larghezza fila massima pacco [mm]
+					public static Tuple<int, string> rPackageSideWidth = Tuple.Create(58, "real");      //VALORE: larghezza lato pacco [mm]
+					public static Tuple<int, string> rPackageHeight = Tuple.Create(62, "real");         //VALORE: altezza pacco [mm]
+				}
+			}
+			public class ProductionData {
+				//DATI DI PRODUZIONE
+				public static Tuple<int, int, string> bTubePresence = Tuple.Create(90, 0, "bool");             //STATO: presenza tubi
+				public static Tuple<int, int, string> bEndRow = Tuple.Create(90, 1, "bool");                   //STATO: fine fila
+				public static Tuple<int, int, string> bEndPackage = Tuple.Create(90, 2, "bool");               //STATO: fine pacco
+				public static Tuple<int, int, string> bLateralOutputProfile = Tuple.Create(90, 3, "bool");     //STATO: uscita controsagoma laterale
+				public static Tuple<int, int, string> bEvenRow = Tuple.Create(90, 4, "bool");                  //STATO: fila pari
+				public static Tuple<int, int, string> bTubesInFirstRow = Tuple.Create(90, 5, "bool");          //STATO: prima fila del pacco
+				public static Tuple<int, string> iPackageNumber = Tuple.Create(92, "integer");         //VALORE: numero progressivo pacco
+				public static Tuple<int, string> iTubesInPackage = Tuple.Create(94, "integer");        //VALORE: tubi su pacco
+				public static Tuple<int, string> iTubesInLastRow = Tuple.Create(96, "integer");        //VALORE: tubi ultima fila
+				public static Tuple<int, string> iFilesInPackage = Tuple.Create(98, "integer");        //VALORE: file su pacco
+			}
+			public class Setup {}
+		}
 		public class Trolley {
 			public const int DBNumber = 485;
 			public class OrderChange {

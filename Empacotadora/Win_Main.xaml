@@ -225,7 +225,7 @@
                         <Label Content="Cinta nr. :" Margin="142,33,1057,0" VerticalAlignment="Top" Height="44" FontSize="18" BorderThickness="1" Background="{x:Null}"/>
                         <Label Content="&lt;cinta&gt;" Margin="142,76,1057,0" VerticalAlignment="Top" Height="44" FontSize="18" BorderBrush="Black" BorderThickness="1" Background="#FFDEDEDE"/>
                         <Label Content="Posição do atado [mm] :" Margin="597,34,602,0" VerticalAlignment="Top" Height="44" FontSize="18" BorderThickness="1" Background="{x:Null}"/>
-                        <Label Content="&lt;posição [mm]&gt;" Margin="597,76,602,0" VerticalAlignment="Top" Height="44" FontSize="18" BorderBrush="Black" BorderThickness="1" Background="#FFDEDEDE"/>
+                        <Label x:Name="lblPackPosition" Content="&lt;posição [mm]&gt;" Margin="597,76,602,0" VerticalAlignment="Top" Height="44" FontSize="18" BorderBrush="Black" BorderThickness="1" Background="#FFDEDEDE"/>
                     </Grid>
                     <Grid Height="328" Margin="0,36,0,0" VerticalAlignment="Top" Background="#FFA6A6A6">
                         <Grid x:Name="grid6Straps" HorizontalAlignment="Left" Height="64" Margin="305,236,0,0" VerticalAlignment="Top" Width="824" Background="#FFA6A6A6">

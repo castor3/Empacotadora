@@ -29,7 +29,6 @@ namespace Empacotadora {
 			tabItemCurrentOrder.Visibility = Visibility.Collapsed;
 			tabItemListOrders.Visibility = Visibility.Collapsed;
 			errorImage.Source = Imaging.CreateBitmapSourceFromHIcon(SystemIcons.Error.Handle‌​, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
-			btnCurrentOrder.Background = Brushes.lightRed;
 		}
 
 		private void btnReturn_Click(object sender, RoutedEventArgs e) {

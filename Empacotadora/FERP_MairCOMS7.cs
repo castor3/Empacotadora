@@ -192,12 +192,13 @@ namespace Empacotadora {
 					//foreach (var item in asd) {
 					//	MessageBox.Show("Bytes: " + item);
 					//}
+
 					int novoInt = BitConverter.ToInt32(bytes, 0);
+					MessageBox.Show("em Int's: " + novoInt.ToString());
 					byte[] novoBytes = BitConverter.GetBytes(novoInt);
 					Array.Reverse(novoBytes);
-					double newDouble = BitConverter.ToDouble(novoBytes, 0);
-					MessageBox.Show("em Int's: " + novoInt.ToString());
 					MessageBox.Show("novoByte[]: " + novoBytes.ToString());
+					double newDouble = BitConverter.ToDouble(novoBytes, 0);
 					MessageBox.Show("newDouble: " + newDouble.ToString());
 					//SPS.set_DD(DBAddress, varAddress,)
 					//SPS.set_DW(DBAddress, varAddress, Convert.ToInt32(valueToWrite));
@@ -208,7 +209,7 @@ namespace Empacotadora {
 				}
 			}
 			else
-				Message = "Not connected";
+				Message = "1";
 			//MessageBox.Show(Message);
 		}
 		#endregion
@@ -230,7 +231,7 @@ namespace Empacotadora {
 				}
 			}
 			else
-				Message = "Not connected";
+				Message = "2";
 			MessageBox.Show(Message);
 			return valueReadFromPLC;
 		}
@@ -250,8 +251,31 @@ namespace Empacotadora {
 				}
 			}
 			else
-				Message = "Not connected";
+				Message = "3";
 			MessageBox.Show(Message);
+		}
+		#endregion
+
+		#region Array
+		public int[] ReadArrayInt(int DBAddress, int varAddressFrom, int varAddressTo) {
+			int[] arrayOfInts = new int[0];
+			if (connected) {
+				try {
+					// SPS.get_DW(int DBNr, int nr);
+					// DBNr     : The number of the data block
+					// nr       : The byte address within the DB
+					for (int i = varAddressFrom; i < varAddressTo; i += 2)
+						arrayOfInts[i] = SPS.get_DW(DBAddress, i);
+					Message = "Success'ReadArrayInt()'";
+				}
+				catch {
+					Message = "Error 'ReadArrayInt()'";
+				}
+			}
+			else
+				Message = "4";
+			MessageBox.Show(Message);
+			return arrayOfInts;
 		}
 		#endregion
 	}
