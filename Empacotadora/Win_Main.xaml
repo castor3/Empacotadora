@@ -223,7 +223,7 @@
                 <Grid Margin="2,0">
                     <Grid Height="160" Margin="0,370,0,0" VerticalAlignment="Top" Background="#FFA6A6A6">
                         <Label Content="Cinta nr. :" Margin="142,33,1057,0" VerticalAlignment="Top" Height="44" FontSize="18" BorderThickness="1" Background="{x:Null}"/>
-                        <Label Content="&lt;cinta&gt;" Margin="142,76,1057,0" VerticalAlignment="Top" Height="44" FontSize="18" BorderBrush="Black" BorderThickness="1" Background="#FFDEDEDE"/>
+                        <Label x:Name="lblCurrentStrap" Content="&lt;cinta&gt;" Margin="142,76,1057,0" VerticalAlignment="Top" Height="44" FontSize="18" BorderBrush="Black" BorderThickness="1" Background="#FFDEDEDE"/>
                         <Label Content="Posição do atado [mm] :" Margin="597,34,602,0" VerticalAlignment="Top" Height="44" FontSize="18" BorderThickness="1" Background="{x:Null}"/>
                         <Label x:Name="lblPackPosition" Content="&lt;posição [mm]&gt;" Margin="597,76,602,0" VerticalAlignment="Top" Height="44" FontSize="18" BorderBrush="Black" BorderThickness="1" Background="#FFDEDEDE"/>
                     </Grid>
@@ -294,17 +294,69 @@
                     <Button x:Name="btnHistory" HorizontalAlignment="Left" Margin="841,536,0,0" VerticalAlignment="Top" Width="154" Height="60" Background="#FFC1C1C1" BorderBrush="#FF707070" Click="btnHistory_Click">
                         <TextBlock TextWrapping="Wrap" TextAlignment="Center" Text="Histórico de atados" FontSize="20"/>
                     </Button>
-                    <Button HorizontalAlignment="Left" Margin="1142,536,0,0" VerticalAlignment="Top" Width="154" Height="60" Background="#FFC1C1C1" BorderBrush="#FF707070">
+                    <Button x:Name="btnEvacuatePackage" HorizontalAlignment="Left" Margin="1142,536,0,0" VerticalAlignment="Top" Width="154" Height="60" Background="#FFC1C1C1" BorderBrush="#FF707070" Click="btnEvacuatePackage_Click">
                         <TextBlock TextWrapping="Wrap" Text="Evacuar atado" FontSize="20"/>
                     </Button>
                 </Grid>
             </TabItem>
             <TabItem x:Name="tabItemHistory" Header="TabItem" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="55">
                 <Grid>
-                    <DataGrid x:Name="datagridHistory" AlternatingRowBackground="#FF976666" Margin="10,10,950,0" Background="{x:Null}" BorderBrush="{x:Null}" Height="683" UseLayoutRounding="True" FontSize="24" GridLinesVisibility="Vertical" VerticalGridLinesBrush="#FF838383" HeadersVisibility="Column" IsReadOnly="True" VerticalAlignment="Top" AlternationCount="2" SelectionMode="Single" CanUserReorderColumns="False"/>
-                    <Viewbox HorizontalAlignment="Left" Height="478" Margin="594,66,0,0" VerticalAlignment="Top" Width="498">
-                        <Calendar HorizontalAlignment="Left" VerticalAlignment="Top" Height="165"/>
+                    <DataGrid x:Name="datagridHistory" AlternatingRowBackground="#FF976666" Margin="10,10,843,0" Background="{x:Null}" BorderBrush="Black" Height="683" UseLayoutRounding="True" FontSize="23" GridLinesVisibility="Vertical" VerticalGridLinesBrush="#FF838383" HeadersVisibility="Column" IsReadOnly="True" VerticalAlignment="Top" AlternationCount="2" SelectionMode="Single" CanUserReorderColumns="False"/>
+                    <Viewbox HorizontalAlignment="Left" Height="449" Margin="954,228,0,0" VerticalAlignment="Top" Width="470">
+                        <Calendar x:Name="calHistory" HorizontalAlignment="Left" VerticalAlignment="Top" Height="165" SelectedDatesChanged="calHistory_SelectedDatesChanged"/>
                     </Viewbox>
+                    <GroupBox Header="Totais" HorizontalAlignment="Left" Height="215" Margin="954,12,0,0" VerticalAlignment="Top" Width="470" FontSize="32" BorderThickness="2">
+                        <Grid Margin="0">
+                            <Label Content="Pacotes" HorizontalAlignment="Right" Margin="0,-1,283,0" VerticalAlignment="Top"/>
+                            <Label Content="Tubos" HorizontalAlignment="Right" Margin="0,53,283,0" VerticalAlignment="Top"/>
+                            <Label Content="Peso" HorizontalAlignment="Right" Margin="0,107,283,0" VerticalAlignment="Top"/>
+                            <Label Content="&lt;...&gt;" HorizontalAlignment="Left" Margin="208,-1,0,0" VerticalAlignment="Top" Width="230" Background="#FFECECEC"/>
+                            <Label Content="&lt;...&gt;" HorizontalAlignment="Left" Margin="208,53,0,0" VerticalAlignment="Top" Width="230" Background="#FFECECEC"/>
+                            <Label Content="&lt;...&gt;" HorizontalAlignment="Left" Margin="208,107,0,0" VerticalAlignment="Top" Width="230" Background="#FFECECEC"/>
+                        </Grid>
+                    </GroupBox>
+                    <ComboBox x:Name="comboboxShift" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Margin="676,134,0,0" VerticalAlignment="Top" Width="185" Height="43" FontSize="24" SelectionChanged="comboboxShift_SelectionChanged">
+                        <ComboBoxItem Content="----------" FontSize="20" HorizontalContentAlignment="Center"/>
+                        <ComboBoxItem Content="Turno 1" FontSize="20" HorizontalContentAlignment="Center"/>
+                        <ComboBoxItem Content="Turno 2" FontSize="20" HorizontalContentAlignment="Center"/>
+                        <ComboBoxItem Content="Turno 3" FontSize="20" HorizontalContentAlignment="Center"/>
+                    </ComboBox>
+                    <Label Content="Turno" HorizontalAlignment="Right" Margin="0,86,573,0" VerticalAlignment="Top" FontSize="36" Width="185"/>
+                    <Label Content="Dia" HorizontalAlignment="Left" Margin="649,434,0,0" VerticalAlignment="Top" FontSize="24" Width="64"/>
+                    <TextBox x:Name="tbHistoryDayInit" HorizontalAlignment="Left" Height="36" Margin="649,466,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="64" FontSize="24" IsReadOnly="True" GotFocus="InitialDate_GotFocus"/>
+                    <Label Content="Mês" HorizontalAlignment="Left" Margin="727,434,0,0" VerticalAlignment="Top" FontSize="24" Width="64"/>
+                    <TextBox x:Name="tbHistoryMonthInit" HorizontalAlignment="Left" Height="36" Margin="727,466,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="64" FontSize="24" IsReadOnly="True" GotFocus="InitialDate_GotFocus"/>
+                    <Label Content="Ano" HorizontalAlignment="Left" Margin="805,434,0,0" VerticalAlignment="Top" FontSize="24" Width="90"/>
+                    <TextBox x:Name="tbHistoryYearInit" HorizontalAlignment="Left" Height="36" Margin="805,466,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="90" FontSize="24" IsReadOnly="True" GotFocus="InitialDate_GotFocus"/>
+                    <Label Content="/" HorizontalAlignment="Left" Margin="713,466,0,0" VerticalAlignment="Top" FontSize="24" Width="14" Height="36" FontWeight="Bold"/>
+                    <Label Content="/" HorizontalAlignment="Left" Margin="791,466,0,0" VerticalAlignment="Top" FontSize="24" Width="14" Height="36" FontWeight="Bold"/>
+                    <Label x:Name="lblInitialDate" Content="Data inicial" HorizontalAlignment="Left" Margin="649,402,0,0" VerticalAlignment="Top" FontSize="24" Width="246"/>
+                    <Grid x:Name="gridFinalDate" HorizontalAlignment="Left" Height="121" Margin="649,514,0,0" VerticalAlignment="Top" Width="246">
+                        <Label Content="Dia" HorizontalAlignment="Left" Margin="0,44,0,0" VerticalAlignment="Top" FontSize="24" Width="64"/>
+                        <TextBox x:Name="tbHistoryDayEnd" HorizontalAlignment="Left" Height="36" Margin="0,76,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="64" FontSize="24" IsReadOnly="True" GotFocus="FinalDate_GotFocus"/>
+                        <Label Content="Mês" HorizontalAlignment="Left" Margin="78,44,0,0" VerticalAlignment="Top" FontSize="24" Width="64"/>
+                        <TextBox x:Name="tbHistoryMonthEnd" HorizontalAlignment="Left" Height="36" Margin="78,76,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="64" FontSize="24" IsReadOnly="True" GotFocus="FinalDate_GotFocus"/>
+                        <Label Content="Ano" HorizontalAlignment="Left" Margin="156,44,0,0" VerticalAlignment="Top" FontSize="24" Width="90"/>
+                        <TextBox x:Name="tbHistoryYearEnd" HorizontalAlignment="Left" Height="36" Margin="156,76,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="90" FontSize="24" IsReadOnly="True" GotFocus="FinalDate_GotFocus"/>
+                        <Label Content="/" HorizontalAlignment="Left" Margin="64,76,0,0" VerticalAlignment="Top" FontSize="24" Width="14" Height="36" FontWeight="Bold"/>
+                        <Label Content="/" HorizontalAlignment="Left" Margin="142,76,0,0" VerticalAlignment="Top" FontSize="24" Width="14" Height="36" FontWeight="Bold"/>
+                        <Label Content="Data final" HorizontalAlignment="Left" Margin="0,12,0,0" VerticalAlignment="Top" FontSize="24" Width="246"/>
+                    </Grid>
+                    <RadioButton x:Name="rbNoFilter" Content="Sem filtro" HorizontalAlignment="Left" Margin="666,262,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Checked="rbNoFilter_Checked">
+                        <RadioButton.LayoutTransform>
+                            <ScaleTransform ScaleX="2" ScaleY="2"/>
+                        </RadioButton.LayoutTransform>
+                    </RadioButton>
+                    <RadioButton x:Name="rbSelectedDate" Content="Data selecionada" HorizontalAlignment="Left" Margin="666,298,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Checked="rbSelectedDate_Checked">
+                        <RadioButton.LayoutTransform>
+                            <ScaleTransform ScaleX="2" ScaleY="2"/>
+                        </RadioButton.LayoutTransform>
+                    </RadioButton>
+                    <RadioButton x:Name="rbInitialFinal" Content="Inicio / Fim" HorizontalAlignment="Left" Margin="666,336,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Checked="rbInitialFinal_Checked">
+                        <RadioButton.LayoutTransform>
+                            <ScaleTransform ScaleX="2" ScaleY="2"/>
+                        </RadioButton.LayoutTransform>
+                    </RadioButton>
                 </Grid>
             </TabItem>
             <TabItem x:Name="tabItemRecipes" Header="TabItem" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="55">
@@ -314,8 +366,8 @@
                     <Button x:Name="btnRecipeSquareTube" Content="Quadrado" HorizontalAlignment="Left" Margin="47,326,0,0" VerticalAlignment="Top" Width="141" Height="96" FontSize="20" Click="btnRecipeSquareTube_Click"/>
                     <Border BorderBrush="#FF4B4B4B" BorderThickness="2" Margin="910,192,84,209" Background="#FFA6A6A6">
                         <Grid x:Name="gridRecipes" HorizontalAlignment="Left" Margin="0" Width="439">
-                            <Label Content="Nrº tubos" Margin="145,31,144,0" VerticalAlignment="Top" Height="36" FontSize="20" HorizontalAlignment="Center" Width="150"/>
-                            <TextBox x:Name="tbRecipeTubes" Height="50" Margin="145,67,144,0" TextWrapping="Wrap" VerticalAlignment="Top" IsReadOnly="True" FontSize="25" Focusable="False"/>
+                            <Label Content="Nrº tubos" Margin="145,31,144,0" VerticalAlignment="Top" Height="36" FontSize="24" HorizontalAlignment="Center" Width="150"/>
+                            <TextBox x:Name="tbRecipeTubes" Height="50" Margin="145,67,144,0" TextWrapping="Wrap" VerticalAlignment="Top" IsReadOnly="True" FontSize="24" Focusable="False"/>
                             <Grid x:Name="gridRecipesSquareTube" HorizontalAlignment="Left" Height="123" Margin="10,139,0,38" VerticalAlignment="Center" Width="419" Background="#FFA6A6A6">
                                 <Label Content="Colunas" Margin="46,14,223,0" VerticalAlignment="Top" Height="38" FontSize="20" HorizontalAlignment="Center" Width="150"/>
                                 <TextBox x:Name="tbRecipeColums" TextWrapping="Wrap" Margin="46,52,223,0" FontSize="25" HorizontalAlignment="Center" Width="150" TabIndex="1" Height="50" VerticalAlignment="Top" IsReadOnly="True" Focusable="False"/>
@@ -323,10 +375,10 @@
                                 <TextBox x:Name="tbRecipeRows" TextWrapping="Wrap" Margin="224,52,45,0" FontSize="25" HorizontalAlignment="Center" Width="150" TabIndex="1" Height="50" VerticalAlignment="Top" IsReadOnly="True" Focusable="False"/>
                             </Grid>
                             <Grid x:Name="gridRecipesRoundTube" HorizontalAlignment="Left" Margin="10,139,0,38" Width="419" Background="#FFA6A6A6" VerticalAlignment="Center" Height="123">
-                                <Label Content="Linha grande" Margin="46,14,223,0" VerticalAlignment="Top" Height="38" FontSize="20" HorizontalAlignment="Center" Width="150"/>
-                                <TextBox x:Name="tbRecipeBigRow" TextWrapping="Wrap" Margin="46,52,223,0" FontSize="25" Width="150" TabIndex="1" Height="50" VerticalAlignment="Top" IsReadOnly="True" Focusable="False"/>
-                                <Label Content="Linha pequena" Margin="224,14,45,0" VerticalAlignment="Top" Height="38" FontSize="20" HorizontalAlignment="Center" Width="150"/>
-                                <TextBox x:Name="tbRecipeSmallRow" TextWrapping="Wrap" Margin="224,52,45,0" FontSize="25" Width="150" TabIndex="1" Height="50" VerticalAlignment="Top" IsReadOnly="True" Focusable="False"/>
+                                <Label Content="Linha grande" Margin="34,14,222,0" VerticalAlignment="Top" Height="38" FontSize="24" HorizontalAlignment="Center" Width="163"/>
+                                <TextBox x:Name="tbRecipeBigRow" TextWrapping="Wrap" Margin="34,52,222,0" FontSize="24" TabIndex="1" Height="50" VerticalAlignment="Top" IsReadOnly="True" Focusable="False"/>
+                                <Label Content="Linha pequena" Margin="220,14,36,0" VerticalAlignment="Top" Height="38" FontSize="24" HorizontalAlignment="Center" Width="163"/>
+                                <TextBox x:Name="tbRecipeSmallRow" TextWrapping="Wrap" Margin="220,52,36,0" FontSize="24" TabIndex="1" Height="50" VerticalAlignment="Top" IsReadOnly="True" Focusable="False"/>
                             </Grid>
                         </Grid>
                     </Border>
@@ -347,7 +399,7 @@
                     <RadioButton Content="Real" HorizontalAlignment="Left" Margin="595,368,0,0" VerticalAlignment="Top" FontSize="22" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="0"/>
                     <Button x:Name="btnConnect" Content="Connect" HorizontalAlignment="Left" Margin="268,398,0,0" VerticalAlignment="Top" Width="194" Height="57" Click="btnConnect_Click"/>
                     <Button x:Name="btnDisconnect" Content="Disconnect" HorizontalAlignment="Left" Margin="459,398,0,0" VerticalAlignment="Top" Width="195" Height="57" Click="btnDisconnect_Click"/>
-                    <Label x:Name="lblMessage" Content="Label" HorizontalAlignment="Left" Margin="268,173,0,0" VerticalAlignment="Top" BorderBrush="#FF8B8B8B" BorderThickness="3" Height="47" Width="386"/>
+                    <Label x:Name="lblMessage" Content="Label" HorizontalAlignment="Left" Margin="268,173,0,0" VerticalAlignment="Top" BorderBrush="#FF8B8B8B" BorderThickness="3" Height="47" Width="386" FontSize="22"/>
                     <TextBox HorizontalAlignment="Left" Height="29" Margin="439,308,0,0" TextWrapping="Wrap" Text="&lt;data&gt;" VerticalAlignment="Top" Width="147" FontSize="18"/>
                     <Button x:Name="btnWriteData" Content="Write" HorizontalAlignment="Left" Margin="439,337,0,0" VerticalAlignment="Top" Width="75" Padding="0" BorderThickness="2" Height="24" Click="btnWriteData_Click"/>
                     <Button x:Name="btnReadData" Content="Read" HorizontalAlignment="Left" Margin="512,337,0,0" VerticalAlignment="Top" Width="74" Padding="0" BorderThickness="2" Height="24"/>

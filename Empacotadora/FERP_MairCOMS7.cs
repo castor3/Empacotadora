@@ -102,8 +102,8 @@ namespace Empacotadora {
 		#endregion
 
 		#region Bool
-		public string ReadBool(int DB, Tuple<int, int, string> variable) {
-			string valueReadFromPLC = "";
+		public int ReadBool(int DB, Tuple<int, int, string> variable) {
+			int valueReadFromPLC = new int();
 			if (!connected) {
 				int DBAddress = DB;
 				int variableAddress = variable.Item1;
@@ -115,15 +115,15 @@ namespace Empacotadora {
 			MessageBox.Show(Message);
 			return valueReadFromPLC;
 		}
-		private void TryToReadBool(int DBAddress, int variableAddress, int bitToChange, string valueReadFromPLC) {
+		private void TryToReadBool(int DBAddress, int variableAddress, int bitToChange, int valueReadFromPLC) {
 			try {
-				// SPS.get_DW(int DBNr, int nr);
+				// SPS.get_D(int DBNr, int nr, int bit);
 				// DBNr     : The number of the data block
-				// nr       : The byte address within the DB
-
-				//valueReadFromPLC = SPS.get_D(DBAddress, variableAddress, bitToChange).ToString();
+				// nr       : The byte address within the DB				
+				// bit		: Bit number within the data byte
+				valueReadFromPLC = SPS.get_D(DBAddress, variableAddress, bitToChange);
 				MessageBox.Show(DBAddress + ", " + variableAddress + ", " + bitToChange);
-				if (valueReadFromPLC.ToString() != "")
+				if (valueReadFromPLC != 0)
 					Message = "Success 'ReadBool()'";
 			}
 			catch {
@@ -131,7 +131,7 @@ namespace Empacotadora {
 			}
 		}
 
-		public string WriteBool(int DB, Tuple<int, int, string> variable, int valueToWrite) {
+		public string WriteBool(int DB, Tuple<int, int, string> variable, bool valueToWrite) {
 			if (connected) {
 				int DBAddress = DB;
 				int variableAddress = variable.Item1;
@@ -142,14 +142,14 @@ namespace Empacotadora {
 				Message = "Not connected";
 			return Message;
 		}
-		private void TryToWriteBool(int DBAddress, int variableAddress, int bitToChange, int valueToWrite) {
+		private void TryToWriteBool(int DBAddress, int variableAddress, int bitToChange, bool valueToWrite) {
 			// SPS.set_D(int DBNr, int nr, int bit, int pVal);
 			// DBNr : The number of the data block
 			// nr   : The byte address within the DB
 			// bit	: Address of bit to change
 			// pVal : The new value
 			try {
-				SPS.set_D(DBAddress, variableAddress, bitToChange, valueToWrite);
+				SPS.set_D(DBAddress, variableAddress, bitToChange, Convert.ToInt32(valueToWrite));
 				MessageBox.Show(DBAddress + ", " + variableAddress + ", " + bitToChange + ", " + valueToWrite);
 				Message = "Success 'WriteBool()'";
 			}
@@ -209,7 +209,7 @@ namespace Empacotadora {
 				}
 			}
 			else
-				Message = "1";
+				Message = "Not Connected";
 			//MessageBox.Show(Message);
 		}
 		#endregion
@@ -224,14 +224,14 @@ namespace Empacotadora {
 					// nr       : The byte address within the DB
 
 					valueReadFromPLC = SPS.get_DW(DBAddress, varAddress).ToString();
-					Message = "Success'ReadInt()'";
+					Message = "Success'ReadReal()'";
 				}
 				catch {
-					Message = "Error 'ReadInt()'";
+					Message = "Error 'ReadReal()'";
 				}
 			}
 			else
-				Message = "2";
+				Message = "Not Connected";
 			MessageBox.Show(Message);
 			return valueReadFromPLC;
 		}
@@ -244,19 +244,19 @@ namespace Empacotadora {
 					// pVal : The new value
 
 					//SPS.set_DW(DBAddress, varAddress, Convert.ToInt32(valueToWrite);
-					Message = "Success 'WriteInt()'";
+					Message = "Success 'WriteReal()'";
 				}
 				catch {
-					Message = "Error 'WriteInt()'";
+					Message = "Error 'WriteReal()'";
 				}
 			}
 			else
-				Message = "3";
+				Message = "Not Connected";
 			MessageBox.Show(Message);
 		}
 		#endregion
 
-		#region Array
+		#region Array Int
 		public int[] ReadArrayInt(int DBAddress, int varAddressFrom, int varAddressTo) {
 			int[] arrayOfInts = new int[0];
 			if (connected) {
@@ -273,9 +273,32 @@ namespace Empacotadora {
 				}
 			}
 			else
-				Message = "4";
+				Message = "Not Connected";
 			MessageBox.Show(Message);
 			return arrayOfInts;
+		}
+		#endregion
+
+		#region Array Real
+		public double[] ReadArrayReal(int DBAddress, int varAddressFrom, int varAddressTo) {
+			double[] arrayOfReals = new double[0];
+			if (connected) {
+				try {
+					// SPS.get_DW(int DBNr, int nr);
+					// DBNr     : The number of the data block
+					// nr       : The byte address within the DB
+					for (int i = varAddressFrom; i < varAddressTo; i += 4)
+						arrayOfReals[i] = SPS.get_DW(DBAddress, i);
+					Message = "Success'ReadArrayReal()'";
+				}
+				catch {
+					Message = "Error 'ReadArrayReal()'";
+				}
+			}
+			else
+				Message = "Not Connected";
+			MessageBox.Show(Message);
+			return arrayOfReals;
 		}
 		#endregion
 	}

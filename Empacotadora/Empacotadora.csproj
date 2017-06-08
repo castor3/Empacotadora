@@ -211,6 +211,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Ferpinta.png" />
+    <Content Include="Resources\Interop.IBHNETLib.dll" />
     <Content Include="Resources\MAIRCOMS7.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

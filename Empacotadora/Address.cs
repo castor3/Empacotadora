@@ -110,8 +110,8 @@ namespace Empacotadora {
 			}
 			public class PCData {
 				//DatiPC
-				public static Tuple<int, string> iNumberOfRegimentsExecuted = Tuple.Create(36, "integer"); //numero di regge eseguite
-				public static Tuple<int, string> rPackagePositionInStrapper = Tuple.Create(38, "real");      //posizione pacco in reggiatura
+				public static Tuple<int, string> iNumberOfRegimentsExecuted = Tuple.Create(36, "integer");	//numero di regge eseguite
+				public static Tuple<int, string> rPackagePositionInStrapper = Tuple.Create(38, "real");		//posizione pacco in reggiatura
 			}
 			public class PLC_TrLaterali {
 				// PLC_TrLaterali
@@ -344,8 +344,8 @@ namespace Empacotadora {
 			}
 			public class Strap {
 				// REGGIATURA
-				public static Tuple<int, string> iNumberOfStraps = Tuple.Create(110, "integer");            //VALORE: Numero reggiature 
-				public static Tuple<int, string> aStrapsPosition = Tuple.Create(112, "Array[real]");        //ARRAY: quote di reggiatura [mm] (ARRAY[1..22] OF REAL	)
+				public static Tuple<int, string> iNumberOfStraps = Tuple.Create(110, "integer");				//VALORE: Numero reggiature 
+				public static Tuple<int, int, string> aStrapsPosition = Tuple.Create(112, 196, "Array[real]");	//ARRAY: quote di reggiatura [mm] (ARRAY[1..22] OF REAL	)
 			}
 			public class Setup {
 				// SETUP

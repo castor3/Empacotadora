@@ -9,7 +9,7 @@ namespace Empacotadora {
 		// Brushes for buttons
 		public static SolidColorBrush active_border = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF444444"));		// deep gray
         public static SolidColorBrush non_active_back = new SolidColorBrush(Colors.RosyBrown);								// light gray
-        public static SolidColorBrush non_active_border = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF999999"));	// light dark red
+        public static SolidColorBrush non_active_border = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF999999"));	// soft dark red
         // Brushes for shapes
         public static SolidColorBrush tomatoBrush = new SolidColorBrush(Colors.Tomato);
         public static SolidColorBrush grayBrush = new SolidColorBrush(Colors.SlateGray);
