@@ -22,7 +22,7 @@ namespace Empacotadora {
 	/// Lógica interna para Win_Main.xaml
 	/// </summary>
 	public partial class Win_Main : Window {
-		FERP_MairCOMS7 PLC = new FERP_MairCOMS7();
+		readonly FERP_MairCOMS7 PLC = new FERP_MairCOMS7();
 		// Wrapper
 		int lastTube = 0, currentPackage = 0, id;
 		const byte margin = 2;
@@ -59,11 +59,11 @@ namespace Empacotadora {
 		}
 		StructTubeChange OldTube = new StructTubeChange();
 		// Diretories
-		public static string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Orders.txt";
-		string historyPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\PackageHistory.txt";
-		string pathSquareTubes = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\SquareTubeRecipes.txt";
-		string pathRectTubes = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\RectTubeRecipes.txt";
-		string pathRoundTubes = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\RoundTubeRecipes.txt";
+		public static string Path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Orders.txt";
+		readonly string historyPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\PackageHistory.txt";
+		readonly string pathSquareTubes = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\SquareTubeRecipes.txt";
+		readonly string pathRectTubes = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\RectTubeRecipes.txt";
+		readonly string pathRoundTubes = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\RoundTubeRecipes.txt";
 
 		const int defaultRoundTubeNmbr = 37, defaultdiameter = 65;
 		const int defaultSquareTubeNmbr = 36, defaultWidth = 60, defaultHeight = 60;
@@ -141,9 +141,9 @@ namespace Empacotadora {
 			currentTubeType = ActiveTubeType.Square;
 			tbDensity.Text = "7.65";
 			try {
-				string lineContent = File.ReadLines(path).Last();
+				string lineContent = File.ReadLines(Path).Last();
 				string[] array = lineContent.Split(',');
-				Int32.TryParse(array[0], out id);
+				int.TryParse(array[0], out id);
 			}
 			catch (FileNotFoundException) {
 				UpdateStatusBar("Ficheiro que contém as ordens não foi encontrado.", 1);
@@ -154,7 +154,7 @@ namespace Empacotadora {
 			string valuesToWrite = "";
 			foreach (var item in GatherTextBoxesValues())
 				valuesToWrite += item;
-			UpdateStatusBar(General.WriteToFile(path, valuesToWrite));
+			UpdateStatusBar(General.WriteToFile(Path, valuesToWrite));
 			SetDefaultLayout();
 		}
 		private void btnWrapper_Click(object sender, RoutedEventArgs e) {
@@ -185,16 +185,22 @@ namespace Empacotadora {
 							"                                   2017",
 							"Sobre");
 		}
-		private void btnReturn_Click(object sender, RoutedEventArgs e) {
-			if (currentLayout == ActiveLayout.NewOrder) {
-				var answer = MessageBox.Show("Sair sem guardar?", "Confirmar", MessageBoxButton.YesNo);
-				if (answer == MessageBoxResult.Yes)
+		private void btnReturn_Click(object sender, RoutedEventArgs e)
+		{
+			switch (currentLayout)
+			{
+				case ActiveLayout.NewOrder:
+					var answer = MessageBox.Show("Sair sem guardar?", "Confirmar", MessageBoxButton.YesNo);
+					if (answer == MessageBoxResult.Yes)
+						SetDefaultLayout();
+					break;
+				case ActiveLayout.History:
+					SetStorageLayout();
+					break;
+				default:
 					SetDefaultLayout();
+					break;
 			}
-			else if (currentLayout == ActiveLayout.History)
-				SetStorageLayout();
-			else
-				SetDefaultLayout();
 		}
 		private void btnManual_Click(object sender, RoutedEventArgs e) {
 			var value = borderManualWrap.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
@@ -550,10 +556,10 @@ namespace Empacotadora {
 			shapeDiameter = recipeValues["shapeSize"];
 		}
 		private void CreateEllipseShapesToBeDrawn(int tubeAmount, int tubeAmountBigLine, int tubeAmountSmallLine, int shapeDiameter, int tubeCurrentlyDrawing, byte lineCap, byte variavel, bool incrementing, int Vpos, int Hpos, int colums, int rows, List<Ellipse> listEllipses) {
-			int HposLineInit;
+			int hPosLineInit;
 			for (byte i = 0; i < tubeAmountBigLine; i++) {
 				++rows;
-				HposLineInit = Hpos;
+				hPosLineInit = Hpos;
 				if ((tubeAmountSmallLine + i) < tubeAmountBigLine) {
 					lineCap = (byte)(tubeAmountSmallLine + i - 1);
 					incrementing = true;
@@ -584,10 +590,15 @@ namespace Empacotadora {
 					Hpos += shapeDiameter + margin;
 					++tubeCurrentlyDrawing;
 				}
-				if (incrementing == true)
-					Hpos = HposLineInit - ((shapeDiameter / 2) + (margin / 2));
-				else if (incrementing == false)
-					Hpos = HposLineInit + ((shapeDiameter / 2) + (margin / 2));
+				switch (incrementing)
+				{
+					case true:
+						Hpos = hPosLineInit - ((shapeDiameter / 2) + (margin / 2));
+						break;
+					case false:
+						Hpos = hPosLineInit + ((shapeDiameter / 2) + (margin / 2));
+						break;
+				}
 				Vpos -= shapeDiameter + (margin / 2);
 			}
 		}
@@ -721,36 +732,33 @@ namespace Empacotadora {
 			catch (OverflowException) {
 				UpdateStatusBar("Erro ao calcular o peso <Math.Round()><Overflow>", 1);
 			}
-			if (sender == tbTubeNmbr) {
-				if (currentTubeType == ActiveTubeType.Round)
-					DrawHexagonalWrap(tubes, diameter);
-				if (currentTubeType == ActiveTubeType.Square)
-					DrawSquareWrap(tubes, width, height);
-			}
+			if (sender != tbTubeNmbr) return;
+			if (currentTubeType == ActiveTubeType.Round)
+				DrawHexagonalWrap(tubes, diameter);
+			if (currentTubeType == ActiveTubeType.Square)
+				DrawSquareWrap(tubes, width, height);
 		}
 		private void CheckValidityOfTextBoxesValues(object sender, TextBox tb) {
-			if (sender == tbDiam || sender == tbWidth || sender == tbHeight) {
-				if (Double.TryParse(tb.Text, out double value))
-					tb.ClearValue(BackgroundProperty);
-				else {
-					tb.Background = Brushes.non_active_back;
-					if (tb.Text != "")
-						MessageBox.Show("- Apenas são aceites números\n" +
-										"- Medida não pode ser igual 0", "Valor inserido inválido");
-				}
-				if (value == 0.0) {
-					tb.Background = Brushes.non_active_back;
-					if (tb.Text != "")
-						MessageBox.Show("Medida não pode ser igual a 0");
-				}
+			if (sender != tbDiam && sender != tbWidth && sender != tbHeight) return;
+			if (double.TryParse(tb.Text, out double value))
+				tb.ClearValue(BackgroundProperty);
+			else {
+				tb.Background = Brushes.non_active_back;
+				if (tb.Text != "")
+					MessageBox.Show("- Apenas são aceites números\n" +
+					                "- Medida não pode ser igual 0", "Valor inserido inválido");
 			}
+			if (value != 0.00) return;
+			tb.Background = Brushes.non_active_back;
+			if (tb.Text != "")
+				MessageBox.Show("Medida não pode ser igual a 0");
 		}
 		private static double GetWeight(string[] array, double diameter, int width, int height) {
 			double weight;
-			Double.TryParse(array[6], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double thickness);
-			Double.TryParse(array[7], out double length);
-			Double.TryParse(array[8], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double density);
-			double diameter_out = diameter, diameter_in = diameter - thickness;
+			double.TryParse(array[6], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double thickness);
+			double.TryParse(array[7], out double length);
+			double.TryParse(array[8], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double density);
+			double diameterOut = diameter, diameterIn = diameter - thickness;
 			// Existe um metodo na classe "OrderDetails" chamado "CalculateWeight"... porque calcular aqui?
 			// Não calcula bem o peso para tubos redondos
 			//if (diameter == 0)
@@ -766,7 +774,8 @@ namespace Empacotadora {
 		}
 		private string[] GatherTextBoxesValues() {
 			// Gathers value of New Order textboxes and concatenates them into a string
-			OrderDetails newOrder = new OrderDetails() {
+			OrderDetails newOrder = new OrderDetails
+			{
 				active = "1",
 				Name = tbNrOrdem.Text,
 				Diameter = tbDiam.Text,
@@ -777,16 +786,22 @@ namespace Empacotadora {
 				Density = tbDensity.Text,
 				//newOrder.Hardness = "";
 				TubeAm = tbTubeNmbr.Text,
-				PackageAm = tbPackageAmount.Text
+				PackageAm = tbPackageAmount.Text,
+				TubeType = (currentTubeType == ActiveTubeType.Round ? "R" : "Q"),
+				PackageType = (currentWrapType == ActiveWrapType.Hexagonal ? "H" : "Q"),
+				Created = DateTime.Now.ToString("dd/MM/yyyy HH\\hmm")
 			};
-			newOrder.TubeType = (currentTubeType == ActiveTubeType.Round ? "R" : "Q");
-			newOrder.PackageType = (currentWrapType == ActiveWrapType.Hexagonal ? "H" : "Q");
-			newOrder.Created = DateTime.Now.ToString("dd/MM/yyyy HH\\hmm");
-			try {
-				if (currentTubeType == ActiveTubeType.Round)
-					newOrder.Weight = Math.Round(newOrder.CalculateWeight(newOrder.Diameter, newOrder.Thick, newOrder.Length, newOrder.Density)).ToString();
-				else if (currentTubeType == ActiveTubeType.Square)
-					newOrder.Weight = Math.Round(newOrder.CalculateWeight(newOrder.Width, newOrder.Height, newOrder.Thick, newOrder.Length, newOrder.Density)).ToString();
+			try
+			{
+				switch (currentTubeType)
+				{
+					case ActiveTubeType.Round:
+						newOrder.Weight = Math.Round(newOrder.CalculateWeight(newOrder.Diameter, newOrder.Thick, newOrder.Length, newOrder.Density)).ToString();
+						break;
+					case ActiveTubeType.Square:
+						newOrder.Weight = Math.Round(newOrder.CalculateWeight(newOrder.Width, newOrder.Height, newOrder.Thick, newOrder.Length, newOrder.Density)).ToString();
+						break;
+				}
 			}
 			catch (Exception) {
 				UpdateStatusBar("Cálculo do peso falhou", 1);
@@ -802,7 +817,7 @@ namespace Empacotadora {
 		#region Strapper
 		// Number of straps, its position and modification
 		private void tbStrapNmbr_LostFocus(object sender, RoutedEventArgs e) {
-			Int32.TryParse(tbStrapNmbr.Text, out int straps);
+			int.TryParse(tbStrapNmbr.Text, out int straps);
 			List<Grid> boxesGrids = new List<Grid>() { grid2Straps, grid3Straps, grid4Straps, grid5Straps, grid6Straps };
 			// Show/Hide grid according to number of straps on the text box
 			switch (straps) {
@@ -838,7 +853,7 @@ namespace Empacotadora {
 		private void tbStrapPosition_LostFocus(object sender, RoutedEventArgs e) {
 			// Finds number of active textboxes (nmbr of straps)
 			// and calls method passing the nmbr of straps
-			Byte.TryParse(tbStrapNmbr.Text, out byte value);
+			byte.TryParse(tbStrapNmbr.Text, out byte value);
 			switch (value) {
 				case 2:
 					if (tbstrap2_1.Text != "" && tbstrap2_2.Text != "") {
@@ -874,42 +889,42 @@ namespace Empacotadora {
 			switch (straps) {
 				case 2:
 					array = new int[2];
-					Int32.TryParse(tbstrap2_1.Text, out array[0]);
-					Int32.TryParse(tbstrap2_2.Text, out array[1]);
+					int.TryParse(tbstrap2_1.Text, out array[0]);
+					int.TryParse(tbstrap2_2.Text, out array[1]);
 					values = string.Join(",", array);
 					break;
 				case 3:
 					array = new int[3];
-					Int32.TryParse(tbstrap3_1.Text, out array[0]);
-					Int32.TryParse(tbstrap3_2.Text, out array[1]);
-					Int32.TryParse(tbstrap3_3.Text, out array[2]);
+					int.TryParse(tbstrap3_1.Text, out array[0]);
+					int.TryParse(tbstrap3_2.Text, out array[1]);
+					int.TryParse(tbstrap3_3.Text, out array[2]);
 					values = string.Join(",", array);
 					break;
 				case 4:
 					array = new int[4];
-					Int32.TryParse(tbstrap4_1.Text, out array[0]);
-					Int32.TryParse(tbstrap4_2.Text, out array[1]);
-					Int32.TryParse(tbstrap4_3.Text, out array[2]);
-					Int32.TryParse(tbstrap4_4.Text, out array[3]);
+					int.TryParse(tbstrap4_1.Text, out array[0]);
+					int.TryParse(tbstrap4_2.Text, out array[1]);
+					int.TryParse(tbstrap4_3.Text, out array[2]);
+					int.TryParse(tbstrap4_4.Text, out array[3]);
 					values = string.Join(",", array);
 					break;
 				case 5:
 					array = new int[5];
-					Int32.TryParse(tbstrap5_1.Text, out array[0]);
-					Int32.TryParse(tbstrap5_2.Text, out array[1]);
-					Int32.TryParse(tbstrap5_3.Text, out array[2]);
-					Int32.TryParse(tbstrap5_4.Text, out array[3]);
-					Int32.TryParse(tbstrap5_5.Text, out array[4]);
+					int.TryParse(tbstrap5_1.Text, out array[0]);
+					int.TryParse(tbstrap5_2.Text, out array[1]);
+					int.TryParse(tbstrap5_3.Text, out array[2]);
+					int.TryParse(tbstrap5_4.Text, out array[3]);
+					int.TryParse(tbstrap5_5.Text, out array[4]);
 					values = string.Join(",", array);
 					break;
 				case 6:
 					array = new int[6];
-					Int32.TryParse(tbstrap6_1.Text, out array[0]);
-					Int32.TryParse(tbstrap6_2.Text, out array[1]);
-					Int32.TryParse(tbstrap6_3.Text, out array[2]);
-					Int32.TryParse(tbstrap6_4.Text, out array[3]);
-					Int32.TryParse(tbstrap6_5.Text, out array[4]);
-					Int32.TryParse(tbstrap6_6.Text, out array[5]);
+					int.TryParse(tbstrap6_1.Text, out array[0]);
+					int.TryParse(tbstrap6_2.Text, out array[1]);
+					int.TryParse(tbstrap6_3.Text, out array[2]);
+					int.TryParse(tbstrap6_4.Text, out array[3]);
+					int.TryParse(tbstrap6_5.Text, out array[4]);
+					int.TryParse(tbstrap6_6.Text, out array[5]);
 					values = string.Join(",", array);
 					break;
 				default:
@@ -930,7 +945,7 @@ namespace Empacotadora {
 			// Changes strap position textboxes (activate or deactivate modification)
 			// according to current state of program
 			if (currentLayout == ActiveLayout.Strapper) {
-				Byte.TryParse(tbStrapNmbr.Text, out byte value);
+				byte.TryParse(tbStrapNmbr.Text, out byte value);
 				IEnumerable<TextBox> controlsCollection = null;
 				switch (value) {
 					case 2:
@@ -971,7 +986,7 @@ namespace Empacotadora {
 		private void UpdateStrapsValues(int length) {
 			if (currentLayout != ActiveLayout.Strapper)
 				return;
-			Byte.TryParse(tbStrapNmbr.Text, out byte nmbr);
+			byte.TryParse(tbStrapNmbr.Text, out byte nmbr);
 			IEnumerable<TextBox> controlsCollection = null;
 			int[] values = null;
 			byte i = 0;
@@ -1078,11 +1093,10 @@ namespace Empacotadora {
 			UpdateDrainLabel();
 		}
 		private void UpdateWeightLabel() {
-			if (/*PLC.ReadBool(setup) &&*/ Convert.ToBoolean(PLC.ReadBool(PCPLC.DBNumber, PCPLC.Weight.bInsertedWeight))) {
-				if (Convert.ToDouble(PLC.ReadReal(PCPLC.DBNumber, PCPLC.Weight.rPackageWeight.Item1)) == -9999)
-					lblWeightHistory.Content = "BAD";
-				else
-					lblWeightHistory.Content = PLC.ReadReal(PCPLC.DBNumber, PCPLC.Weight.rPackageWeight.Item1).ToString();
+			if (/*PLC.ReadBool(setup) &&*/ Convert.ToBoolean(PLC.ReadBool(PCPLC.DBNumber, PCPLC.Weight.bInsertedWeight)))
+			{
+				lblWeightHistory.Content = Convert.ToDouble(PLC.ReadReal(PCPLC.DBNumber, PCPLC.Weight.rPackageWeight.Item1)) == -9999 ? "BAD" :
+											PLC.ReadReal(PCPLC.DBNumber, PCPLC.Weight.rPackageWeight.Item1).ToString();
 			}
 			else
 				lblWeightHistory.Content = "OFF";
@@ -1116,11 +1130,10 @@ namespace Empacotadora {
 		private void EvacuatePackageFromScale() {
 			btnEvacuatePackage.IsEnabled = false;
 			loops += 1;
-			if (loops > 9) {
-				loops = 0;
-				storageTimer.Stop();
-				btnEvacuatePackage.IsEnabled = true;
-			}
+			if (loops <= 9) return;
+			loops = 0;
+			storageTimer.Stop();
+			btnEvacuatePackage.IsEnabled = true;
 		}
 		// History
 		private void btnHistory_Click(object sender, RoutedEventArgs e) {
@@ -1278,29 +1291,26 @@ namespace Empacotadora {
 				UpdateStatusBar("Para editar selecione uma ordem", 1);
 		}
 		private void datagridRecipes_PreviewMouseDown(object sender, MouseButtonEventArgs e) {
-			if (editingRecipe) {
-				e.Handled = true;
-				UpdateStatusBar("Para mudar de receita termine de editar a atual", 1);
-			}
+			if (!editingRecipe) return;
+			e.Handled = true;
+			UpdateStatusBar("Para mudar de receita termine de editar a atual", 1);
 		}
 		private bool GetDataFromSelectedCells() {
 			if (isRoundTubeRecipeActive == true) {
 				RoundTubeRecipe datagridRow = GetRoundTubeRecipeFromGrid();
-				if (datagridRow != null) {
-					tbRecipeTubes.Text = datagridRow.TubeNumber;
-					tbRecipeBigRow.Text = datagridRow.BigRow;
-					tbRecipeSmallRow.Text = datagridRow.SmallRow;
-					return true;
-				}
+				if (datagridRow == null) return false;
+				tbRecipeTubes.Text = datagridRow.TubeNumber;
+				tbRecipeBigRow.Text = datagridRow.BigRow;
+				tbRecipeSmallRow.Text = datagridRow.SmallRow;
+				return true;
 			}
 			else {
 				SquareTubeRecipe datagridRow = GetSquareTubeRecipeFromGrid();
-				if (datagridRow != null) {
-					tbRecipeTubes.Text = datagridRow.TubeNumber;
-					tbRecipeColums.Text = datagridRow.Colums;
-					tbRecipeRows.Text = datagridRow.Rows;
-					return true;
-				}
+				if (datagridRow == null) return false;
+				tbRecipeTubes.Text = datagridRow.TubeNumber;
+				tbRecipeColums.Text = datagridRow.Colums;
+				tbRecipeRows.Text = datagridRow.Rows;
+				return true;
 			}
 			return false;
 		}
@@ -1519,18 +1529,16 @@ namespace Empacotadora {
 			string status = PLC.Connect(tbIPAddress.Text, 2);
 			UpdateStatusBar(status);
 			//var comp = StringComparison.OrdinalIgnoreCase;
-			if (status.Contains("Successful")) {
-				lblConnectionStatus.Background = Brushes.green;
-				lblConnectionStatus.Content = "Ligado";
-			}
+			if (!status.Contains("Successful")) return;
+			lblConnectionStatus.Background = Brushes.green;
+			lblConnectionStatus.Content = "Ligado";
 		}
 		private void btnDisconnect_Click(object sender, RoutedEventArgs e) {
 			string status = PLC.Disconnect();
 			UpdateStatusBar(status);
-			if (status.Contains("Disconnected") || status.Contains("Not connected")) {
-				lblConnectionStatus.Background = Brushes.lightRed;
-				lblConnectionStatus.Content = "Desligado";
-			}
+			if (!status.Contains("Disconnected") && !status.Contains("Not connected")) return;
+			lblConnectionStatus.Background = Brushes.lightRed;
+			lblConnectionStatus.Content = "Desligado";
 		}
 		private void btnWriteData_Click(object sender, RoutedEventArgs e) {
 			double.TryParse("220.34", NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double test);

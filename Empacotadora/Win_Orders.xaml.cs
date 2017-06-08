@@ -54,9 +54,9 @@ namespace Empacotadora {
 												 "             remover a seguinte ordem?\n\t" +
 												 "              " + datagridRow.Name, "Confirmar?", MessageBoxButton.YesNo);
 				if (answer == MessageBoxResult.Yes) {
-					OrderDetails.DeactivateOrder(datagridRow.ID, Win_Main.path);
+					OrderDetails.DeactivateOrder(datagridRow.ID, Win_Main.Path);
 					datagridOrders.ItemsSource = null;
-					datagridOrders.ItemsSource = OrderDetails.ReadOrdersFromFile(Win_Main.path);
+					datagridOrders.ItemsSource = OrderDetails.ReadOrdersFromFile(Win_Main.Path);
 				}
 			}
 			catch (NullReferenceException) {
@@ -162,7 +162,7 @@ namespace Empacotadora {
 			tabOrders.SelectedItem = tabItemListOrders;
 			lblTitle.Content = "Ordens";
 			try {
-				datagridOrders.ItemsSource = OrderDetails.ReadOrdersFromFile(Win_Main.path);
+				datagridOrders.ItemsSource = OrderDetails.ReadOrdersFromFile(Win_Main.Path);
 			}
 			catch (FileNotFoundException) {
 				UpdateStatusBar("Ficheiro das ordens não encontrado", 1);
