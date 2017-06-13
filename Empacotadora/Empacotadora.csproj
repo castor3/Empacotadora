@@ -91,16 +91,8 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Win_Init.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Win_Init.xaml.cs">
-      <DependentUpon>Win_Init.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Win_Keypad.xaml">
@@ -224,7 +216,6 @@
     <Resource Include="Resources\Ferpinta.png" />
     <Resource Include="Ferpinta.ico" />
     <Content Include="Resources\Interop.IBHNETLib.dll" />
-    <Content Include="Resources\MAIRCOMS7.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

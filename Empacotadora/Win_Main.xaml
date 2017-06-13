@@ -68,7 +68,7 @@
 			<ColumnDefinition Width="278"/>
 			<ColumnDefinition Width="130"/>
 		</Grid.ColumnDefinitions>
-		<Button x:Name="btnSaveNewOrder" FontSize="20" Click="btnSaveNewOrder_Click">
+		<Button x:Name="btnSaveNewOrder" FontSize="20" Click="btnSaveNewOrder_Click" Visibility="Collapsed">
 			<TextBlock HorizontalAlignment="Center" TextWrapping="Wrap" Text="Guardar Ordem" VerticalAlignment="Center" FontSize="20"/>
 		</Button>
 		<Button x:Name="btnStorage" Content="Armazém" Grid.Column="4" FontSize="20" Click="btnStorage_Click"/>
@@ -79,16 +79,39 @@
 		<Label x:Name="lblTitle" Content="Empacotadora" Grid.Column="2" Margin="113,-785,113,0" VerticalAlignment="Top" FontSize="22" Grid.ColumnSpan="3" Width="164" FontWeight="Bold"/>
 		<Button x:Name="btnReturn" Content="Voltar" Grid.Column="7" FontSize="20" Click="btnReturn_Click"/>
 		<Image x:Name="logoCalculator" Grid.Column="7" HorizontalAlignment="Left" Height="70" Margin="38,-804,0,0" VerticalAlignment="Top" Width="55" Source="Resources/calculadora.png" MouseLeftButtonUp="logoCalculator_MouseLeftButtonUp"/>
-		<Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="60" Margin="0,-817,0,0" VerticalAlignment="Top" Width="120">
+		<Border x:Name="borderDateTime" BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="60" Margin="0,-817,0,0" VerticalAlignment="Top" Width="120">
 			<TextBlock x:Name="lblDateTime" TextAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" Height="40" Width="95" Padding="0,4,0,0" Margin="0" Background="White" PreviewMouseLeftButtonUp="lblDateTime_PreviewMouseLeftButtonUp"/>
 		</Border>
-		<Calendar x:Name="cal" HorizontalAlignment="Left" Margin="120,-825,0,0" VerticalAlignment="Top" Visibility="Collapsed"/>
 		<Button x:Name="btnAbout" Content="Sobre" Grid.Column="6" FontSize="20" Margin="157.333,0,0,0" Click="btnAbout_Click" BorderThickness="3,3,1,3"/>
 		<TabControl x:Name="tabLayout" HorizontalAlignment="Left" Height="731" Margin="0,-736,0,0" VerticalAlignment="Top" Width="1440" Grid.ColumnSpan="8" BorderBrush="{x:Null}" Background="{x:Null}">
-			<TabItem x:Name="tabItemWrapper" Header="TabItem">
+			<TabItem x:Name="tabItemInit" Header="Init">
+				<Grid>
+					<Button x:Name="btnEnter" Margin="681,404,682,259" Content="Entrar" Cursor="Hand" FontStretch="SemiExpanded" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Click="btnEnter_Click">
+						<Button.Template>
+							<ControlTemplate TargetType="Button">
+								<TextBlock TextDecorations="Underline" Padding="4">
+                <ContentPresenter/>
+								</TextBlock>
+							</ControlTemplate>
+						</Button.Template>
+						<Button.Style>
+							<Style TargetType="Button">
+								<Setter Property="Foreground" Value="Blue" />
+								<Style.Triggers>
+									<Trigger Property="IsMouseOver" Value="true">
+										<Setter Property="Foreground" Value="Red"/>
+									</Trigger>
+								</Style.Triggers>
+							</Style>
+						</Button.Style>
+					</Button>
+					<Image Height="132" Margin="424,203,424,368" Width="586" Source="Resources/Ferpinta Logo.jpg" Stretch="Fill"/>
+				</Grid>
+			</TabItem>
+			<TabItem x:Name="tabItemWrapper" Header="Emp.">
 				<Grid>
 					<TabControl x:Name="tabWrapper" BorderThickness="0" HorizontalAlignment="Left" Height="670" Margin="3,32,0,0" VerticalAlignment="Top" Width="740" Background="{x:Null}">
-						<TabItem x:Name="tabItemWrapperMain" Header="TabItem" Background="#FFE5E5E5">
+						<TabItem x:Name="tabItemWrapperMain" Header="default" Background="#FFE5E5E5">
 							<Grid>
 								<Button x:Name="btnAddTube" Content="Adicionar" HorizontalAlignment="Left" Margin="544,483,0,0" VerticalAlignment="Top" Width="82" FontSize="16" Height="52" Click="btnAddTube_Click"/>
 								<Button x:Name="btnResetPackages" Content="Pacotes=0" HorizontalAlignment="Left" Margin="631,483,0,0" VerticalAlignment="Top" Width="82" FontSize="16" Height="52" Click="btnResetPackages_Click"/>
@@ -126,7 +149,7 @@
 								</Border>
 							</Grid>
 						</TabItem>
-						<TabItem x:Name="tabItemWrapperNewOrder" Header="TabItem" Background="#FFE5E5E5">
+						<TabItem x:Name="tabItemWrapperNewOrder" Header="Nova Ordem" Background="#FFE5E5E5">
 							<Grid Background="#FFDEDEDE">
 								<Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="485" Margin="28,151,0,0" VerticalAlignment="Top" Width="439"/>
 								<Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="103" Margin="500,186,0,0" VerticalAlignment="Top" Width="196">
@@ -184,9 +207,6 @@
 								</Border>
 							</Grid>
 						</TabItem>
-						<TabItem x:Name="tabItemWrapperEmpty" Header="TabItem" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="55" Background="#FFDEDEDE">
-							<Grid Background="#FFDEDEDE"/>
-						</TabItem>
 					</TabControl>
 					<Border x:Name="borderCanvas" BorderBrush="Black" Background="#FFA6A6A6" BorderThickness="1" Margin="805,202,79,13">
 						<Grid>
@@ -220,7 +240,7 @@
 					</Border>
 				</Grid>
 			</TabItem>
-			<TabItem x:Name="tabItemStrapper" Header="TabItem">
+			<TabItem x:Name="tabItemStrapper" Header="Cint.">
 				<Grid Margin="2,0">
 					<Grid Height="160" Margin="0,370,0,0" VerticalAlignment="Top" Background="#FFA6A6A6">
 						<Label Content="Cinta nr. :" Margin="142,33,1057,0" VerticalAlignment="Top" Height="44" FontSize="18" BorderThickness="1" Background="{x:Null}"/>
@@ -269,7 +289,7 @@
 					</Grid>
 				</Grid>
 			</TabItem>
-			<TabItem x:Name="tabItemStorage" Header="TabItem" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="55">
+			<TabItem x:Name="tabItemStorage" Header="Armaz." HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="55">
 				<Grid>
 					<Label x:Name="lblDrain" Content="ON" HorizontalAlignment="Left" Margin="0,286,0,0" VerticalAlignment="Top" Height="65" Width="323" FontSize="40" Foreground="#FF5BDE4E" FontWeight="Bold" BorderThickness="1"/>
 					<Label Content="Escoar" HorizontalAlignment="Left" Margin="0,221,0,0" VerticalAlignment="Top" Height="65" Width="323" FontSize="30"/>
@@ -300,7 +320,7 @@
 					</Button>
 				</Grid>
 			</TabItem>
-			<TabItem x:Name="tabItemHistory" Header="TabItem" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="55">
+			<TabItem x:Name="tabItemHistory" Header="Hist." HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="55">
 				<Grid>
 					<DataGrid x:Name="datagridHistory" AlternatingRowBackground="#FF976666" Margin="10,10,843,0" Background="{x:Null}" BorderBrush="Black" Height="683" UseLayoutRounding="True" FontSize="23" GridLinesVisibility="Vertical" VerticalGridLinesBrush="#FF838383" HeadersVisibility="Column" IsReadOnly="True" VerticalAlignment="Top" AlternationCount="2" SelectionMode="Single" CanUserReorderColumns="False"/>
 					<Viewbox HorizontalAlignment="Left" Height="449" Margin="954,228,0,0" VerticalAlignment="Top" Width="470">
@@ -360,7 +380,7 @@
 					</RadioButton>
 				</Grid>
 			</TabItem>
-			<TabItem x:Name="tabItemRecipes" Header="TabItem" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="55">
+			<TabItem x:Name="tabItemRecipes" Header="Rec." HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="55">
 				<Grid>
 					<DataGrid x:Name="datagridRecipes" AlternatingRowBackground="#FF976666" Margin="229,10,605,0" Background="{x:Null}" BorderBrush="{x:Null}" Height="683" UseLayoutRounding="True" FontSize="24" GridLinesVisibility="Vertical" VerticalGridLinesBrush="#FF838383" HeadersVisibility="Column" IsReadOnly="True" VerticalAlignment="Top" AlternationCount="2" SelectionMode="Single" CanUserReorderColumns="False" Width="600" SelectedCellsChanged="datagridRecipes_SelectedCellsChanged" PreviewMouseDown="datagridRecipes_PreviewMouseDown"/>
 					<Button x:Name="btnRecipeRoundTube" Content="Redondo" HorizontalAlignment="Left" Margin="47,192,0,0" VerticalAlignment="Top" Width="141" Height="96" FontSize="20" Click="btnRecipeRoundTube_Click"/>
@@ -388,7 +408,7 @@
 					<Button x:Name="btnRecipeCancel" Content="Cancelar" HorizontalAlignment="Right" Margin="0,499,84,0" VerticalAlignment="Top" Width="210" Height="48" Click="btnRecipeCancel_Click" FontSize="16" Visibility="Collapsed"/>
 				</Grid>
 			</TabItem>
-			<TabItem x:Name="tabItemPLCConnection" Header="TabItem" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="55">
+			<TabItem x:Name="tabItemPLCConnection" Header="PLC" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="55">
 				<Grid>
 					<Label Content="IP Address" HorizontalAlignment="Left" Margin="268,220,0,0" VerticalAlignment="Top" FontSize="20" Padding="5,0"/>
 					<TextBox x:Name="tbIPAddress" HorizontalAlignment="Left" Height="37" Margin="268,247,0,0" TextWrapping="Wrap" Text="192.168.1.2" VerticalAlignment="Top" Width="171" HorizontalContentAlignment="Left" FontSize="20" VerticalScrollBarVisibility="Auto"/>
@@ -408,7 +428,7 @@
 				</Grid>
 			</TabItem>
 		</TabControl>
-		<StatusBar HorizontalAlignment="Left" Height="23" Margin="120,-816,0,0" VerticalAlignment="Top" Width="470" Grid.ColumnSpan="3" BorderThickness="0" BorderBrush="Black">
+		<StatusBar Name="statusBar" HorizontalAlignment="Left" Height="23" Margin="120,-816,0,0" VerticalAlignment="Top" Width="470" Grid.ColumnSpan="3" BorderThickness="0" BorderBrush="Black">
 			<StatusBarItem>
 				<TextBlock><Run Text="StatusBar"/></TextBlock>
 			</StatusBarItem>
@@ -579,5 +599,8 @@
 				</TabItem>
 			</TabControl>
 		</Border>
+		<Viewbox x:Name="vbCalendar" HorizontalAlignment="Left" Height="378" Margin="120,-816,0,0" VerticalAlignment="Top" Width="389" Grid.ColumnSpan="2" Visibility="Collapsed">
+			<Calendar x:Name="cal" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Width="185"/>
+		</Viewbox>
 	</Grid>
 </Window>

@@ -6,10 +6,18 @@ using System.Windows;
 namespace Empacotadora {
 	class Recipes {
 		public static Dictionary<string, int> GetRoundTubeRecipe(int tubeNmbr) {
-			string RoundTubeRecipePath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\RoundTubeRecipes.txt";
-			IEnumerable<string> linesFromFile = File.ReadLines(RoundTubeRecipePath);
+			string RoundTubeRecipePath = Win_Main.systemPath + @"\RoundTubeRecipes.txt";
+			IEnumerable<string> linesFromFile = null;
+			Dictionary<string, int> recipeValues = new Dictionary<string, int>();
+			try {
+				linesFromFile = File.ReadLines(RoundTubeRecipePath);
+			}
+			catch (FileNotFoundException exc) {
+				MessageBox.Show(exc.Message);
+				return recipeValues;
+			}
 			ParseRoundTubeRecipeValues(linesFromFile, tubeNmbr, out byte bigRow, out byte smallRow, out byte shapeSize, out int Vpos, out int Hpos);
-			Dictionary<string, int> details = new Dictionary<string, int>()
+			recipeValues = new Dictionary<string, int>()
 			{
 				{ "bigRowSize", bigRow },
 				{ "smallRowSize", smallRow },
@@ -17,7 +25,7 @@ namespace Empacotadora {
 				{ "Hpos", Hpos },
 				{ "shapeSize", shapeSize }
 			};
-			return details;
+			return recipeValues;
 		}
 		private static void ParseRoundTubeRecipeValues(IEnumerable<string> linesFromFile, int tubeNmbr, out byte bigRow, out byte smallRow, out byte shapeSize, out int Vpos, out int Hpos) {
 			bigRow = smallRow = shapeSize = 0; Vpos = Hpos = 0;
@@ -40,21 +48,29 @@ namespace Empacotadora {
 		}
 		public static Dictionary<string, int> GetSquareTubeRecipe(int tubeNmbr) {
 			bool found = false;
-			string SquareTubeRecipePath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\SquareTubeRecipes.txt";
-			string RectTubeRecipePath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\RectTubeRecipes.txt";
-			IEnumerable<string> linesFromFile = File.ReadLines(SquareTubeRecipePath);
+			string SquareTubeRecipePath = Win_Main.systemPath + @"\SquareTubeRecipes.txt";
+			string RectTubeRecipePath = Win_Main.systemPath + @"\RectTubeRecipes.txt";
+			IEnumerable<string> linesFromFile = null;
+			Dictionary<string, int> recipeValues = new Dictionary<string, int>();
+			try {
+				linesFromFile = File.ReadLines(SquareTubeRecipePath);
+			}
+			catch (FileNotFoundException exc) {
+				MessageBox.Show(exc.Message);
+				return recipeValues;
+			}
 			ParseSquareTubeRecipeValues(linesFromFile, tubeNmbr, out byte shapeSize, out int Vpos, out int Hpos, ref found);
 			if (found == false) {
 				linesFromFile = File.ReadLines(RectTubeRecipePath);
 				ParseSquareTubeRecipeValues(linesFromFile, tubeNmbr, out shapeSize, out Vpos, out Hpos, ref found);
 			}
-			Dictionary<string, int> values = new Dictionary<string, int>()
+			recipeValues = new Dictionary<string, int>()
 			{
 				{ "Vpos", Vpos },
 				{ "Hpos", Hpos },
 				{ "shapeSize", shapeSize }
 			};
-			return values;
+			return recipeValues;
 		}
 		private static void ParseSquareTubeRecipeValues(IEnumerable<string> linesFromFile, int tubeNmbr, out byte shapeSize, out int Vpos, out int Hpos, ref bool found) {
 			shapeSize = 0; Vpos = 0; Hpos = 0;

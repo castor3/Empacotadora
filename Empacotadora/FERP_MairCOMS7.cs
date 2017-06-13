@@ -156,7 +156,7 @@ namespace Empacotadora {
 		}
 
 		public void ToogleBool(int DB, Tuple<int, int, string> variable) {
-			WriteBool(DB, variable, !Convert.ToBoolean(ReadBool(DB, variable)));
+			//WriteBool(DB, variable, !Convert.ToBoolean(ReadBool(DB, variable)));
 		}
 		#endregion
 
