@@ -16,48 +16,71 @@ namespace Empacotadora {
 		//Methods
 		public static List<History> ReadHistoryFromFile(string path) {
 			List<History> history = new List<History>();
-			var linesFromFile = File.ReadLines(path);
-			foreach (var line in linesFromFile) {
-				string[] array = line.Split(',');
-				AddArrayToList(ref history, array);
+			try {
+				IEnumerable<string> linesFromFile = File.ReadLines(path);
+				foreach (string line in linesFromFile) {
+					string[] array = line.Split(',');
+					AddArrayToList(ref history, array);
+				}
+			}
+			catch (Exception exc) {
+				if (exc is DirectoryNotFoundException || exc is FileNotFoundException)
+					MessageBox.Show("File/Directory not found exception");
 			}
 			return history;
 		}
 		public static List<History> ReadHistoryFromFile(string path, DateTime selectedDate) {
 			List<History> history = new List<History>();
-			var linesFromFile = File.ReadLines(path);
-			foreach (var line in linesFromFile) {
-				string[] array = line.Split(',');
-				string[] aux = array[4].Split('/');
-				DateTime historyDate = DateTime.ParseExact(aux[0] + "/" + aux[1], "dd/MM", CultureInfo.InvariantCulture);
-				if (selectedDate == historyDate)
-					AddArrayToList(ref history, array);
+			try {
+				IEnumerable<string> linesFromFile = File.ReadLines(path);
+				foreach (string line in linesFromFile) {
+					string[] array = line.Split(',');
+					string[] aux = array[4].Split('/');
+					DateTime historyDate = DateTime.ParseExact(aux[0] + "/" + aux[1], "dd/MM", CultureInfo.InvariantCulture);
+					if (selectedDate == historyDate)
+						AddArrayToList(ref history, array);
+				}
+			}
+			catch (Exception exc) {
+				if (exc is DirectoryNotFoundException || exc is FileNotFoundException)
+					MessageBox.Show("File/Directory not found exception");
 			}
 			return history;
 		}
 		public static List<History> ReadHistoryFromFile(string path, DateTime initialDate, DateTime endDate) {
 			List<History> history = new List<History>();
-			var linesFromFile = File.ReadLines(path);
-			foreach (var line in linesFromFile) {
-				string[] array = line.Split(',');
-				ParseDates(initialDate, endDate, array[4], out DateTime historyDate, out DateTime newEndDate,
-															out DateTime newInitialDate, out TimeSpan diff);
-				if (historyDate >= initialDate.AddHours(7) && historyDate <= endDate.AddDays(1))
-					AddArrayToList(ref history, array);
+			try {
+				IEnumerable<string> linesFromFile = File.ReadLines(path);
+				foreach (string line in linesFromFile) {
+					string[] array = line.Split(',');
+					DateTime historyDate = DateTime.ParseExact(array[4], "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+					if (historyDate >= initialDate.AddHours(7) && historyDate <= endDate.AddDays(1))
+						AddArrayToList(ref history, array);
+				}
+			}
+			catch (Exception exc) {
+				if (exc is DirectoryNotFoundException || exc is FileNotFoundException)
+					MessageBox.Show("File/Directory not found exception");
 			}
 			return history;
 		}
 		public static List<History> ReadHistoryFromFile(string path, DateTime initialDate, DateTime endDate, byte shiftSelected) {
 			Shift shiftOfHistoryDate = Shift.nill;
 			List<History> history = new List<History>();
-			var linesFromFile = File.ReadLines(path);
-			foreach (var line in linesFromFile) {
-				string[] array = line.Split(',');
-				shiftOfHistoryDate = GetShift(initialDate, endDate, array[4]);
-				if (shiftSelected == 0 && shiftOfHistoryDate != Shift.nill)
-					AddArrayToList(ref history, array);
-				else if ((byte)(shiftOfHistoryDate) == shiftSelected)
-					AddArrayToList(ref history, array);
+			try {
+				IEnumerable<string> linesFromFile = File.ReadLines(path);
+				foreach (string line in linesFromFile) {
+					string[] array = line.Split(',');
+					shiftOfHistoryDate = GetShift(initialDate, endDate, array[4]);
+					if (shiftSelected == 0 && shiftOfHistoryDate != Shift.nill)
+						AddArrayToList(ref history, array);
+					else if ((byte)(shiftOfHistoryDate) == shiftSelected)
+						AddArrayToList(ref history, array);
+				}
+			}
+			catch (Exception exc) {
+				if (exc is DirectoryNotFoundException || exc is FileNotFoundException)
+					MessageBox.Show("File/Directory not found exception");
 			}
 			return history;
 		}
@@ -120,7 +143,6 @@ namespace Empacotadora {
 				shiftFromHistoryTime = Shift.nill;
 			return shiftFromHistoryTime;
 		}
-
 		private static void AddArrayToList(ref List<History> history, string[] array) {
 			try {
 				history.Add(new History() {

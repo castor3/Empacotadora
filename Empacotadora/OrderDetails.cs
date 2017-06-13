@@ -38,55 +38,61 @@ namespace Empacotadora {
 			Double.TryParse(thick, out double thickness);
 			Double.TryParse(leng, out double length);
 			Double.TryParse(dens, out double density);
-			double diameter_out = diameter;
-			double diameter_in = diameter - thickness;
-			double weight = ((Math.PI * ((Math.Pow((0.5 * diameter_out), 2)) -
-							(Math.Pow((0.5 * diameter_in), 2)))) * length * (density * 0.000001));
+			double diameterOut = diameter;
+			double diameterIn = diameter - thickness;
+			double weight = ((Math.PI * ((Math.Pow((0.5 * diameterOut), 2)) -
+							(Math.Pow((0.5 * diameterIn), 2)))) * length * (density * 0.000001));
 			return weight;
 		}
 		public static List<OrderDetails> ReadOrdersFromFile(string path) {
 			List<OrderDetails> orders = new List<OrderDetails>();
-			var linesFromFile = File.ReadLines(path);
-			foreach (var line in linesFromFile) {
-				string[] array = line.Split(',');
-				try {
-					if (array[1] == "1") {
-						orders.Add(new OrderDetails() {
-							ID = array[0],
-							Name = array[2],
-							Diameter = array[3],
-							Width = array[4],
-							Height = array[5],
-							Thick = array[6],
-							Length = array[7],
-							Density = array[8],
-							//Hardness = array[9],
-							TubeAm = array[10],
-							TubeType = array[11],
-							PackageAm = array[12],
-							PackageType = array[13],
-							Weight = array[14],
-							Created = array[15],
-						});
+			try {
+				IEnumerable<string> linesFromFile = File.ReadLines(path);
+				foreach (string line in linesFromFile) {
+					string[] array = line.Split(',');
+					try {
+						if (array[1] == "1") {
+							orders.Add(new OrderDetails() {
+								ID = array[0],
+								Name = array[2],
+								Diameter = array[3],
+								Width = array[4],
+								Height = array[5],
+								Thick = array[6],
+								Length = array[7],
+								Density = array[8],
+								//Hardness = array[9],
+								TubeAm = array[10],
+								TubeType = array[11],
+								PackageAm = array[12],
+								PackageType = array[13],
+								Weight = array[14],
+								Created = array[15],
+							});
+						}
+					}
+					catch (IndexOutOfRangeException) {
+						MessageBox.Show("Erro de index ao ler do ficheiro");
+						continue;
 					}
 				}
-				catch (IndexOutOfRangeException) {
-					MessageBox.Show("Erro de index ao ler do ficheiro");
-					continue;
-				}
+			}
+			catch (Exception exc) {
+				if (exc is DirectoryNotFoundException || exc is FileNotFoundException)
+					MessageBox.Show("File/Directory not found exception");
 			}
 			return orders;
 		}
 		public static void DeactivateOrder(string orderID, string path) {
-			var linesFromFile = File.ReadAllLines(path);
+			IEnumerable<string> linesFromFile = File.ReadAllLines(path);
 			List<string> newFileContent = new List<string>();
-			foreach (var line in linesFromFile) {
+			foreach (string line in linesFromFile) {
 				string newline = "";
 				// splits the order read from the line
 				string[] array = line.Split(',');
 				if (array[0] == orderID) {
 					array[1] = "0";
-					foreach (var value in array)
+					foreach (string value in array)
 						newline += value + ",";
 					// removes "," in the end of the line
 					newline = newline.Remove(newline.Length - 1);

@@ -50,13 +50,13 @@ namespace Empacotadora {
 		private void btnDeleteOrder_Click(object sender, RoutedEventArgs e) {
 			OrderDetails datagridRow = GetDataFromGrid();
 			try {
-				var answer = MessageBox.Show("          Tem a certeza de que pretende\n" +
+				MessageBoxResult answer = MessageBox.Show("          Tem a certeza de que pretende\n" +
 												 "             remover a seguinte ordem?\n\t" +
 												 "              " + datagridRow.Name, "Confirmar?", MessageBoxButton.YesNo);
 				if (answer == MessageBoxResult.Yes) {
-					OrderDetails.DeactivateOrder(datagridRow.ID, Win_Main.Path);
+					OrderDetails.DeactivateOrder(datagridRow.ID, Win_Main.path);
 					datagridOrders.ItemsSource = null;
-					datagridOrders.ItemsSource = OrderDetails.ReadOrdersFromFile(Win_Main.Path);
+					datagridOrders.ItemsSource = OrderDetails.ReadOrdersFromFile(Win_Main.path);
 				}
 			}
 			catch (NullReferenceException) {
@@ -74,7 +74,7 @@ namespace Empacotadora {
 			OrderDetails datagridRow = GetDataFromGrid();
 			if (datagridRow != null) {
 				General.currentOrder = datagridRow;
-				var answer = MessageBox.Show("            Tem a certeza de que pretende\n" +
+				MessageBoxResult answer = MessageBox.Show("            Tem a certeza de que pretende\n" +
 											 "               carregar a seguinte ordem?\n\t" +
 											 "              " + General.currentOrder.Name +
 											 "\n        A ordem em progresso vai ser terminada.", "Confirmar?", MessageBoxButton.YesNo);
@@ -84,8 +84,7 @@ namespace Empacotadora {
 						gridSquare.Visibility = Visibility.Visible;
 						lblOrderWidth.Content = General.currentOrder.Width;
 						lblOrderHeight.Content = General.currentOrder.Height;
-					}
-					else {
+					} else {
 						gridRound.Visibility = Visibility.Visible;
 						gridSquare.Visibility = Visibility.Collapsed;
 						lblOrderDiam.Content = General.currentOrder.Diameter;
@@ -125,6 +124,8 @@ namespace Empacotadora {
 			lblLoadSuccess.Visibility = Visibility.Collapsed;
 			timer.Stop();
 		}
+		
+		#region StatusBar
 		// Status bar update
 		private void SetStatusBarTimer() {
 			//  DispatcherTimer setup
@@ -149,6 +150,7 @@ namespace Empacotadora {
 			sbIcon.Visibility = Visibility.Visible;
 			SetStatusBarTimer();
 		}
+		#endregion
 
 		private void SetCurrentOrderLayout() {
 			tabOrders.SelectedItem = tabItemCurrentOrder;
@@ -162,7 +164,7 @@ namespace Empacotadora {
 			tabOrders.SelectedItem = tabItemListOrders;
 			lblTitle.Content = "Ordens";
 			try {
-				datagridOrders.ItemsSource = OrderDetails.ReadOrdersFromFile(Win_Main.Path);
+				datagridOrders.ItemsSource = OrderDetails.ReadOrdersFromFile(Win_Main.path);
 			}
 			catch (FileNotFoundException) {
 				UpdateStatusBar("Ficheiro das ordens não encontrado", 1);

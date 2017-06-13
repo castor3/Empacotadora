@@ -38,8 +38,7 @@ namespace Empacotadora {
 				int nSlot = 0;
 
 				TryToConnect(IPAddr, nMpi, nRack, nSlot);
-			}
-			else
+			} else
 				Message = (connected ? "Already connected" : "Not initialized");
 			return Message;
 		}
@@ -109,8 +108,7 @@ namespace Empacotadora {
 				int variableAddress = variable.Item1;
 				int bitToChange = variable.Item2;
 				TryToReadBool(DBAddress, variableAddress, bitToChange, valueReadFromPLC);
-			}
-			else
+			} else
 				Message = "Not connected";
 			MessageBox.Show(Message);
 			return valueReadFromPLC;
@@ -137,8 +135,7 @@ namespace Empacotadora {
 				int variableAddress = variable.Item1;
 				int bitToChange = variable.Item2;
 				TryToWriteBool(DBAddress, variableAddress, bitToChange, valueToWrite);
-			}
-			else
+			} else
 				Message = "Not connected";
 			return Message;
 		}
@@ -157,6 +154,10 @@ namespace Empacotadora {
 				Message = "Error 'WriteBool()'";
 			}
 		}
+
+		public void ToogleBool(int DB, Tuple<int, int, string> variable) {
+			WriteBool(DB, variable, !Convert.ToBoolean(ReadBool(DB, variable)));
+		}
 		#endregion
 
 		#region Int
@@ -174,8 +175,7 @@ namespace Empacotadora {
 				catch {
 					Message = "Error 'ReadInt()'";
 				}
-			}
-			else
+			} else
 				Message = "Not connected";
 			MessageBox.Show(Message);
 			return valueReadFromPLC;
@@ -207,8 +207,7 @@ namespace Empacotadora {
 				catch {
 					Message = "Error 'WriteInt()'";
 				}
-			}
-			else
+			} else
 				Message = "Not Connected";
 			//MessageBox.Show(Message);
 		}
@@ -229,8 +228,7 @@ namespace Empacotadora {
 				catch {
 					Message = "Error 'ReadReal()'";
 				}
-			}
-			else
+			} else
 				Message = "Not Connected";
 			MessageBox.Show(Message);
 			return valueReadFromPLC;
@@ -249,8 +247,7 @@ namespace Empacotadora {
 				catch {
 					Message = "Error 'WriteReal()'";
 				}
-			}
-			else
+			} else
 				Message = "Not Connected";
 			MessageBox.Show(Message);
 		}
@@ -271,8 +268,7 @@ namespace Empacotadora {
 				catch {
 					Message = "Error 'ReadArrayInt()'";
 				}
-			}
-			else
+			} else
 				Message = "Not Connected";
 			MessageBox.Show(Message);
 			return arrayOfInts;
@@ -294,8 +290,7 @@ namespace Empacotadora {
 				catch {
 					Message = "Error 'ReadArrayReal()'";
 				}
-			}
-			else
+			} else
 				Message = "Not Connected";
 			MessageBox.Show(Message);
 			return arrayOfReals;

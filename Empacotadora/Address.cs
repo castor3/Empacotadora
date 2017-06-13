@@ -110,8 +110,8 @@ namespace Empacotadora {
 			}
 			public class PCData {
 				//DatiPC
-				public static Tuple<int, string> iNumberOfRegimentsExecuted = Tuple.Create(36, "integer");	//numero di regge eseguite
-				public static Tuple<int, string> rPackagePositionInStrapper = Tuple.Create(38, "real");		//posizione pacco in reggiatura
+				public static Tuple<int, string> iNumberOfRegimentsExecuted = Tuple.Create(36, "integer");  //numero di regge eseguite
+				public static Tuple<int, string> rPackagePositionInStrapper = Tuple.Create(38, "real");     //posizione pacco in reggiatura
 			}
 			public class PLC_TrLaterali {
 				// PLC_TrLaterali
@@ -131,7 +131,7 @@ namespace Empacotadora {
 				}
 			}
 		}
-		public class Accumulator_1{
+		public class Accumulator_1 {
 			public const int DBNumber = 480;
 			public class OrderChange {
 				//CAMBIO_ORDINE
@@ -168,6 +168,20 @@ namespace Empacotadora {
 					public static Tuple<int, string> rPackageHeight = Tuple.Create(62, "real");         //VALORE: altezza pacco [mm]
 				}
 			}
+			public class ManualMovement {
+				public static Tuple<int, int, string> bTransportChain = Tuple.Create(86, 0, "bool");                    //Trasportatore salita
+				public static Tuple<int, int, string> bTubeFitting = Tuple.Create(86, 1, "bool");                       //Fermo tubo
+				public static Tuple<int, int, string> bTubeOrientation = Tuple.Create(86, 2, "bool");                   //Orientatore tubi
+				public static Tuple<int, int, string> bAlignmentRolls = Tuple.Create(86, 3, "bool");                    //Rulli allineamento
+				public static Tuple<int, int, string> bTrasportQueue = Tuple.Create(86, 5, "bool");                     //Trasportatore file
+				public static Tuple<int, int, string> bAlignQueue = Tuple.Create(86, 6, "bool");                        //Allineamento file
+				public static Tuple<int, int, string> bLoader = Tuple.Create(86, 7, "bool");                            //Pale
+				public static Tuple<int, int, string> bMechanicalCounterblocks = Tuple.Create(87, 0, "bool");           //Controsagome meccaniche
+				public static Tuple<int, int, string> bLowerPneumaticCounterblocks = Tuple.Create(87, 1, "bool");       //Controsagome pneumatica inferiore
+				public static Tuple<int, int, string> bSuperiorPneumaticCounterblocks = Tuple.Create(87, 2, "bool");    //Controsagome pneumatica superiore
+				public static Tuple<int, int, string> bLateralPneumaticCounterblocks = Tuple.Create(87, 3, "bool");     //Controsagome pneumatica laterale
+				public static Tuple<int, int, string> bShelves = Tuple.Create(87, 4, "bool");                           //Mensole
+			}
 			public class ProductionData {
 				//DATI DI PRODUZIONE
 				public static Tuple<int, int, string> bTubePresence = Tuple.Create(90, 0, "bool");             //STATO: presenza tubi
@@ -181,9 +195,9 @@ namespace Empacotadora {
 				public static Tuple<int, string> iTubesInLastRow = Tuple.Create(96, "integer");        //VALORE: tubi ultima fila
 				public static Tuple<int, string> iFilesInPackage = Tuple.Create(98, "integer");        //VALORE: file su pacco
 			}
-			public static Tuple<int, int, string> Rows = Tuple.Create(110, 308, "Array[int]");	//ARRAY: numero tubi per fila [1..100]
+			public static Tuple<int, int, string> Rows = Tuple.Create(110, 308, "Array[int]");  //ARRAY: numero tubi per fila [1..100]
 			public class Setup {
-				public static Tuple<int, string> timeTubeAlignment = Tuple.Create(310, "real");	//VALORE: tempo allineamento tubo
+				public static Tuple<int, string> timeTubeAlignment = Tuple.Create(310, "real"); //VALORE: tempo allineamento tubo
 				public static Tuple<int, string> shelvesAditionalDescentTimeCalculatingCoefficient = Tuple.Create(314, "real"); //VALORE: coefficiente calcolo tempo discesa supplementare mensole (shelves) [s/mm]
 			}
 		}
@@ -237,7 +251,7 @@ namespace Empacotadora {
 				public static Tuple<int, string> iTubesInLastRow = Tuple.Create(96, "integer");        //VALORE: tubi ultima fila
 				public static Tuple<int, string> iFilesInPackage = Tuple.Create(98, "integer");        //VALORE: file su pacco
 			}
-			public class Setup {}
+			public class Setup { }
 		}
 		public class Trolley {
 			public const int DBNumber = 485;
@@ -329,6 +343,14 @@ namespace Empacotadora {
 					public static Tuple<int, string> rPackageHeight = Tuple.Create(62, "real");        //VALORE: altezza pacco [mm]
 				}
 			}
+			public class ManualMovement {
+				public static Tuple<int, int, string> bCar = Tuple.Create(86, 0, "bool");           //Carrello evacuazione entrata-uscita
+				public static Tuple<int, int, string> bCarRolls = Tuple.Create(86, 1, "bool");      //Rulli contenimento 1
+				public static Tuple<int, int, string> bCarRolls2 = Tuple.Create(86, 2, "bool");     //Rulli contenimento 2
+				public static Tuple<int, int, string> bCarRolls12 = Tuple.Create(86, 3, "bool");    //Rulli contenimento 1/2
+				public static Tuple<int, int, string> bLateralTransp = Tuple.Create(86, 4, "bool"); //Trasporti laterali
+				public static Tuple<int, int, string> bUpperRolls = Tuple.Create(86, 5, "bool");    //Rulli pneumati superiori
+			}
 			public class ProductionData {
 				//DATI DI PRODUZIONE
 				public static Tuple<int, int, string> bTubePresence = Tuple.Create(90, 0, "bool");          //STATO: presenza tubi
@@ -344,8 +366,8 @@ namespace Empacotadora {
 			}
 			public class Strap {
 				// REGGIATURA
-				public static Tuple<int, string> iNumberOfStraps = Tuple.Create(110, "integer");				//VALORE: Numero reggiature 
-				public static Tuple<int, int, string> aStrapsPosition = Tuple.Create(112, 196, "Array[real]");	//ARRAY: quote di reggiatura [mm] (ARRAY[1..22] OF REAL	)
+				public static Tuple<int, string> iNumberOfStraps = Tuple.Create(110, "integer");                //VALORE: Numero reggiature 
+				public static Tuple<int, int, string> aStrapsPosition = Tuple.Create(112, 196, "Array[real]");  //ARRAY: quote di reggiatura [mm] (ARRAY[1..22] OF REAL	)
 			}
 			public class Setup {
 				// SETUP
@@ -398,15 +420,15 @@ namespace Empacotadora {
 					public static Tuple<int, string> rPackageHeight = Tuple.Create(62, "real");         //VALORE: altezza pacco [mm]
 				}
 			}
-			//public class ManualMovement {
-			//	// Manual movement
-			//	public static Tuple<int, int, string> bLiftingChains = Tuple.Create(86, 0, "bool");          //Catene sollevabili
-			//	public static Tuple<int, int, string> bDrains1_2 = Tuple.Create(86, 1, "bool");              //Scoli_1_2
-			//	public static Tuple<int, int, string> bDrains1_2_3 = Tuple.Create(86, 2, "bool");            //Scoli_1_2_3
-			//	public static Tuple<int, int, string> bDrains1_2_3_4 = Tuple.Create(86, 3, "bool");          //Scoli_1_2_3_4
-			//	public static Tuple<int, int, string> bStorageChains = Tuple.Create(86, 4, "bool");          //Catene stoccaggio
-			//	public static Tuple<int, int, string> bStorage_LiftingChains = Tuple.Create(86, 5, "bool");  //Catene prelievo + catene stoccaggio marcia
-			//}
+			public class ManualMovement {
+				// Manual movement
+				public static Tuple<int, int, string> bLiftingChains = Tuple.Create(86, 0, "bool");          //Catene sollevabili
+				public static Tuple<int, int, string> bDrains1_2 = Tuple.Create(86, 1, "bool");              //Scoli_1_2
+				public static Tuple<int, int, string> bDrains1_2_3 = Tuple.Create(86, 2, "bool");            //Scoli_1_2_3
+				public static Tuple<int, int, string> bDrains1_2_3_4 = Tuple.Create(86, 3, "bool");          //Scoli_1_2_3_4
+				public static Tuple<int, int, string> bStorageChains = Tuple.Create(86, 4, "bool");          //Catene stoccaggio
+				public static Tuple<int, int, string> bStorage_LiftingChains = Tuple.Create(86, 5, "bool");  //Catene prelievo + catene stoccaggio marcia
+			}
 			public class ProductionData {
 				// Production data
 				public static Tuple<int, int, string> bTubePresence = Tuple.Create(90, 0, "bool");           //STATO: presenza tubi

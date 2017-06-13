@@ -33,14 +33,23 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Ferpinta.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Interop.IBHNETLib">
       <HintPath>Resources\Interop.IBHNETLib.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
+    <Reference Include="MahApps.Metro, Version=1.5.0.23, Culture=neutral, PublicKeyToken=f4fb5a3c4d1e5b4f, processorArchitecture=MSIL">
+      <HintPath>..\packages\MahApps.Metro.1.5.0\lib\net45\MahApps.Metro.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\MahApps.Metro.1.5.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -126,6 +135,7 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -160,19 +170,11 @@
     <Resource Include="Resources\Manual\Active\Storage\A_Drain.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Manual\Active\Strapper\A_TrasportLat.bmp" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Manual\Active\Strapper\A_CarRolls.bmp" />
     <Resource Include="Resources\Manual\Active\Strapper\A_Car.bmp" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Manual\Active\Wrapper\A_AlignmentRolls.bmp" />
-    <Resource Include="Resources\Manual\Active\Wrapper\A_BatenteAllinFile.bmp" />
-    <Resource Include="Resources\Manual\Active\Wrapper\A_ControsagomeMecc.bmp" />
-    <Resource Include="Resources\Manual\Active\Wrapper\A_ControsagomePneum_lateral.bmp" />
-    <Resource Include="Resources\Manual\Active\Wrapper\A_ControsagomePneum_lower.bmp" />
-    <Resource Include="Resources\Manual\Active\Wrapper\A_ControsagomePneum_upper.bmp" />
     <Resource Include="Resources\Manual\Active\Wrapper\A_Loader.bmp" />
     <Resource Include="Resources\Manual\Active\Wrapper\A_Shelves.bmp" />
     <Resource Include="Resources\Manual\Active\Wrapper\A_Tilt.bmp" />
@@ -185,15 +187,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Manual\Normal\Strapper\Car.bmp" />
-    <Resource Include="Resources\Manual\Normal\Strapper\TrasportLat.bmp" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Manual\Normal\Wrapper\AlignmentRolls.bmp" />
-    <Resource Include="Resources\Manual\Normal\Wrapper\BatenteAllinFile.bmp" />
-    <Resource Include="Resources\Manual\Normal\Wrapper\ControsagomeMecc.bmp" />
-    <Resource Include="Resources\Manual\Normal\Wrapper\ControsagomePneum_lateral.bmp" />
-    <Resource Include="Resources\Manual\Normal\Wrapper\ControsagomePneum_lower.bmp" />
-    <Resource Include="Resources\Manual\Normal\Wrapper\ControsagomePneum_upper.bmp" />
     <Resource Include="Resources\Manual\Normal\Wrapper\Loader.bmp" />
     <Resource Include="Resources\Manual\Normal\Wrapper\Shelves.bmp" />
     <Resource Include="Resources\Manual\Normal\Wrapper\Tilt.bmp" />
@@ -210,7 +206,23 @@
     <Resource Include="Resources\Manual\Active\Storage\A_StorageChains-Withdrawal.bmp" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\packaging.jpeg" />
+    <Resource Include="Resources\Manual\Active\Strapper\A_LateralTransp.bmp" />
+    <Resource Include="Resources\Manual\Active\Strapper\A_CarRolls1+2.bmp" />
+    <Resource Include="Resources\Manual\Normal\Strapper\LateralTransp.bmp" />
+    <Resource Include="Resources\Manual\Normal\Strapper\CarRolls1+2.bmp" />
+    <Resource Include="Resources\Manual\Normal\Wrapper\SuperiorPneumaticCounterblocks.bmp" />
+    <Resource Include="Resources\Manual\Normal\Wrapper\LateralPneumaticCounterblocks.bmp" />
+    <Resource Include="Resources\Manual\Active\Wrapper\A_SuperiorPneumaticCounterblocks.bmp" />
+    <Resource Include="Resources\Manual\Active\Wrapper\A_LateralPneumaticCounterblocks.bmp" />
+    <Resource Include="Resources\Manual\Active\Wrapper\A_AlignQueue.bmp" />
+    <Resource Include="Resources\Manual\Active\Wrapper\A_LowerPneumaticCounterblocks.bmp" />
+    <Resource Include="Resources\Manual\Normal\Wrapper\LowerPneumaticCounterblocks.bmp" />
+    <Resource Include="Resources\Manual\Normal\Wrapper\AlignQueue.bmp" />
+    <Resource Include="Resources\Manual\Normal\Wrapper\MechanicalCounterblocks.bmp" />
+    <Resource Include="Resources\Manual\Active\Wrapper\A_MechanicalCounterblocks.bmp" />
     <Resource Include="Resources\Ferpinta.png" />
+    <Resource Include="Ferpinta.ico" />
     <Content Include="Resources\Interop.IBHNETLib.dll" />
     <Content Include="Resources\MAIRCOMS7.dll" />
   </ItemGroup>

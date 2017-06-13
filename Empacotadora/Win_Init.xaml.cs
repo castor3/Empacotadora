@@ -27,8 +27,10 @@ namespace Empacotadora
 
         private void btnEnter_Click(object sender, RoutedEventArgs e)
         {
+			MessageBox.Show("Abrir Main");
             Win_Main WMain = new Win_Main();
-            WMain.Show();
+			WMain.Show();
+			MessageBox.Show("Fechar Init");
 			Close();
         }
 

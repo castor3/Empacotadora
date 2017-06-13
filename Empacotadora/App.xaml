@@ -4,6 +4,6 @@
              xmlns:local="clr-namespace:Empacotadora"
              StartupUri="Win_Init.xaml">
     <Application.Resources>
-        
-    </Application.Resources>
+		
+	</Application.Resources>
 </Application>
