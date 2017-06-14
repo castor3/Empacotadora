@@ -165,12 +165,12 @@
 									</Grid>
 								</Border>
 								<StackPanel HorizontalAlignment="Left" Height="430" Margin="48,178,0,0" VerticalAlignment="Top" Width="149">
-									<Label Content="Diâmetro :" HorizontalContentAlignment="Right" FontSize="20" Background="{x:Null}" BorderThickness="1" Margin="0,0,0,25" VerticalAlignment="Top"/>
-									<Label Content="Largura :" HorizontalContentAlignment="Right" FontSize="20" Background="{x:Null}" BorderThickness="1" VerticalAlignment="Top" Margin="0,0,0,25"/>
-									<Label Content="Altura :" HorizontalContentAlignment="Right" FontSize="20" Background="{x:Null}" BorderThickness="1" Margin="0,0,0,25" VerticalAlignment="Top"/>
-									<Label Content="Espessura :" HorizontalContentAlignment="Right" FontSize="20" Background="{x:Null}" BorderThickness="1" Margin="0,0,0,25" VerticalAlignment="Top"/>
-									<Label Content="Comprimento :" HorizontalContentAlignment="Right" FontSize="20" Background="{x:Null}" BorderThickness="1" Margin="0,0,0,25" VerticalAlignment="Top"/>
-									<Label Content="Massa linear :" HorizontalContentAlignment="Right" FontSize="20" Background="{x:Null}" BorderThickness="1" Margin="0,0,0,25" VerticalAlignment="Top"/>
+									<Label Content="Diâmetro :" HorizontalContentAlignment="Right" FontSize="20" Background="{x:Null}" BorderThickness="1" Margin="0,5,0,30" VerticalAlignment="Top"/>
+									<Label Content="Largura :" HorizontalContentAlignment="Right" FontSize="20" Background="{x:Null}" BorderThickness="1" Margin="0,5,0,30" VerticalAlignment="Top"/>
+									<Label Content="Altura :" HorizontalContentAlignment="Right" FontSize="20" Background="{x:Null}" BorderThickness="1" Margin="0,5,0,30" VerticalAlignment="Top"/>
+									<Label Content="Espessura :" HorizontalContentAlignment="Right" FontSize="20" Background="{x:Null}" BorderThickness="1" Margin="0,5,0,30" VerticalAlignment="Top"/>
+									<Label Content="Comprimento :" HorizontalContentAlignment="Right" FontSize="20" Background="{x:Null}" BorderThickness="1" Margin="0,5,0,30" VerticalAlignment="Top"/>
+									<Label Content="Massa linear :" HorizontalContentAlignment="Right" FontSize="20" Background="{x:Null}" BorderThickness="1" Margin="0,5,0,30" VerticalAlignment="Top"/>
 									<Label Content="Dureza :" HorizontalContentAlignment="Right" FontSize="20" Background="{x:Null}" BorderThickness="1" Margin="0,0,0,25" VerticalAlignment="Top" IsEnabled="False"/>
 								</StackPanel>
 								<StackPanel HorizontalAlignment="Left" Height="430" Margin="254,178,0,0" VerticalAlignment="Top" Width="168">
@@ -442,7 +442,7 @@
 		</StatusBar>
 		<Button x:Name="btnExit" Content="Sair" Grid.Column="7" FontSize="20" Click="btnExit_Click"/>
 		<Button x:Name="btnManual" Content="Manual" HorizontalAlignment="Left" Margin="0,-98,0,0" VerticalAlignment="Top" Width="130" Height="84" Click="btnManual_Click" FontSize="18"/>
-		<Border x:Name="borderManualWrap" BorderBrush="Black" BorderThickness="5" HorizontalAlignment="Left" Height="358" Margin="13,-469,0,0" VerticalAlignment="Top" Width="480" Background="#FFDEDEDE" Grid.ColumnSpan="2" Visibility="Collapsed">
+		<Border x:Name="borderManualWrap" BorderBrush="Black" BorderThickness="5" HorizontalAlignment="Left" Height="358" Margin="13,-469,0,0" VerticalAlignment="Top" Width="480" Background="#FFDEDEDE" Grid.ColumnSpan="2" MinWidth="480" MinHeight="358" Visibility="Collapsed">
 			<Border.Effect>
 				<DropShadowEffect Direction="225" ShadowDepth="20" Color="DimGray" BlurRadius="15"/>
 			</Border.Effect>

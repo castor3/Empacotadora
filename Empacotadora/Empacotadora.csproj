@@ -70,6 +70,7 @@
     </ApplicationDefinition>
     <Compile Include="Address.cs" />
     <Compile Include="Brushes.cs" />
+    <Compile Include="Document.cs" />
     <Compile Include="FERP_MairCOMS7.cs" />
     <Compile Include="General.cs" />
     <Compile Include="History.cs" />

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Globalization;
+using System.Runtime.InteropServices;
 using IBHNETLib;
 
 namespace Empacotadora {
@@ -38,7 +39,8 @@ namespace Empacotadora {
 				int nSlot = 0;
 
 				TryToConnect(IPAddr, nMpi, nRack, nSlot);
-			} else
+			}
+			else
 				Message = (connected ? "Already connected" : "Not initialized");
 			return Message;
 		}
@@ -50,8 +52,8 @@ namespace Empacotadora {
 				SPS_3 = (IIIBHnet3)SPS;
 				initialized = true;
 			}
-			catch (System.Runtime.InteropServices.COMException) {
-				MessageBox.Show("Error, COM not initialized");
+			catch (COMException exc) {
+				MessageBox.Show(exc.Message);
 				initialized = false;
 			}
 		}
@@ -70,7 +72,8 @@ namespace Empacotadora {
 				connected = true;
 				Message = "Successful connection to IP: " + IPAddr + " -> MPI: " + nMpi;
 			}
-			catch {
+			catch (COMException exc) {
+				MessageBox.Show(exc.Message);
 				connected = false;
 				Message = "Error while connecting";
 			}
@@ -93,7 +96,8 @@ namespace Empacotadora {
 				connected = false;
 				Message = "Disconnected";
 			}
-			catch {
+			catch (COMException exc) {
+				MessageBox.Show(exc.Message);
 				Message = "Error while disconnecting";
 				connected = false;
 			}
@@ -108,7 +112,8 @@ namespace Empacotadora {
 				int variableAddress = variable.Item1;
 				int bitToChange = variable.Item2;
 				TryToReadBool(DBAddress, variableAddress, bitToChange, valueReadFromPLC);
-			} else
+			}
+			else
 				Message = "Not connected";
 			MessageBox.Show(Message);
 			return valueReadFromPLC;
@@ -124,7 +129,8 @@ namespace Empacotadora {
 				if (valueReadFromPLC != 0)
 					Message = "Success 'ReadBool()'";
 			}
-			catch {
+			catch (COMException exc) {
+				MessageBox.Show(exc.Message);
 				Message = "Error 'ReadBool()'";
 			}
 		}
@@ -135,7 +141,8 @@ namespace Empacotadora {
 				int variableAddress = variable.Item1;
 				int bitToChange = variable.Item2;
 				TryToWriteBool(DBAddress, variableAddress, bitToChange, valueToWrite);
-			} else
+			}
+			else
 				Message = "Not connected";
 			return Message;
 		}
@@ -150,7 +157,8 @@ namespace Empacotadora {
 				MessageBox.Show(DBAddress + ", " + variableAddress + ", " + bitToChange + ", " + valueToWrite);
 				Message = "Success 'WriteBool()'";
 			}
-			catch {
+			catch (COMException exc) {
+				MessageBox.Show(exc.Message);
 				Message = "Error 'WriteBool()'";
 			}
 		}
@@ -175,7 +183,8 @@ namespace Empacotadora {
 				catch {
 					Message = "Error 'ReadInt()'";
 				}
-			} else
+			}
+			else
 				Message = "Not connected";
 			MessageBox.Show(Message);
 			return valueReadFromPLC;
@@ -207,7 +216,8 @@ namespace Empacotadora {
 				catch {
 					Message = "Error 'WriteInt()'";
 				}
-			} else
+			}
+			else
 				Message = "Not Connected";
 			//MessageBox.Show(Message);
 		}
@@ -228,7 +238,8 @@ namespace Empacotadora {
 				catch {
 					Message = "Error 'ReadReal()'";
 				}
-			} else
+			}
+			else
 				Message = "Not Connected";
 			MessageBox.Show(Message);
 			return valueReadFromPLC;
@@ -247,7 +258,8 @@ namespace Empacotadora {
 				catch {
 					Message = "Error 'WriteReal()'";
 				}
-			} else
+			}
+			else
 				Message = "Not Connected";
 			MessageBox.Show(Message);
 		}
@@ -268,7 +280,8 @@ namespace Empacotadora {
 				catch {
 					Message = "Error 'ReadArrayInt()'";
 				}
-			} else
+			}
+			else
 				Message = "Not Connected";
 			MessageBox.Show(Message);
 			return arrayOfInts;
@@ -290,7 +303,8 @@ namespace Empacotadora {
 				catch {
 					Message = "Error 'ReadArrayReal()'";
 				}
-			} else
+			}
+			else
 				Message = "Not Connected";
 			MessageBox.Show(Message);
 			return arrayOfReals;

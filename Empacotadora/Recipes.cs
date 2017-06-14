@@ -7,15 +7,8 @@ namespace Empacotadora {
 	class Recipes {
 		public static Dictionary<string, int> GetRoundTubeRecipe(int tubeNmbr) {
 			string RoundTubeRecipePath = Win_Main.systemPath + @"\RoundTubeRecipes.txt";
-			IEnumerable<string> linesFromFile = null;
 			Dictionary<string, int> recipeValues = new Dictionary<string, int>();
-			try {
-				linesFromFile = File.ReadLines(RoundTubeRecipePath);
-			}
-			catch (FileNotFoundException exc) {
-				MessageBox.Show(exc.Message);
-				return recipeValues;
-			}
+			if (!Document.ReadFromFile(RoundTubeRecipePath, out IEnumerable<string> linesFromFile)) return recipeValues;
 			ParseRoundTubeRecipeValues(linesFromFile, tubeNmbr, out byte bigRow, out byte smallRow, out byte shapeSize, out int Vpos, out int Hpos);
 			recipeValues = new Dictionary<string, int>()
 			{
@@ -40,29 +33,19 @@ namespace Empacotadora {
 						byte.TryParse(array[5], out shapeSize);
 					}
 				}
-				catch (IndexOutOfRangeException) {
-					MessageBox.Show("Erro de index ao ler do ficheiro");
-					continue;
-				}
+				catch (IndexOutOfRangeException) { return; }
 			}
 		}
 		public static Dictionary<string, int> GetSquareTubeRecipe(int tubeNmbr) {
 			bool found = false;
 			string SquareTubeRecipePath = Win_Main.systemPath + @"\SquareTubeRecipes.txt";
 			string RectTubeRecipePath = Win_Main.systemPath + @"\RectTubeRecipes.txt";
-			IEnumerable<string> linesFromFile = null;
 			Dictionary<string, int> recipeValues = new Dictionary<string, int>();
-			try {
-				linesFromFile = File.ReadLines(SquareTubeRecipePath);
-			}
-			catch (FileNotFoundException exc) {
-				MessageBox.Show(exc.Message);
-				return recipeValues;
-			}
+			if (!Document.ReadFromFile(SquareTubeRecipePath, out IEnumerable<string> linesFromFile)) return recipeValues;
 			ParseSquareTubeRecipeValues(linesFromFile, tubeNmbr, out byte shapeSize, out int Vpos, out int Hpos, ref found);
 			if (found == false) {
-				linesFromFile = File.ReadLines(RectTubeRecipePath);
-				ParseSquareTubeRecipeValues(linesFromFile, tubeNmbr, out shapeSize, out Vpos, out Hpos, ref found);
+				if (!Document.ReadFromFile(RectTubeRecipePath, out IEnumerable<string> linesFromFileOfRectangleRecipe)) return recipeValues;
+				ParseSquareTubeRecipeValues(linesFromFileOfRectangleRecipe, tubeNmbr, out shapeSize, out Vpos, out Hpos, ref found);
 			}
 			recipeValues = new Dictionary<string, int>()
 			{
@@ -84,22 +67,13 @@ namespace Empacotadora {
 						found = true;
 					}
 				}
-				catch (IndexOutOfRangeException) {
-					MessageBox.Show("Erro de index ao ler do ficheiro");
-					continue;
-				}
+				catch (IndexOutOfRangeException) { return; }
 			}
 		}
 		public static List<RoundTubeRecipe> ReadTubeRecipesFromFile(string path) {
 			List<RoundTubeRecipe> recipes = new List<RoundTubeRecipe>();
-			try {
-				IEnumerable<string> linesFromFile = File.ReadLines(path);
-				AddRoundTubeRecipeValuesToList(recipes, linesFromFile);
-			}
-			catch (Exception exc) {
-				if (exc is DirectoryNotFoundException || exc is FileNotFoundException)
-					MessageBox.Show("File/Directory not found exception");
-			}
+			if (!Document.ReadFromFile(path, out IEnumerable<string> linesFromFile)) return recipes;
+			AddRoundTubeRecipeValuesToList(recipes, linesFromFile);
 			return recipes;
 		}
 		private static void AddRoundTubeRecipeValuesToList(List<RoundTubeRecipe> recipes, IEnumerable<string> linesFromFile) {
@@ -115,23 +89,15 @@ namespace Empacotadora {
 						ShapeSize = array[5],
 					});
 				}
-				catch (IndexOutOfRangeException) {
-					continue;
-				}
+				catch (IndexOutOfRangeException) { return; }
 			}
 		}
 		public static List<SquareTubeRecipe> ReadTubeRecipesFromFile(string pathSquareTubes, string pathRectTubes) {
 			List<SquareTubeRecipe> recipes = new List<SquareTubeRecipe>();
-			try {
-				IEnumerable<string> linesFromFile = File.ReadLines(pathSquareTubes);
-				AddSquareTubeRecipeValuesToList(recipes, linesFromFile);
-				linesFromFile = File.ReadLines(pathRectTubes);
-				AddSquareTubeRecipeValuesToList(recipes, linesFromFile);
-			}
-			catch (Exception exc) {
-				if (exc is DirectoryNotFoundException || exc is FileNotFoundException)
-					MessageBox.Show("File/Directory not found exception");
-			}
+			if (!Document.ReadFromFile(pathSquareTubes, out IEnumerable<string> linesFromFile)) return recipes;
+			AddSquareTubeRecipeValuesToList(recipes, linesFromFile);
+			if (!Document.ReadFromFile(pathRectTubes, out IEnumerable<string> linesFromFileOfRectangleTubes)) return recipes;
+			AddSquareTubeRecipeValuesToList(recipes, linesFromFileOfRectangleTubes);
 			return recipes;
 		}
 		private static void AddSquareTubeRecipeValuesToList(List<SquareTubeRecipe> recipes, IEnumerable<string> linesFromFile) {
@@ -147,9 +113,7 @@ namespace Empacotadora {
 						Rows = (array[5] != "" ? array[5] : "Auto"),
 					});
 				}
-				catch (IndexOutOfRangeException) {
-					continue;
-				}
+				catch (IndexOutOfRangeException) { return; }
 			}
 		}
 		public static int[] GetStrapsPositionFromRecipe(int length, byte strapsNmbr) {

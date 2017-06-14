@@ -22,6 +22,9 @@ namespace Empacotadora {
 	/// Lógica interna para Win_Main.xaml
 	/// </summary>
 	public partial class Win_Main : Window {
+		// General
+		readonly string saveSuccessful = "Sucesso ao gravar";
+		readonly string saveError = "Erro ao tentar gravar";
 		readonly FERP_MairCOMS7 PLC = new FERP_MairCOMS7();
 		// Wrapper
 		int lastTube = 0, currentPackage = 0, id;
@@ -45,7 +48,8 @@ namespace Empacotadora {
 		private enum ActiveDate { Initial, End }
 		ActiveDate currentDate;
 		// Recipe
-		bool isRoundTubeRecipeActive = false;
+		private enum ActiveRecipe { RoundTube, SquareTube }
+		ActiveRecipe currentRecipe;
 		// PLC
 		int[] PLCArrayPackageRows;
 		int tubeNumber;
@@ -59,7 +63,7 @@ namespace Empacotadora {
 		}
 		StructTubeChange OldTube = new StructTubeChange();
 		// Diretories
-		readonly public static string systemPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData)+@"\Empacotadora";
+		readonly public static string systemPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Empacotadora";
 		readonly public static string path = systemPath + @"\Orders.txt";
 		readonly string historyPath = systemPath + @"\PackageHistory.txt";
 		readonly string pathSquareTubes = systemPath + @"\SquareTubeRecipes.txt";
@@ -148,8 +152,9 @@ namespace Empacotadora {
 				string[] array = lineContent.Split(',');
 				int.TryParse(array[0], out id);
 			}
-			catch (FileNotFoundException) {
+			catch (Exception exc) when (exc is IOException || exc is FileNotFoundException || exc is DirectoryNotFoundException || exc is UnauthorizedAccessException) {
 				UpdateStatusBar("Ficheiro que contém as ordens não foi encontrado.", 1);
+				return;
 			}
 			lblID.Content = (++id).ToString();
 		}
@@ -158,7 +163,8 @@ namespace Empacotadora {
 			if (GatherTextBoxesValues() == null) return;
 			foreach (string item in GatherTextBoxesValues())
 				valuesToWrite += item;
-			UpdateStatusBar(General.WriteToFile(path, valuesToWrite));
+			string msg = Document.AppendToFile(path, valuesToWrite) ? "Sucesso ao gravar" : "Erro ao tentar gravar";
+			UpdateStatusBar(msg);
 			SetDefaultLayout();
 		}
 		private void btnWrapper_Click(object sender, RoutedEventArgs e) {
@@ -245,7 +251,7 @@ namespace Empacotadora {
 			//  DispatcherTimer setup
 			DispatcherTimer timer = new DispatcherTimer();
 			timer.Tick += new EventHandler(StatusBarTimer_Tick);
-			timer.Interval = new TimeSpan(0, 0, 0, 3);
+			timer.Interval = new TimeSpan(0, 0, 0, 3, 500);
 			timer.Stop();
 			timer.Start();
 		}
@@ -370,7 +376,7 @@ namespace Empacotadora {
 			gridRecipesSquareTube.Visibility = Visibility.Collapsed;
 			gridRecipesRoundTube.Visibility = Visibility.Visible;
 			datagridRecipes.ItemsSource = Recipes.ReadTubeRecipesFromFile(pathRoundTubes);
-			isRoundTubeRecipeActive = true;
+			currentRecipe = ActiveRecipe.RoundTube;
 			currentLayout = ActiveLayout.Recipes;
 		}
 		// "Show"/"Hide" methods show or hide layout controls
@@ -773,7 +779,7 @@ namespace Empacotadora {
 				weight = GetWeight(array, diameter, width, height);
 				int.TryParse(tbTubeNmbr.Text, out tubes);
 			}
-			catch (NullReferenceException) { }
+			catch (NullReferenceException) { return; }
 			if (tubes > 0)
 				weight *= tubes;
 			try {
@@ -857,7 +863,8 @@ namespace Empacotadora {
 						break;
 				}
 			}
-			catch (Exception) {
+			catch (Exception exc) {
+				MessageBox.Show(exc.InnerException.ToString());
 				UpdateStatusBar("Cálculo do peso falhou", 1);
 			}
 			List<string> stringToWrite = new List<string> {
@@ -1134,9 +1141,9 @@ namespace Empacotadora {
 		#region Storage
 		// Storage
 		private void FillLastHistory() {
+			List<History> history = History.ReadHistoryFromFile(historyPath);
+			List<Label> weightLabels = new List<Label>() { lblWeight1, lblWeight2, lblWeight3 };
 			try {
-				List<History> history = History.ReadHistoryFromFile(historyPath);
-				List<Label> weightLabels = new List<Label>() { lblWeight1, lblWeight2, lblWeight3 };
 				lblTubesHistory.Content = history[(history.Count) - 1].TubeAm;
 				for (byte i = 1; i <= 3; i++)
 					weightLabels[i - 1].Content = history[(history.Count) - i].Weight;
@@ -1144,10 +1151,7 @@ namespace Empacotadora {
 				for (byte i = 1; i <= 3; i++)
 					dateLabels[i - 1].Content = history[(history.Count) - i].Created;
 			}
-			catch (Exception exc) {
-				if (exc is FileNotFoundException || exc is ArgumentOutOfRangeException)
-					UpdateStatusBar("Ficheiro do histórico não encontrado", 1);
-			}
+			catch (ArgumentOutOfRangeException) { }
 		}
 		private void UpdateStorageControls() {
 			FillLastHistory();
@@ -1264,36 +1268,31 @@ namespace Empacotadora {
 			currentDate = ActiveDate.End;
 		}
 		private void FillHistoryDataGrid() {
-			try {
-				if ((bool)rbNoFilter.IsChecked)
-					datagridHistory.ItemsSource = History.ReadHistoryFromFile(historyPath);
-				else if ((bool)rbSelectedDate.IsChecked) {
-					try {
-						if (comboboxShift.SelectedIndex == 0)
-							datagridHistory.ItemsSource = History.ReadHistoryFromFile(historyPath, calHistory.SelectedDate.Value.Date);
-						else
-							datagridHistory.ItemsSource = History.ReadHistoryFromFile(historyPath, calHistory.SelectedDate.Value.Date, calHistory.SelectedDate.Value.Date, (byte)comboboxShift.SelectedIndex);
-					}
-					catch (InvalidOperationException) { }
+			if ((bool)rbNoFilter.IsChecked)
+				datagridHistory.ItemsSource = History.ReadHistoryFromFile(historyPath);
+			else if ((bool)rbSelectedDate.IsChecked) {
+				try {
+					if (comboboxShift.SelectedIndex == 0)
+						datagridHistory.ItemsSource = History.ReadHistoryFromFile(historyPath, calHistory.SelectedDate.Value.Date);
+					else
+						datagridHistory.ItemsSource = History.ReadHistoryFromFile(historyPath, calHistory.SelectedDate.Value.Date, calHistory.SelectedDate.Value.Date, (byte)comboboxShift.SelectedIndex);
 				}
-				else if ((bool)rbInitialFinal.IsChecked) {
-					string sInitDate = tbHistoryDayInit.Text + " " + tbHistoryMonthInit.Text + " " + tbHistoryYearInit.Text;
-					string sEndDate = tbHistoryDayEnd.Text + " " + tbHistoryMonthEnd.Text + " " + tbHistoryYearEnd.Text;
-					DateTime.TryParse(sInitDate, out DateTime initialDate);
-					try {
-						DateTime endDate = DateTime.Parse(sEndDate);
-						if (comboboxShift.SelectedIndex == 0)
-							datagridHistory.ItemsSource = History.ReadHistoryFromFile(historyPath, initialDate, endDate);
-						else
-							datagridHistory.ItemsSource = History.ReadHistoryFromFile(historyPath, initialDate, endDate, (byte)comboboxShift.SelectedIndex);
-					}
-					catch (FormatException) {
-						UpdateStatusBar("Escolha um intervalo de datas");
-					}
-				}
+				catch (InvalidOperationException) { }
 			}
-			catch (FileNotFoundException) {
-				UpdateStatusBar("History file not found", 1);
+			else if ((bool)rbInitialFinal.IsChecked) {
+				string sInitDate = tbHistoryDayInit.Text + " " + tbHistoryMonthInit.Text + " " + tbHistoryYearInit.Text;
+				string sEndDate = tbHistoryDayEnd.Text + " " + tbHistoryMonthEnd.Text + " " + tbHistoryYearEnd.Text;
+				DateTime.TryParse(sInitDate, out DateTime initialDate);
+				try {
+					DateTime endDate = DateTime.Parse(sEndDate);
+					if (comboboxShift.SelectedIndex == 0)
+						datagridHistory.ItemsSource = History.ReadHistoryFromFile(historyPath, initialDate, endDate);
+					else
+						datagridHistory.ItemsSource = History.ReadHistoryFromFile(historyPath, initialDate, endDate, (byte)comboboxShift.SelectedIndex);
+				}
+				catch (FormatException) {
+					UpdateStatusBar("Escolha um intervalo de datas");
+				}
 			}
 		}
 		#endregion
@@ -1306,7 +1305,7 @@ namespace Empacotadora {
 			foreach (TextBox item in textBoxes) {
 				item.Text = "";
 			}
-			isRoundTubeRecipeActive = true;
+			currentRecipe = ActiveRecipe.RoundTube;
 		}
 		private void btnRecipeSquareTube_Click(object sender, RoutedEventArgs e) {
 			ShowTubeRecipesOnDataGrid(pathSquareTubes, pathRectTubes);
@@ -1314,7 +1313,7 @@ namespace Empacotadora {
 			foreach (TextBox item in textBoxes) {
 				item.Text = "";
 			}
-			isRoundTubeRecipeActive = false;
+			currentRecipe = ActiveRecipe.SquareTube;
 		}
 		private void ShowTubeRecipesOnDataGrid(string pathRoundTube) {
 			datagridRecipes.ItemsSource = Recipes.ReadTubeRecipesFromFile(pathRoundTube);
@@ -1343,15 +1342,18 @@ namespace Empacotadora {
 					item.IsReadOnly = false;
 					item.Focusable = true;
 				}
-				btnRecipeEdit.IsEnabled = false;
-				btnRecipeRoundTube.IsEnabled = false;
-				btnRecipeSquareTube.IsEnabled = false;
-				btnReturn.IsEnabled = false;
-				btnRecipeSave.Visibility = Visibility.Visible;
-				btnRecipeCancel.Visibility = Visibility.Visible;
+				DisableRecipeUIButtons();
 			}
 			else
 				UpdateStatusBar("Para editar selecione uma ordem", 1);
+		}
+		private void DisableRecipeUIButtons() {
+			btnRecipeEdit.IsEnabled = false;
+			btnRecipeRoundTube.IsEnabled = false;
+			btnRecipeSquareTube.IsEnabled = false;
+			btnReturn.IsEnabled = false;
+			btnRecipeSave.Visibility = Visibility.Visible;
+			btnRecipeCancel.Visibility = Visibility.Visible;
 		}
 		private void datagridRecipes_PreviewMouseDown(object sender, MouseButtonEventArgs e) {
 			if (!editingRecipe) return;
@@ -1359,7 +1361,7 @@ namespace Empacotadora {
 			UpdateStatusBar("Para mudar de receita termine de editar a atual", 1);
 		}
 		private bool GetDataFromSelectedCells() {
-			if (isRoundTubeRecipeActive == true) {
+			if (currentRecipe == ActiveRecipe.RoundTube) {
 				RoundTubeRecipe datagridRow = GetRoundTubeRecipeFromGrid();
 				if (datagridRow == null) return false;
 				tbRecipeTubes.Text = datagridRow.TubeNumber;
@@ -1399,42 +1401,39 @@ namespace Empacotadora {
 		private void btnRecipeSave_Click(object sender, RoutedEventArgs e) {
 			DisableTextBoxesModification();
 			List<string> newFileContent = new List<string>();
-			if (isRoundTubeRecipeActive == true) {
+			if (currentRecipe == ActiveRecipe.RoundTube) {
 				EditRoundTubeRecipesTextFile(newFileContent);
-				UpdateStatusBar(General.WriteToFile(pathRoundTubes, newFileContent));
+				string msg = Document.WriteToFile(pathRoundTubes, newFileContent.ToArray()) ? saveSuccessful : saveError;
+				UpdateStatusBar(msg);
 				datagridRecipes.ItemsSource = null;
 				datagridRecipes.ItemsSource = Recipes.ReadTubeRecipesFromFile(pathRoundTubes);
 			}
 			else {
 				EditSquareTubeRecipesTextFile(newFileContent, pathSquareTubes, out bool found);
-				if (found == true)
-					UpdateStatusBar(General.WriteToFile(pathSquareTubes, newFileContent));
+				if (found == true) {
+					string msg = Document.WriteToFile(pathSquareTubes, newFileContent.ToArray()) ? saveSuccessful : saveError;
+					UpdateStatusBar(msg);
+				}
 				else {
 					EditSquareTubeRecipesTextFile(newFileContent, pathRectTubes, out found);
-					UpdateStatusBar(General.WriteToFile(pathRectTubes, newFileContent));
+					string msg = Document.WriteToFile(pathRectTubes, newFileContent.ToArray()) ? saveSuccessful : saveError;
+					UpdateStatusBar(msg);
 				}
 				datagridRecipes.ItemsSource = null;
 				datagridRecipes.ItemsSource = Recipes.ReadTubeRecipesFromFile(pathSquareTubes, pathRectTubes);
 			}
-			btnRecipeEdit.IsEnabled = true;
-			btnRecipeRoundTube.IsEnabled = true;
-			btnRecipeSquareTube.IsEnabled = true;
-			btnReturn.IsEnabled = true;
-			btnRecipeSave.Visibility = Visibility.Collapsed;
-			btnRecipeCancel.Visibility = Visibility.Collapsed;
+			ResetRecipeUIButtons();
 			editingRecipe = false;
 		}
 		private void DisableTextBoxesModification() {
 			List<TextBox> textBoxes = GetTextBoxesFromGrids();
-			foreach (TextBox item in textBoxes) {
-				item.ClearValue(BackgroundProperty);
-				item.IsReadOnly = true;
-				item.Focusable = false;
-			}
+			foreach (TextBox item in textBoxes)
+				ResetRecipeTextBox(item);
 		}
 		private void EditSquareTubeRecipesTextFile(List<string> newFileContent, string path, out bool found) {
 			found = false;
-			foreach (string item in File.ReadAllLines(path)) {
+			if (!Document.ReadFromFile(path, out IEnumerable<string> linesFromFile)) return;
+			foreach (string item in linesFromFile) {
 				string newline = "";
 				string[] array = item.Split(',');
 				if (array[0] == tbRecipeTubes.Text) {
@@ -1450,7 +1449,8 @@ namespace Empacotadora {
 			}
 		}
 		private void EditRoundTubeRecipesTextFile(List<string> newFileContent) {
-			foreach (string item in File.ReadAllLines(pathRoundTubes)) {
+			if (!Document.ReadFromFile(pathRoundTubes, out IEnumerable<string> linesFromFile)) return;
+			foreach (string item in linesFromFile) {
 				string newline = "";
 				string[] array = item.Split(',');
 				if (array[0] == tbRecipeTubes.Text) {
@@ -1466,17 +1466,23 @@ namespace Empacotadora {
 		private void btnRecipeCancel_Click(object sender, RoutedEventArgs e) {
 			List<TextBox> textBoxes = GetTextBoxesFromGrids();
 			foreach (TextBox item in textBoxes) {
-				item.ClearValue(BackgroundProperty);
-				item.IsReadOnly = true;
-				item.Focusable = false;
+				ResetRecipeTextBox(item);
 			}
+			ResetRecipeUIButtons();
+			editingRecipe = false;
+		}
+		private void ResetRecipeTextBox(TextBox item) {
+			item.ClearValue(BackgroundProperty);
+			item.IsReadOnly = true;
+			item.Focusable = false;
+		}
+		private void ResetRecipeUIButtons() {
 			btnRecipeEdit.IsEnabled = true;
 			btnRecipeRoundTube.IsEnabled = true;
 			btnRecipeSquareTube.IsEnabled = true;
 			btnReturn.IsEnabled = true;
 			btnRecipeSave.Visibility = Visibility.Collapsed;
 			btnRecipeCancel.Visibility = Visibility.Collapsed;
-			editingRecipe = false;
 		}
 		private List<TextBox> GetTextBoxesFromGrids() {
 			List<TextBox> textBoxes = new List<TextBox>();

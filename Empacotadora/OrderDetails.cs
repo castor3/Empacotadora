@@ -46,45 +46,39 @@ namespace Empacotadora {
 		}
 		public static List<OrderDetails> ReadOrdersFromFile(string path) {
 			List<OrderDetails> orders = new List<OrderDetails>();
-			try {
-				IEnumerable<string> linesFromFile = File.ReadLines(path);
-				foreach (string line in linesFromFile) {
-					string[] array = line.Split(',');
-					try {
-						if (array[1] == "1") {
-							orders.Add(new OrderDetails() {
-								ID = array[0],
-								Name = array[2],
-								Diameter = array[3],
-								Width = array[4],
-								Height = array[5],
-								Thick = array[6],
-								Length = array[7],
-								Density = array[8],
-								//Hardness = array[9],
-								TubeAm = array[10],
-								TubeType = array[11],
-								PackageAm = array[12],
-								PackageType = array[13],
-								Weight = array[14],
-								Created = array[15],
-							});
-						}
-					}
-					catch (IndexOutOfRangeException) {
-						MessageBox.Show("Erro de index ao ler do ficheiro");
-						continue;
+			if (!Document.ReadFromFile(path, out IEnumerable<string> linesFromFile)) return orders;
+			foreach (string line in linesFromFile) {
+				string[] array = line.Split(',');
+				try {
+					if (array[1] == "1") {
+						orders.Add(new OrderDetails() {
+							ID = array[0],
+							Name = array[2],
+							Diameter = array[3],
+							Width = array[4],
+							Height = array[5],
+							Thick = array[6],
+							Length = array[7],
+							Density = array[8],
+							//Hardness = array[9],
+							TubeAm = array[10],
+							TubeType = array[11],
+							PackageAm = array[12],
+							PackageType = array[13],
+							Weight = array[14],
+							Created = array[15],
+						});
 					}
 				}
-			}
-			catch (Exception exc) {
-				if (exc is DirectoryNotFoundException || exc is FileNotFoundException)
-					MessageBox.Show("File/Directory not found exception");
+				catch (IndexOutOfRangeException exc) {
+					MessageBox.Show(exc.Message);
+					return orders;
+				}
 			}
 			return orders;
 		}
 		public static void DeactivateOrder(string orderID, string path) {
-			IEnumerable<string> linesFromFile = File.ReadAllLines(path);
+			if (!Document.ReadFromFile(path, out IEnumerable<string> linesFromFile)) return;
 			List<string> newFileContent = new List<string>();
 			foreach (string line in linesFromFile) {
 				string newline = "";
@@ -99,12 +93,7 @@ namespace Empacotadora {
 				}
 				newFileContent.Add(newline == "" ? line : newline);
 			}
-			try {
-				File.WriteAllLines(path, newFileContent);
-			}
-			catch (IOException) {
-				MessageBox.Show("Não foi possível escrever no ficheiro");
-			}
+			Document.WriteToFile(path, newFileContent.ToArray());
 		}
 	}
 }
