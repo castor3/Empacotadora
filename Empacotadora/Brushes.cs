@@ -14,8 +14,6 @@ namespace Empacotadora {
         public static SolidColorBrush tomatoBrush = new SolidColorBrush(Colors.Tomato);
         public static SolidColorBrush grayBrush = new SolidColorBrush(Colors.SlateGray);
         public static SolidColorBrush blackBrush = new SolidColorBrush(Colors.Black);
-		// Brush edit straps
-		public static SolidColorBrush modifyStrapsBrush = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFF0F05B"));	// Yellow
 		// yellow brush for manual button background
 		public static SolidColorBrush yellowBrush = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFF80"));
 	}

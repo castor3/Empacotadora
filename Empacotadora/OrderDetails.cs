@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Windows;
 
 namespace Empacotadora {
@@ -18,10 +17,11 @@ namespace Empacotadora {
 		//public string Hardness { get; set; }
 		public string TubeAm { get; set; }
 		public string TubeType { get; set; }
-		public string PackageAm { get; set; }
 		public string PackageType { get; set; }
 		public string Weight { get; set; }
 		public string Created { get; set; }
+		public byte Straps { get; set; }
+		public int[] StrapsPosition { get; set; }
 		// Methods
 		public double CalculateWeight(string hei, string wid, string thick, string leng, string dens) {
 			Double.TryParse(wid, out double width);
@@ -63,10 +63,9 @@ namespace Empacotadora {
 							//Hardness = array[9],
 							TubeAm = array[10],
 							TubeType = array[11],
-							PackageAm = array[12],
-							PackageType = array[13],
-							Weight = array[14],
-							Created = array[15],
+							PackageType = array[12],
+							Weight = array[13],
+							Created = array[14],
 						});
 					}
 				}

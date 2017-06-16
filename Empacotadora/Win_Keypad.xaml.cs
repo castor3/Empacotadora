@@ -1,26 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
-namespace Empacotadora
-{
-    /// <summary>
-    /// Lógica interna para Win_Keypad.xaml
-    /// </summary>
-    public partial class Win_Keypad : Window
+namespace Empacotadora {
+	/// <summary>
+	/// Lógica interna para Win_Keypad.xaml
+	/// </summary>
+	public partial class Win_Keypad : Window
     {
         public string value;
-        public bool enter = false, edited = false;
+        public static bool enter = false, edited = false;
 
         public Win_Keypad()
         {

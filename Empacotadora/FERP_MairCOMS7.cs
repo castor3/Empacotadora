@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Globalization;
 using System.Runtime.InteropServices;
+using System.Windows;
 using IBHNETLib;
 
 namespace Empacotadora {
@@ -105,7 +100,7 @@ namespace Empacotadora {
 		#endregion
 
 		#region Bool
-		public int ReadBool(int DB, Tuple<int, int, string> variable) {
+		public bool ReadBool(int DB, Tuple<int, int, string> variable) {
 			int valueReadFromPLC = new int();
 			if (!connected) {
 				int DBAddress = DB;
@@ -116,7 +111,7 @@ namespace Empacotadora {
 			else
 				Message = "Not connected";
 			MessageBox.Show(Message);
-			return valueReadFromPLC;
+			return Convert.ToBoolean(valueReadFromPLC);
 		}
 		private void TryToReadBool(int DBAddress, int variableAddress, int bitToChange, int valueReadFromPLC) {
 			try {
@@ -164,12 +159,12 @@ namespace Empacotadora {
 		}
 
 		public void ToogleBool(int DB, Tuple<int, int, string> variable) {
-			//WriteBool(DB, variable, !Convert.ToBoolean(ReadBool(DB, variable)));
+			//WriteBool(DB, variable, !ReadBool(DB, variable));
 		}
 		#endregion
 
 		#region Int
-		public string ReadInt(int DBAddress, int varAddress) {
+		public int ReadInt(int DBAddress, int varAddress) {
 			string valueReadFromPLC = "";
 			if (connected) {
 				try {
@@ -187,7 +182,7 @@ namespace Empacotadora {
 			else
 				Message = "Not connected";
 			MessageBox.Show(Message);
-			return valueReadFromPLC;
+			return Convert.ToInt32(valueReadFromPLC);
 		}
 		public void WriteInt(int DBAddress, int varAddress, double valueToWrite) {
 			if (!connected) {
@@ -224,7 +219,7 @@ namespace Empacotadora {
 		#endregion
 
 		#region Real
-		public string ReadReal(int DBAddress, int varAddress) {
+		public double ReadReal(int DBAddress, int varAddress) {
 			string valueReadFromPLC = "";
 			if (connected) {
 				try {
@@ -242,7 +237,7 @@ namespace Empacotadora {
 			else
 				Message = "Not Connected";
 			MessageBox.Show(Message);
-			return valueReadFromPLC;
+			return Convert.ToDouble(valueReadFromPLC);
 		}
 		public void WriteReal(int DBAddress, int varAddress, double valueToWrite) {
 			if (connected) {

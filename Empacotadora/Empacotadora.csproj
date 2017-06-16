@@ -72,7 +72,6 @@
     <Compile Include="Brushes.cs" />
     <Compile Include="Document.cs" />
     <Compile Include="FERP_MairCOMS7.cs" />
-    <Compile Include="General.cs" />
     <Compile Include="History.cs" />
     <Compile Include="OrderDetails.cs" />
     <Compile Include="Recipes.cs" />
