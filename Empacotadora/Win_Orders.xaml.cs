@@ -22,7 +22,7 @@ namespace Empacotadora {
 	/// </summary>
 	public partial class Win_Orders : Window {
 		public enum Layout { Default, NewOrder, EditOrder, Recipes }
-		public static Layout nextLayout;
+		public static Layout NextLayout;
 
 		public Win_Orders() {
 			InitializeComponent();
@@ -32,11 +32,11 @@ namespace Empacotadora {
 		}
 
 		private void btnReturn_Click(object sender, RoutedEventArgs e) {
-			nextLayout = Layout.Default;
+			NextLayout = Layout.Default;
 			Close();
 		}
 		private void btnNewOrder_Click(object sender, RoutedEventArgs e) {
-			nextLayout = Layout.NewOrder;
+			NextLayout = Layout.NewOrder;
 			Close();
 		}
 		private void btnCurrentOrder_Click(object sender, RoutedEventArgs e) {
@@ -53,11 +53,10 @@ namespace Empacotadora {
 				MessageBoxResult answer = MessageBox.Show("          Tem a certeza de que pretende\n" +
 												 "             remover a seguinte ordem?\n\t" +
 												 "              " + datagridRow.Name, "Confirmar?", MessageBoxButton.YesNo);
-				if (answer == MessageBoxResult.Yes) {
-					OrderDetails.DeactivateOrder(datagridRow.ID, Win_Main.path);
-					datagridOrders.ItemsSource = null;
-					datagridOrders.ItemsSource = OrderDetails.ReadOrdersFromFile(Win_Main.path);
-				}
+				if (answer != MessageBoxResult.Yes) return;
+				OrderDetails.DeactivateOrder(datagridRow.ID, Win_Main.Path);
+				datagridOrders.ItemsSource = null;
+				datagridOrders.ItemsSource = OrderDetails.ReadOrdersFromFile(Win_Main.Path);
 			}
 			catch (NullReferenceException) {
 				UpdateStatusBar("Selecione uma ordem para remover", 1);
@@ -68,44 +67,42 @@ namespace Empacotadora {
 			btnLoadOrder.Visibility = Visibility.Visible;
 			SetOrdersListLayout();
 			btnListOrders.ClearValue(BackgroundProperty);
-			btnCurrentOrder.Background = Brushes.lightRed;
+			btnCurrentOrder.Background = Brushes.LightRed;
 		}
 		private void btnLoadOrder_Click(object sender, RoutedEventArgs e) {
 			OrderDetails datagridRow = GetDataFromGrid();
-			if (datagridRow != null) {
-				Win_Main.currentOrder = datagridRow;
-				MessageBoxResult answer = MessageBox.Show("            Tem a certeza de que pretende\n" +
-											 "               carregar a seguinte ordem?\n\t" +
-											 "              " + Win_Main.currentOrder.Name +
-											 "\n        A ordem em progresso vai ser terminada.", "Confirmar?", MessageBoxButton.YesNo);
-				if (answer == MessageBoxResult.Yes) {
-					if (Win_Main.currentOrder.Diameter == "") {
-						gridRound.Visibility = Visibility.Collapsed;
-						gridSquare.Visibility = Visibility.Visible;
-						lblOrderWidth.Content = Win_Main.currentOrder.Width;
-						lblOrderHeight.Content = Win_Main.currentOrder.Height;
-					} else {
-						gridRound.Visibility = Visibility.Visible;
-						gridSquare.Visibility = Visibility.Collapsed;
-						lblOrderDiam.Content = Win_Main.currentOrder.Diameter;
-					}
-					lblOrderName.Content = Win_Main.currentOrder.Name;
-					lblOrderThick.Content = Win_Main.currentOrder.Thick;
-					lblOrderLength.Content = Win_Main.currentOrder.Length;
-
-					SetCurrentOrderLayout();
-					UpdateStatusBar(Win_Main.currentOrder.Name + " " + Win_Main.currentOrder.Thick + " " + Win_Main.currentOrder.Length);
-					// DispatcherTimer setup
-					DispatcherTimer timer = new DispatcherTimer();
-					timer.Tick += new EventHandler(Timer_Tick);
-					timer.Interval = new TimeSpan(0, 0, 0, 3);
-					timer.Start();
-					lblLoadSuccess.Visibility = Visibility.Visible;
-				}
+			if (datagridRow == null) return;
+			Win_Main.CurrentOrder = datagridRow;
+			MessageBoxResult answer = MessageBox.Show("            Tem a certeza de que pretende\n" +
+			                                          "               carregar a seguinte ordem?\n\t" +
+			                                          "              " + Win_Main.CurrentOrder.Name +
+			                                          "\n        A ordem em progresso vai ser terminada.", "Confirmar?", MessageBoxButton.YesNo);
+			if (answer != MessageBoxResult.Yes) return;
+			if (Win_Main.CurrentOrder.Diameter == "") {
+				gridRound.Visibility = Visibility.Collapsed;
+				gridSquare.Visibility = Visibility.Visible;
+				lblOrderWidth.Content = Win_Main.CurrentOrder.Width;
+				lblOrderHeight.Content = Win_Main.CurrentOrder.Height;
+			} else {
+				gridRound.Visibility = Visibility.Visible;
+				gridSquare.Visibility = Visibility.Collapsed;
+				lblOrderDiam.Content = Win_Main.CurrentOrder.Diameter;
 			}
+			lblOrderName.Content = Win_Main.CurrentOrder.Name;
+			lblOrderThick.Content = Win_Main.CurrentOrder.Thick;
+			lblOrderLength.Content = Win_Main.CurrentOrder.Length;
+
+			SetCurrentOrderLayout();
+			UpdateStatusBar(Win_Main.CurrentOrder.Name + " " + Win_Main.CurrentOrder.Thick + " " + Win_Main.CurrentOrder.Length);
+			// DispatcherTimer setup
+			DispatcherTimer timer = new DispatcherTimer();
+			timer.Tick += new EventHandler(Timer_Tick);
+			timer.Interval = new TimeSpan(0, 0, 0, 3);
+			timer.Start();
+			lblLoadSuccess.Visibility = Visibility.Visible;
 		}
 		private void btnRecipes_Click(object sender, RoutedEventArgs e) {
-			nextLayout = Layout.Recipes;
+			NextLayout = Layout.Recipes;
 			Close();
 		}
 		private OrderDetails GetDataFromGrid() {
@@ -158,25 +155,25 @@ namespace Empacotadora {
 			btnListOrders.ClearValue(BackgroundProperty);
 			btnReturn.ClearValue(BackgroundProperty);
 			btnNewOrder.ClearValue(BackgroundProperty);
-			btnCurrentOrder.Background = Brushes.lightRed;
+			btnCurrentOrder.Background = Brushes.LightRed;
 		}
 		private void SetOrdersListLayout() {
 			tabOrders.SelectedItem = tabItemListOrders;
 			lblTitle.Content = "Ordens";
 			try {
-				datagridOrders.ItemsSource = OrderDetails.ReadOrdersFromFile(Win_Main.path);
+				datagridOrders.ItemsSource = OrderDetails.ReadOrdersFromFile(Win_Main.Path);
 			}
 			catch (FileNotFoundException) {
 				UpdateStatusBar("Ficheiro das ordens não encontrado", 1);
 			}
-			btnListOrders.Background = Brushes.lightRed;
+			btnListOrders.Background = Brushes.LightRed;
 			btnReturn.ClearValue(BackgroundProperty);
 			btnNewOrder.ClearValue(BackgroundProperty);
 			btnCurrentOrder.ClearValue(BackgroundProperty);
 		}
 
 		private void btnEditOrder_Click(object sender, RoutedEventArgs e) {
-			nextLayout = Layout.EditOrder;
+			NextLayout = Layout.EditOrder;
 			Close();
 		}
 	}

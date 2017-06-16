@@ -6,7 +6,7 @@ using System.Windows;
 
 namespace Empacotadora {
 	public class History {
-		private enum Shift { noShiftFilter, shiftOne, shiftTwo, shiftThree, nill }
+		private enum Shift { NoShiftFilter, ShiftOne, ShiftTwo, ShiftThree, nill }
 		//Properties
 		public string Name { get; set; }
 		public string PackNmbr { get; set; }
@@ -14,8 +14,8 @@ namespace Empacotadora {
 		public string Weight { get; set; }
 		public string Created { get; set; }
 		//Methods
-		public static List<History> ReadHistoryFromFile(string path) {
-			List<History> history = new List<History>();
+		public static ICollection<History> ReadHistoryFromFile(string path) {
+			ICollection<History> history = new Collection<History>();
 			if (!Document.ReadFromFile(path, out IEnumerable<string> linesFromFile)) return history;
 			foreach (string line in linesFromFile) {
 				string[] array = line.Split(',');
@@ -23,8 +23,8 @@ namespace Empacotadora {
 			}
 			return history;
 		}
-		public static List<History> ReadHistoryFromFile(string path, DateTime selectedDate) {
-			List<History> history = new List<History>();
+		public static ICollection<History> ReadHistoryFromFile(string path, DateTime selectedDate) {
+			ICollection<History> history = new Collection<History>();
 			if (!Document.ReadFromFile(path, out IEnumerable<string> linesFromFile)) return history;
 			foreach (string line in linesFromFile) {
 				string[] array = line.Split(',');
@@ -35,8 +35,8 @@ namespace Empacotadora {
 			}
 			return history;
 		}
-		public static List<History> ReadHistoryFromFile(string path, DateTime initialDate, DateTime endDate) {
-			List<History> history = new List<History>();
+		public static ICollection<History> ReadHistoryFromFile(string path, DateTime initialDate, DateTime endDate) {
+			ICollection<History> history = new Collection<History>();
 			if (!Document.ReadFromFile(path, out IEnumerable<string> linesFromFile)) return history;
 			foreach (string line in linesFromFile) {
 				string[] array = line.Split(',');
@@ -46,9 +46,9 @@ namespace Empacotadora {
 			}
 			return history;
 		}
-		public static List<History> ReadHistoryFromFile(string path, DateTime initialDate, DateTime endDate, byte shiftSelected) {
+		public static ICollection<History> ReadHistoryFromFile(string path, DateTime initialDate, DateTime endDate, byte shiftSelected) {
 			Shift shiftOfHistoryDate = Shift.nill;
-			List<History> history = new List<History>();
+			ICollection<History> history = new Collection<History>();
 			if (!Document.ReadFromFile(path, out IEnumerable<string> linesFromFile)) return history;
 			foreach (string line in linesFromFile) {
 				string[] array = line.Split(',');
@@ -90,11 +90,11 @@ namespace Empacotadora {
 			DateTime shiftThreeInit = shiftTwoInit.AddHours(8);
 			DateTime shiftThreeEnd = shiftThreeInit.AddHours(8);
 			if (historyDate >= shiftOneInit && historyDate < shiftTwoInit)
-				shiftOfHistoryDate = Shift.shiftOne;
+				shiftOfHistoryDate = Shift.ShiftOne;
 			else if (historyDate >= shiftTwoInit && historyDate < shiftThreeInit)
-				shiftOfHistoryDate = Shift.shiftTwo;
+				shiftOfHistoryDate = Shift.ShiftTwo;
 			else if (historyDate >= shiftThreeInit && historyDate < shiftThreeEnd)
-				shiftOfHistoryDate = Shift.shiftThree;
+				shiftOfHistoryDate = Shift.ShiftThree;
 			else
 				shiftOfHistoryDate = Shift.nill;
 			return shiftOfHistoryDate;
@@ -110,16 +110,16 @@ namespace Empacotadora {
 			TimeSpan shiftTwoTimeInit = TimeSpan.Parse("15:00:00");
 			TimeSpan shiftThreeTimeInit = TimeSpan.Parse("23:00:00");
 			if (historyTime >= shiftOneTimeInit && historyTime < shiftTwoTimeInit)
-				shiftFromHistoryTime = Shift.shiftOne;
+				shiftFromHistoryTime = Shift.ShiftOne;
 			else if (historyTime >= shiftTwoTimeInit && historyTime < shiftThreeTimeInit)
-				shiftFromHistoryTime = Shift.shiftTwo;
+				shiftFromHistoryTime = Shift.ShiftTwo;
 			else if (historyTime >= shiftThreeTimeInit || historyTime < shiftOneTimeInit)
-				shiftFromHistoryTime = Shift.shiftThree;
+				shiftFromHistoryTime = Shift.ShiftThree;
 			else
 				shiftFromHistoryTime = Shift.nill;
 			return shiftFromHistoryTime;
 		}
-		private static void AddArrayToList(ref List<History> history, string[] array) {
+		private static void AddArrayToList(ref ICollection<History> history, IReadOnlyList<string> array) {
 			try {
 				history.Add(new History() {
 					Name = array[0],

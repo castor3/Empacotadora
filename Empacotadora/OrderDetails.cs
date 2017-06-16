@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 
 namespace Empacotadora {
 	public class OrderDetails {
 		// Properties
-		public string active;
+		public string Active;
 		public string ID { get; set; }
 		public string Name { get; set; }
 		public string Diameter { get; set; }
@@ -24,28 +25,28 @@ namespace Empacotadora {
 		public int[] StrapsPosition { get; set; }
 		// Methods
 		public double CalculateWeight(string hei, string wid, string thick, string leng, string dens) {
-			Double.TryParse(wid, out double width);
-			Double.TryParse(hei, out double height);
-			Double.TryParse(thick, out double thickness);
-			Double.TryParse(leng, out double length);
-			Double.TryParse(dens, out double density);
+			double.TryParse(wid, out double width);
+			double.TryParse(hei, out double height);
+			double.TryParse(thick, out double thickness);
+			double.TryParse(leng, out double length);
+			double.TryParse(dens, out double density);
 			double weight = (((height * width * length) - (((height - (2 * thickness)) *
 							(width - (2 * thickness))) * length)) * (density * 1000) * 0.000000001);
 			return weight;
 		}
 		public double CalculateWeight(string diam, string thick, string leng, string dens) {
-			Double.TryParse(diam, out double diameter);
-			Double.TryParse(thick, out double thickness);
-			Double.TryParse(leng, out double length);
-			Double.TryParse(dens, out double density);
+			double.TryParse(diam, out double diameter);
+			double.TryParse(thick, out double thickness);
+			double.TryParse(leng, out double length);
+			double.TryParse(dens, out double density);
 			double diameterOut = diameter;
 			double diameterIn = diameter - thickness;
 			double weight = ((Math.PI * ((Math.Pow((0.5 * diameterOut), 2)) -
 							(Math.Pow((0.5 * diameterIn), 2)))) * length * (density * 0.000001));
 			return weight;
 		}
-		public static List<OrderDetails> ReadOrdersFromFile(string path) {
-			List<OrderDetails> orders = new List<OrderDetails>();
+		public static ICollection<OrderDetails> ReadOrdersFromFile(string path) {
+			ICollection<OrderDetails> orders = new ICollection<OrderDetails>();
 			if (!Document.ReadFromFile(path, out IEnumerable<string> linesFromFile)) return orders;
 			foreach (string line in linesFromFile) {
 				string[] array = line.Split(',');
@@ -60,7 +61,6 @@ namespace Empacotadora {
 							Thick = array[6],
 							Length = array[7],
 							Density = array[8],
-							//Hardness = array[9],
 							TubeAm = array[10],
 							TubeType = array[11],
 							PackageType = array[12],
@@ -78,15 +78,16 @@ namespace Empacotadora {
 		}
 		public static void DeactivateOrder(string orderID, string path) {
 			if (!Document.ReadFromFile(path, out IEnumerable<string> linesFromFile)) return;
-			List<string> newFileContent = new List<string>();
+			ICollection<string> newFileContent = new ICollection<string>();
 			foreach (string line in linesFromFile) {
 				string newline = "";
 				// splits the order read from the line
 				string[] array = line.Split(',');
 				if (array[0] == orderID) {
 					array[1] = "0";
-					foreach (string value in array)
-						newline += value + ",";
+					//foreach (string value in array)
+					//	newline += value + ",";
+					newline = array.Aggregate(newline, (current, value) => current + (value + ","));
 					// removes "," in the end of the line
 					newline = newline.Remove(newline.Length - 1);
 				}

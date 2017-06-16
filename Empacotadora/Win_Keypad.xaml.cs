@@ -7,8 +7,8 @@ namespace Empacotadora {
 	/// </summary>
 	public partial class Win_Keypad : Window
     {
-        public string value;
-        public static bool enter = false, edited = false;
+        public string Value;
+        public static bool Enter = false, Edited = false;
 
         public Win_Keypad()
         {
@@ -17,8 +17,8 @@ namespace Empacotadora {
 
         private void btnSair_Click(object sender, RoutedEventArgs e)
         {
-            enter = false;
-            edited = false;
+            Enter = false;
+            Edited = false;
             Close();
         }
 
@@ -26,7 +26,7 @@ namespace Empacotadora {
         {
             Button b = (Button)sender;
             tbResult.Text += b.Content.ToString();
-            edited = true;
+            Edited = true;
         }
 
         private void Del_Click(object sender, RoutedEventArgs e)
@@ -35,20 +35,20 @@ namespace Empacotadora {
             {
                 tbResult.Text = tbResult.Text.Substring(0, tbResult.Text.Length - 1);
             }
-            edited = true;
+            Edited = true;
         }
 
         private void C_Click(object sender, RoutedEventArgs e)
         {
             tbResult.Text = "";
-            edited = true;
+            Edited = true;
         }
 
         private void Enter_click(object sender, RoutedEventArgs e)
         {
-            if (edited == true)
-                value = tbResult.Text;
-            enter = true;
+            if (Edited == true)
+                Value = tbResult.Text;
+            Enter = true;
             Close();
         }
     }

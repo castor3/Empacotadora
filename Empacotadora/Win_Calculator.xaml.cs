@@ -9,7 +9,7 @@ namespace Empacotadora
 	/// </summary>
 	public partial class Win_Calculator : Window
     {
-        bool end = false;
+        bool _end = false;
 
         public Win_Calculator()
         {
@@ -23,10 +23,10 @@ namespace Empacotadora
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             Button b = (Button)sender;
-            if (end == true)
+            if (_end == true)
             {
                 tbResult.Text = "";
-                end = false;
+                _end = false;
             }
             tbResult.Text += b.Content.ToString();
         }
@@ -43,7 +43,6 @@ namespace Empacotadora
         }
         private void Result()
         {
-            String op;
             int iOp = 0;
             if (tbResult.Text.Contains("+"))
             {
@@ -66,25 +65,24 @@ namespace Empacotadora
                 //error    
             }
 
-            op = tbResult.Text.Substring(iOp, 1);
-            Double.TryParse(tbResult.Text.Substring(0, iOp), out double op1);
-            Double.TryParse(tbResult.Text.Substring(iOp + 1, tbResult.Text.Length - iOp - 1), out double op2);
+            string operation = tbResult.Text.Substring(iOp, 1);
+            double.TryParse(tbResult.Text.Substring(0, iOp), out double op1);
+            double.TryParse(tbResult.Text.Substring(iOp + 1, tbResult.Text.Length - iOp - 1), out double op2);
 
-            if (op == "+")
+            switch (operation)
             {
-                tbResult.Text += "=" + (op1 + op2);
-            }
-            else if (op == "-")
-            {
-                tbResult.Text += "=" + (op1 - op2);
-            }
-            else if (op == "*")
-            {
-                tbResult.Text += "=" + (op1 * op2);
-            }
-            else
-            {
-                tbResult.Text += "=" + (op1 / op2);
+                case "+":
+                    tbResult.Text += "=" + (op1 + op2);
+                    break;
+                case "-":
+                    tbResult.Text += "=" + (op1 - op2);
+                    break;
+                case "*":
+                    tbResult.Text += "=" + (op1 * op2);
+                    break;
+                default:
+                    tbResult.Text += "=" + (op1 / op2);
+                    break;
             }
         }
         private void Result_click(object sender, RoutedEventArgs e)
@@ -99,7 +97,7 @@ namespace Empacotadora
             }
             finally
             {
-                end = true;
+                _end = true;
             }
 
         }

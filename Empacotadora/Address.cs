@@ -1,9 +1,6 @@
 ﻿using System;
 
 namespace Empacotadora {
-	/// <summary>
-	/// Contains PLC address (as double) of variables
-	/// </summary>
 	namespace Address {
 		// b->bool	(1 bit)
 		// i->int	(16 bits)
