@@ -17,6 +17,10 @@ using System.Globalization;
 using System.Windows.Interop;
 using Empacotadora.Address;
 using System.Collections;
+using System.Collections.ObjectModel;
+using System.Drawing;
+using System.Net.Mime;
+using System.Reflection.Emit;
 
 namespace Empacotadora {
 	/// <summary>
@@ -222,7 +226,7 @@ namespace Empacotadora {
 		private void btnExit_Click(object sender, RoutedEventArgs e) {
 			//var answer = MessageBox.Show("Terminar o programa?", "Confirmar", MessageBoxButton.YesNo);
 			//if(answer == MessageBoxResult.Yes)
-			Application.Current.Shutdown();
+			MediaTypeNames.Application.Current.Shutdown();
 		}
 		private void btnAbout_Click(object sender, RoutedEventArgs e) {
 			MessageBox.Show("              Desenvolvedor: Rui Santos\n" +
@@ -600,9 +604,9 @@ namespace Empacotadora {
 				return;
 			}
 			ropePerimeterIsValid = (ropePerimeter >= packagePerimeter + 150 &&
-									ropePerimeter <= packagePerimeter + 300) ? true : false;
-			ropeWeightIsValid = (ropeWeight >= packageWeight + 50) ? true : false;
-			ropeIsValid = (ropePerimeterIsValid && ropeWeightIsValid) ? true : false;
+			                        ropePerimeter <= packagePerimeter + 300);
+			ropeWeightIsValid = (ropeWeight >= packageWeight + 50);
+			ropeIsValid = (ropePerimeterIsValid && ropeWeightIsValid);
 		}
 		private IEnumerable GetAllRopeStrapsFromFile() {
 			if (!Document.ReadFromFile(_pathRopeStraps, out IEnumerable<string> linesFromFile))
@@ -661,9 +665,6 @@ namespace Empacotadora {
 
 			CreateEllipseShapesToBeDrawn(tubeAmount, tubeAmountBigLine, tubeAmountSmallLine, shapeDiameter, tubeCurrentlyDrawing, vPos, hPos, ref columns, ref rows, listEllipses);
 
-			hPos = hPosInit;
-			vPos = vPosInit;
-
 			PutShapesInCanvas(listEllipses);
 
 			double packageWidth = diameter * columns;
@@ -691,6 +692,7 @@ namespace Empacotadora {
 			int hPosLineInit;
 			byte variavel = 0;
 			bool incrementing = false;
+			byte lineCap = 0;
 			for (byte i = 0; i < tubeAmountBigLine; i++) {
 				++rows;
 				hPosLineInit = hPos;
@@ -822,7 +824,7 @@ namespace Empacotadora {
 			numV = temp1;
 			numH = temp2 + 1;
 		}
-		private void PutShapesInCanvas<T>(ICollection<T> listOfShapes) where T : Shape {
+		private void PutShapesInCanvas<T>(IEnumerable<T> listOfShapes) where T : Shape {
 			cnvAtado.Children.Clear();
 			foreach (var forma in listOfShapes)
 				cnvAtado.Children.Add(forma);
@@ -944,7 +946,7 @@ namespace Empacotadora {
 				MessageBox.Show(exc.InnerException.ToString());
 				UpdateStatusBar("Cálculo do peso falhou", 1);
 			}
-			ICollection<string> stringToWrite = new ICollection<string> {
+			ICollection<string> stringToWrite = new Collection<string> {
 				_id.ToString(), newOrder.Active, newOrder.Name, newOrder.Diameter, newOrder.Width,
 				newOrder.Height, newOrder.Thick, newOrder.Length, newOrder.Density, newOrder.TubeAm,
 				newOrder.TubeType, newOrder.PackageType, newOrder.Weight, newOrder.Created };
@@ -1171,12 +1173,12 @@ namespace Empacotadora {
 			}
 			int[] values = Recipes.GetStrapsPositionFromRecipe(length, nmbr);
 			byte i = 0;
-			if (controlsCollection != null)
-				foreach (TextBox item in controlsCollection)
-				{
-					item.Text = values[i].ToString();
-					++i;
-				}
+			if (controlsCollection == null) return;
+			foreach (TextBox item in controlsCollection)
+			{
+				item.Text = values[i].ToString();
+				++i;
+			}
 		}
 		private void Button_Click(object sender, RoutedEventArgs e) {
 			UpdateStrapsValues(6000);
@@ -1225,13 +1227,13 @@ namespace Empacotadora {
 			UpdateStoragePage();
 		}
 		private void FillLastHistory() {
-			ICollection<History> history = History.ReadHistoryFromFile(_historyPath);
-			ICollection<Label> weightLabels = new ICollection<Label>() { lblWeight1, lblWeight2, lblWeight3 };
+			IList<History> history = History.ReadHistoryFromFile(_historyPath);
+			IList<Label> weightLabels = new List<Label>() { lblWeight1, lblWeight2, lblWeight3 };
 			try {
 				lblTubesHistory.Content = history[(history.Count) - 1].TubeAm;
 				for (byte i = 1; i <= 3; i++)
 					weightLabels[i - 1].Content = history[(history.Count) - i].Weight;
-				ICollection<Label> dateLabels = new ICollection<Label>() { lblDate1, lblDate2, lblDate3 };
+				IList<Label> dateLabels = new List<Label>() { lblDate1, lblDate2, lblDate3 };
 				for (byte i = 1; i <= 3; i++)
 					dateLabels[i - 1].Content = history[(history.Count) - i].Created;
 			}
@@ -1473,7 +1475,7 @@ namespace Empacotadora {
 		}
 		private void btnRecipeSave_Click(object sender, RoutedEventArgs e) {
 			DisableTextBoxesModification();
-			ICollection<string> newFileContent = new ICollection<string>();
+			ICollection<string> newFileContent = new Collection<string>();
 			if (_currentRecipe == ActiveRecipe.RoundTube) {
 				EditRoundTubeRecipesTextFile(newFileContent);
 				string msg = Document.WriteToFile(_pathRoundTubes, newFileContent.ToArray()) ? SaveSuccessful : SaveError;

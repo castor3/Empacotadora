@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Globalization;
 using System.Windows;
@@ -14,8 +15,8 @@ namespace Empacotadora {
 		public string Weight { get; set; }
 		public string Created { get; set; }
 		//Methods
-		public static ICollection<History> ReadHistoryFromFile(string path) {
-			ICollection<History> history = new Collection<History>();
+		public static IList<History> ReadHistoryFromFile(string path) {
+			IList<History> history = new List<History>();
 			if (!Document.ReadFromFile(path, out IEnumerable<string> linesFromFile)) return history;
 			foreach (string line in linesFromFile) {
 				string[] array = line.Split(',');
@@ -23,8 +24,8 @@ namespace Empacotadora {
 			}
 			return history;
 		}
-		public static ICollection<History> ReadHistoryFromFile(string path, DateTime selectedDate) {
-			ICollection<History> history = new Collection<History>();
+		public static IList<History> ReadHistoryFromFile(string path, DateTime selectedDate) {
+			IList<History> history = new List<History>();
 			if (!Document.ReadFromFile(path, out IEnumerable<string> linesFromFile)) return history;
 			foreach (string line in linesFromFile) {
 				string[] array = line.Split(',');
@@ -35,8 +36,8 @@ namespace Empacotadora {
 			}
 			return history;
 		}
-		public static ICollection<History> ReadHistoryFromFile(string path, DateTime initialDate, DateTime endDate) {
-			ICollection<History> history = new Collection<History>();
+		public static IList<History> ReadHistoryFromFile(string path, DateTime initialDate, DateTime endDate) {
+			IList<History> history = new List<History>();
 			if (!Document.ReadFromFile(path, out IEnumerable<string> linesFromFile)) return history;
 			foreach (string line in linesFromFile) {
 				string[] array = line.Split(',');
@@ -46,9 +47,9 @@ namespace Empacotadora {
 			}
 			return history;
 		}
-		public static ICollection<History> ReadHistoryFromFile(string path, DateTime initialDate, DateTime endDate, byte shiftSelected) {
+		public static IList<History> ReadHistoryFromFile(string path, DateTime initialDate, DateTime endDate, byte shiftSelected) {
 			Shift shiftOfHistoryDate = Shift.nill;
-			ICollection<History> history = new Collection<History>();
+			IList<History> history = new List<History>();
 			if (!Document.ReadFromFile(path, out IEnumerable<string> linesFromFile)) return history;
 			foreach (string line in linesFromFile) {
 				string[] array = line.Split(',');
@@ -119,7 +120,7 @@ namespace Empacotadora {
 				shiftFromHistoryTime = Shift.nill;
 			return shiftFromHistoryTime;
 		}
-		private static void AddArrayToList(ref ICollection<History> history, IReadOnlyList<string> array) {
+		private static void AddArrayToList(ref IList<History> history, IReadOnlyList<string> array) {
 			try {
 				history.Add(new History() {
 					Name = array[0],

@@ -30,8 +30,8 @@ namespace Empacotadora {
 
 				//int nRack = Convert.ToInt32(tbRack.Text.ToString());	// Always 0
 				//int nSlot = Convert.ToInt32(tbSlot.Text.ToString());	// Used when not using MPI
-				int nRack = 0;
-				int nSlot = 0;
+				const int nRack = 0;
+				const int nSlot = 0;
 
 				TryToConnect(IPAddr, nMpi, nRack, nSlot);
 			}
