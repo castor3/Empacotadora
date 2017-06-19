@@ -75,6 +75,7 @@ namespace Empacotadora {
 		readonly string _pathRectTubes = SystemPath + @"\RectTubeRecipes.txt";
 		readonly string _pathRoundTubes = SystemPath + @"\RoundTubeRecipes.txt";
 		readonly string _pathRopeStraps = SystemPath + @"\RopeStraps.txt";
+		
 		readonly int _defaultRoundTubeNmbr = 37, _defaultDiameter = 65;
 		readonly int _defaultSquareTubeNmbr = 36, _defaultWidth = 60, _defaultHeight = 60;
 
@@ -153,15 +154,10 @@ namespace Empacotadora {
 			SetSqrTube();
 			_currentTubeType = ActiveTubeType.Square;
 			tbDensity.Text = "7.65";
-			try {
-				string lineContent = File.ReadLines(Path).Last();
-				string[] array = lineContent.Split(',');
-				int.TryParse(array[0], out _id);
-			}
-			catch (Exception exc) when (exc is IOException || exc is FileNotFoundException || exc is DirectoryNotFoundException || exc is UnauthorizedAccessException) {
-				UpdateStatusBar("Ficheiro que contém as ordens não foi encontrado.", 1);
-				return;
-			}
+			Document.ReadFromFile(Path, out IEnumerable<string> linesFromFile);
+			string lineContent = linesFromFile.Last();
+			string[] array = lineContent.Split(',');
+			int.TryParse(array[0], out _id);
 			lblID.Content = (++_id).ToString();
 		}
 		private void ShowCurrentOrderOnWrapperLayout() {
