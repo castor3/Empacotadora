@@ -21,23 +21,22 @@ namespace Empacotadora {
 	/// Lógica interna para Win_Orders.xaml
 	/// </summary>
 	public partial class Win_Orders : Window {
-		public static bool flagNewOrder = false;
-		public static bool flagRecipes = false;
+		public enum Layout { Default, NewOrder, EditOrder, Recipes }
+		public static Layout NextLayout;
 
 		public Win_Orders() {
 			InitializeComponent();
 			tabItemCurrentOrder.Visibility = Visibility.Collapsed;
 			tabItemListOrders.Visibility = Visibility.Collapsed;
 			errorImage.Source = Imaging.CreateBitmapSourceFromHIcon(SystemIcons.Error.Handle‌​, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
-			btnCurrentOrder.Background = Brushes.lightRed;
 		}
 
 		private void btnReturn_Click(object sender, RoutedEventArgs e) {
-			flagNewOrder = false;
+			NextLayout = Layout.Default;
 			Close();
 		}
 		private void btnNewOrder_Click(object sender, RoutedEventArgs e) {
-			flagNewOrder = true;
+			NextLayout = Layout.NewOrder;
 			Close();
 		}
 		private void btnCurrentOrder_Click(object sender, RoutedEventArgs e) {
@@ -51,14 +50,13 @@ namespace Empacotadora {
 		private void btnDeleteOrder_Click(object sender, RoutedEventArgs e) {
 			OrderDetails datagridRow = GetDataFromGrid();
 			try {
-				var answer = MessageBox.Show("          Tem a certeza de que pretende\n" +
+				MessageBoxResult answer = MessageBox.Show("          Tem a certeza de que pretende\n" +
 												 "             remover a seguinte ordem?\n\t" +
 												 "              " + datagridRow.Name, "Confirmar?", MessageBoxButton.YesNo);
-				if (answer == MessageBoxResult.Yes) {
-					OrderDetails.DeactivateOrder(datagridRow.ID, Win_Main.path);
-					datagridOrders.ItemsSource = null;
-					datagridOrders.ItemsSource = OrderDetails.ReadOrdersFromFile(Win_Main.path);
-				}
+				if (answer != MessageBoxResult.Yes) return;
+				OrderDetails.DeactivateOrder(datagridRow.ID, Win_Main.Path);
+				datagridOrders.ItemsSource = null;
+				datagridOrders.ItemsSource = OrderDetails.ReadOrdersFromFile(Win_Main.Path);
 			}
 			catch (NullReferenceException) {
 				UpdateStatusBar("Selecione uma ordem para remover", 1);
@@ -69,45 +67,42 @@ namespace Empacotadora {
 			btnLoadOrder.Visibility = Visibility.Visible;
 			SetOrdersListLayout();
 			btnListOrders.ClearValue(BackgroundProperty);
-			btnCurrentOrder.Background = Brushes.lightRed;
+			btnCurrentOrder.Background = Brushes.LightRed;
 		}
 		private void btnLoadOrder_Click(object sender, RoutedEventArgs e) {
 			OrderDetails datagridRow = GetDataFromGrid();
-			if (datagridRow != null) {
-				General.currentOrder = datagridRow;
-				var answer = MessageBox.Show("            Tem a certeza de que pretende\n" +
-											 "               carregar a seguinte ordem?\n\t" +
-											 "              " + General.currentOrder.Name +
-											 "\n        A ordem em progresso vai ser terminada.", "Confirmar?", MessageBoxButton.YesNo);
-				if (answer == MessageBoxResult.Yes) {
-					if (General.currentOrder.Diameter == "") {
-						gridRound.Visibility = Visibility.Collapsed;
-						gridSquare.Visibility = Visibility.Visible;
-						lblOrderWidth.Content = General.currentOrder.Width;
-						lblOrderHeight.Content = General.currentOrder.Height;
-					}
-					else {
-						gridRound.Visibility = Visibility.Visible;
-						gridSquare.Visibility = Visibility.Collapsed;
-						lblOrderDiam.Content = General.currentOrder.Diameter;
-					}
-					lblOrderName.Content = General.currentOrder.Name;
-					lblOrderThick.Content = General.currentOrder.Thick;
-					lblOrderLength.Content = General.currentOrder.Length;
-
-					SetCurrentOrderLayout();
-					UpdateStatusBar(General.currentOrder.Name + " " + General.currentOrder.Thick + " " + General.currentOrder.Length);
-					// DispatcherTimer setup
-					DispatcherTimer timer = new DispatcherTimer();
-					timer.Tick += new EventHandler(Timer_Tick);
-					timer.Interval = new TimeSpan(0, 0, 0, 3);
-					timer.Start();
-					lblLoadSuccess.Visibility = Visibility.Visible;
-				}
+			if (datagridRow == null) return;
+			Win_Main.CurrentOrder = datagridRow;
+			MessageBoxResult answer = MessageBox.Show("            Tem a certeza de que pretende\n" +
+			                                          "               carregar a seguinte ordem?\n\t" +
+			                                          "              " + Win_Main.CurrentOrder.Name +
+			                                          "\n        A ordem em progresso vai ser terminada.", "Confirmar?", MessageBoxButton.YesNo);
+			if (answer != MessageBoxResult.Yes) return;
+			if (Win_Main.CurrentOrder.Diameter == "") {
+				gridRound.Visibility = Visibility.Collapsed;
+				gridSquare.Visibility = Visibility.Visible;
+				lblOrderWidth.Content = Win_Main.CurrentOrder.Width;
+				lblOrderHeight.Content = Win_Main.CurrentOrder.Height;
+			} else {
+				gridRound.Visibility = Visibility.Visible;
+				gridSquare.Visibility = Visibility.Collapsed;
+				lblOrderDiam.Content = Win_Main.CurrentOrder.Diameter;
 			}
+			lblOrderName.Content = Win_Main.CurrentOrder.Name;
+			lblOrderThick.Content = Win_Main.CurrentOrder.Thick;
+			lblOrderLength.Content = Win_Main.CurrentOrder.Length;
+
+			SetCurrentOrderLayout();
+			UpdateStatusBar(Win_Main.CurrentOrder.Name + " " + Win_Main.CurrentOrder.Thick + " " + Win_Main.CurrentOrder.Length);
+			// DispatcherTimer setup
+			DispatcherTimer timer = new DispatcherTimer();
+			timer.Tick += new EventHandler(Timer_Tick);
+			timer.Interval = new TimeSpan(0, 0, 0, 3);
+			timer.Start();
+			lblLoadSuccess.Visibility = Visibility.Visible;
 		}
 		private void btnRecipes_Click(object sender, RoutedEventArgs e) {
-			flagRecipes = true;
+			NextLayout = Layout.Recipes;
 			Close();
 		}
 		private OrderDetails GetDataFromGrid() {
@@ -126,6 +121,8 @@ namespace Empacotadora {
 			lblLoadSuccess.Visibility = Visibility.Collapsed;
 			timer.Stop();
 		}
+		
+		#region StatusBar
 		// Status bar update
 		private void SetStatusBarTimer() {
 			//  DispatcherTimer setup
@@ -150,6 +147,7 @@ namespace Empacotadora {
 			sbIcon.Visibility = Visibility.Visible;
 			SetStatusBarTimer();
 		}
+		#endregion
 
 		private void SetCurrentOrderLayout() {
 			tabOrders.SelectedItem = tabItemCurrentOrder;
@@ -157,21 +155,26 @@ namespace Empacotadora {
 			btnListOrders.ClearValue(BackgroundProperty);
 			btnReturn.ClearValue(BackgroundProperty);
 			btnNewOrder.ClearValue(BackgroundProperty);
-			btnCurrentOrder.Background = Brushes.lightRed;
+			btnCurrentOrder.Background = Brushes.LightRed;
 		}
 		private void SetOrdersListLayout() {
 			tabOrders.SelectedItem = tabItemListOrders;
 			lblTitle.Content = "Ordens";
 			try {
-				datagridOrders.ItemsSource = OrderDetails.ReadOrdersFromFile(Win_Main.path);
+				datagridOrders.ItemsSource = OrderDetails.ReadOrdersFromFile(Win_Main.Path);
 			}
 			catch (FileNotFoundException) {
 				UpdateStatusBar("Ficheiro das ordens não encontrado", 1);
 			}
-			btnListOrders.Background = Brushes.lightRed;
+			btnListOrders.Background = Brushes.LightRed;
 			btnReturn.ClearValue(BackgroundProperty);
 			btnNewOrder.ClearValue(BackgroundProperty);
 			btnCurrentOrder.ClearValue(BackgroundProperty);
+		}
+
+		private void btnEditOrder_Click(object sender, RoutedEventArgs e) {
+			NextLayout = Layout.EditOrder;
+			Close();
 		}
 	}
 }

@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 using System.Windows;
-using System.Globalization;
 using IBHNETLib;
 
 namespace Empacotadora {
@@ -16,7 +12,7 @@ namespace Empacotadora {
 		private IIIBHnet SPS = null;
 		private IIIBHnet2 SPS_2 = null;
 		private IIIBHnet3 SPS_3 = null;
-		bool connected = false, initialized = false;
+		bool _connected = false, _initialized = false;
 
 		public string Message { get; set; } = "...";
 
@@ -26,21 +22,21 @@ namespace Empacotadora {
 		/// </summary>
 		public string Connect(string IPAddr, byte MPIAddr) {
 			// Establish a connection to the control unit
-			if (!initialized)
+			if (!_initialized)
 				Init();
-			if (!connected && initialized) {
+			if (!_connected && _initialized) {
 				string sMpi = MPIAddr.ToString();
 				int nMpi = Convert.ToInt32(sMpi, 10);
 
 				//int nRack = Convert.ToInt32(tbRack.Text.ToString());	// Always 0
 				//int nSlot = Convert.ToInt32(tbSlot.Text.ToString());	// Used when not using MPI
-				int nRack = 0;
-				int nSlot = 0;
+				const int nRack = 0;
+				const int nSlot = 0;
 
 				TryToConnect(IPAddr, nMpi, nRack, nSlot);
 			}
 			else
-				Message = (connected ? "Already connected" : "Not initialized");
+				Message = (_connected ? "Already connected" : "Not initialized");
 			return Message;
 		}
 		private void Init() {
@@ -49,11 +45,11 @@ namespace Empacotadora {
 				SPS = new IIBHnet();
 				SPS_2 = (IIIBHnet2)SPS;
 				SPS_3 = (IIIBHnet3)SPS;
-				initialized = true;
+				_initialized = true;
 			}
-			catch (System.Runtime.InteropServices.COMException) {
-				MessageBox.Show("Error, COM not initialized");
-				initialized = false;
+			catch (COMException exc) {
+				MessageBox.Show(exc.Message);
+				_initialized = false;
 			}
 		}
 		private void TryToConnect(string IPAddr, int nMpi, int nRack, int nSlot) {
@@ -68,11 +64,12 @@ namespace Empacotadora {
 				// Slot   : With MPI always 0, with Profibus the slot of the CPU
 
 				//SPS_3.Connect_DP(IPAddr, nMpi, nRack, nSlot);
-				connected = true;
+				_connected = true;
 				Message = "Successful connection to IP: " + IPAddr + " -> MPI: " + nMpi;
 			}
-			catch {
-				connected = false;
+			catch (COMException exc) {
+				MessageBox.Show(exc.Message);
+				_connected = false;
 				Message = "Error while connecting";
 			}
 		}
@@ -82,7 +79,7 @@ namespace Empacotadora {
 		/// </summary>
 		public string Disconnect() {
 			// Disconnect the connection to the PLC
-			if (connected)
+			if (_connected)
 				TryToDisconnect();
 			else
 				Message = "Not connected";
@@ -91,49 +88,50 @@ namespace Empacotadora {
 		private void TryToDisconnect() {
 			try {
 				//SPS.Disconnect();
-				connected = false;
+				_connected = false;
 				Message = "Disconnected";
 			}
-			catch {
+			catch (COMException exc) {
+				MessageBox.Show(exc.Message);
 				Message = "Error while disconnecting";
-				connected = false;
+				_connected = false;
 			}
 		}
 		#endregion
 
 		#region Bool
-		public string ReadBool(int DB, Tuple<int, int, string> variable) {
-			string valueReadFromPLC = "";
-			if (!connected) {
+		public bool ReadBool(int DB, Tuple<int, int, string> variable) {
+			int valueReadFromPLC = new int();
+			if (!_connected) {
 				int DBAddress = DB;
 				int variableAddress = variable.Item1;
 				int bitToChange = variable.Item2;
-				TryToReadBool(DBAddress, variableAddress, bitToChange, valueReadFromPLC);
+				TryToReadBool(DBAddress, variableAddress, bitToChange, ref valueReadFromPLC);
 			}
 			else
 				Message = "Not connected";
 			MessageBox.Show(Message);
-			return valueReadFromPLC;
+			return Convert.ToBoolean(valueReadFromPLC);
 		}
-		private void TryToReadBool(int DBAddress, int variableAddress, int bitToChange, string valueReadFromPLC) {
+		private void TryToReadBool(int DBAddress, int variableAddress, int bitToChange, ref int valueReadFromPLC) {
 			try {
-				// SPS.get_DW(int DBNr, int nr);
+				// SPS.get_D(int DBNr, int nr, int bit);
 				// DBNr     : The number of the data block
-				// nr       : The byte address within the DB
-
-				//valueReadFromPLC = SPS.get_D(DBAddress, variableAddress, bitToChange).ToString();
+				// nr       : The byte address within the DB				
+				// bit		: Bit number within the data byte
+				valueReadFromPLC = SPS.get_D(DBAddress, variableAddress, bitToChange);
 				MessageBox.Show(DBAddress + ", " + variableAddress + ", " + bitToChange);
-				if (valueReadFromPLC.ToString() != "")
+				if (valueReadFromPLC != 0)
 					Message = "Success 'ReadBool()'";
 			}
-			catch {
+			catch (COMException exc) {
+				MessageBox.Show(exc.Message);
 				Message = "Error 'ReadBool()'";
 			}
 		}
 
-		public string WriteBool(int DB, Tuple<int, int, string> variable, int valueToWrite) {
-			if (connected) {
-				int DBAddress = DB;
+		public string WriteBool(int DBAddress, Tuple<int, int, string> variable, bool valueToWrite) {
+			if (_connected) {
 				int variableAddress = variable.Item1;
 				int bitToChange = variable.Item2;
 				TryToWriteBool(DBAddress, variableAddress, bitToChange, valueToWrite);
@@ -142,27 +140,32 @@ namespace Empacotadora {
 				Message = "Not connected";
 			return Message;
 		}
-		private void TryToWriteBool(int DBAddress, int variableAddress, int bitToChange, int valueToWrite) {
+		private void TryToWriteBool(int DBAddress, int variableAddress, int bitToChange, bool valueToWrite) {
 			// SPS.set_D(int DBNr, int nr, int bit, int pVal);
 			// DBNr : The number of the data block
 			// nr   : The byte address within the DB
 			// bit	: Address of bit to change
 			// pVal : The new value
 			try {
-				SPS.set_D(DBAddress, variableAddress, bitToChange, valueToWrite);
+				SPS.set_D(DBAddress, variableAddress, bitToChange, Convert.ToInt32(valueToWrite));
 				MessageBox.Show(DBAddress + ", " + variableAddress + ", " + bitToChange + ", " + valueToWrite);
 				Message = "Success 'WriteBool()'";
 			}
-			catch {
+			catch (COMException exc) {
+				MessageBox.Show(exc.Message);
 				Message = "Error 'WriteBool()'";
 			}
+		}
+
+		public void ToogleBool(int DB, Tuple<int, int, string> variable) {
+			//WriteBool(DB, variable, !ReadBool(DB, variable));
 		}
 		#endregion
 
 		#region Int
-		public string ReadInt(int DBAddress, int varAddress) {
+		public int ReadInt(int DBAddress, int varAddress) {
 			string valueReadFromPLC = "";
-			if (connected) {
+			if (_connected) {
 				try {
 					// SPS.get_DW(int DBNr, int nr);
 					// DBNr     : The number of the data block
@@ -178,10 +181,10 @@ namespace Empacotadora {
 			else
 				Message = "Not connected";
 			MessageBox.Show(Message);
-			return valueReadFromPLC;
+			return Convert.ToInt32(valueReadFromPLC);
 		}
 		public void WriteInt(int DBAddress, int varAddress, double valueToWrite) {
-			if (!connected) {
+			if (!_connected) {
 				try {
 					// SPS.set_DW(int DBNr, int nr, int pVal);
 					// DBNr : The number of the data block
@@ -192,13 +195,7 @@ namespace Empacotadora {
 					//foreach (var item in asd) {
 					//	MessageBox.Show("Bytes: " + item);
 					//}
-					int novoInt = BitConverter.ToInt32(bytes, 0);
-					byte[] novoBytes = BitConverter.GetBytes(novoInt);
-					Array.Reverse(novoBytes);
-					double newDouble = BitConverter.ToDouble(novoBytes, 0);
-					MessageBox.Show("em Int's: " + novoInt.ToString());
-					MessageBox.Show("novoByte[]: " + novoBytes.ToString());
-					MessageBox.Show("newDouble: " + newDouble.ToString());
+
 					//SPS.set_DD(DBAddress, varAddress,)
 					//SPS.set_DW(DBAddress, varAddress, Convert.ToInt32(valueToWrite));
 					Message = "Success 'WriteInt()'";
@@ -208,34 +205,34 @@ namespace Empacotadora {
 				}
 			}
 			else
-				Message = "Not connected";
+				Message = "Not Connected";
 			//MessageBox.Show(Message);
 		}
 		#endregion
 
 		#region Real
-		public string ReadReal(int DBAddress, int varAddress) {
+		public double ReadReal(int DBAddress, int varAddress) {
 			string valueReadFromPLC = "";
-			if (connected) {
+			if (_connected) {
 				try {
 					// SPS.get_DW(int DBNr, int nr);
 					// DBNr     : The number of the data block
 					// nr       : The byte address within the DB
 
 					valueReadFromPLC = SPS.get_DW(DBAddress, varAddress).ToString();
-					Message = "Success'ReadInt()'";
+					Message = "Success'ReadReal()'";
 				}
 				catch {
-					Message = "Error 'ReadInt()'";
+					Message = "Error 'ReadReal()'";
 				}
 			}
 			else
-				Message = "Not connected";
+				Message = "Not Connected";
 			MessageBox.Show(Message);
-			return valueReadFromPLC;
+			return Convert.ToDouble(valueReadFromPLC);
 		}
 		public void WriteReal(int DBAddress, int varAddress, double valueToWrite) {
-			if (connected) {
+			if (_connected) {
 				try {
 					// SPS.set_DW(int DBNr, int nr, int pVal);
 					// DBNr : The number of the data block
@@ -243,15 +240,61 @@ namespace Empacotadora {
 					// pVal : The new value
 
 					//SPS.set_DW(DBAddress, varAddress, Convert.ToInt32(valueToWrite);
-					Message = "Success 'WriteInt()'";
+					Message = "Success 'WriteReal()'";
 				}
 				catch {
-					Message = "Error 'WriteInt()'";
+					Message = "Error 'WriteReal()'";
 				}
 			}
 			else
-				Message = "Not connected";
+				Message = "Not Connected";
 			MessageBox.Show(Message);
+		}
+		#endregion
+
+		#region Array Int
+		public int[] ReadArrayInt(int DBAddress, int varAddressFrom, int varAddressTo) {
+			int[] arrayOfInts = new int[0];
+			if (_connected) {
+				try {
+					// SPS.get_DW(int DBNr, int nr);
+					// DBNr     : The number of the data block
+					// nr       : The byte address within the DB
+					for (int i = varAddressFrom; i < varAddressTo; i += 2)
+						arrayOfInts[i] = SPS.get_DW(DBAddress, i);
+					Message = "Success'ReadArrayInt()'";
+				}
+				catch {
+					Message = "Error 'ReadArrayInt()'";
+				}
+			}
+			else
+				Message = "Not Connected";
+			MessageBox.Show(Message);
+			return arrayOfInts;
+		}
+		#endregion
+
+		#region Array Real
+		public double[] ReadArrayReal(int DBAddress, int varAddressFrom, int varAddressTo) {
+			double[] arrayOfReals = new double[0];
+			if (_connected) {
+				try {
+					// SPS.get_DW(int DBNr, int nr);
+					// DBNr     : The number of the data block
+					// nr       : The byte address within the DB
+					for (int i = varAddressFrom; i < varAddressTo; i += 4)
+						arrayOfReals[i] = SPS.get_DW(DBAddress, i);
+					Message = "Success'ReadArrayReal()'";
+				}
+				catch {
+					Message = "Error 'ReadArrayReal()'";
+				}
+			}
+			else
+				Message = "Not Connected";
+			MessageBox.Show(Message);
+			return arrayOfReals;
 		}
 		#endregion
 	}
