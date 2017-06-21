@@ -145,22 +145,22 @@
 									</Border>
 									<Border BorderThickness="2" HorizontalAlignment="Left" Margin="31,0,0,136" Width="363" Background="#FFA6A6A6" Height="371" VerticalAlignment="Bottom">
 										<Grid>
-											<Label x:Name="lblOrderName" Content="" Margin="94,60,95,0" VerticalAlignment="Top" Height="36" Width="170" Background="#FFDEDEDE" BorderBrush="Black" BorderThickness="1" FontSize="15"/>
+											<Label x:Name="lblOrderName" Content="" Margin="94,60,95,0" VerticalAlignment="Top" Height="36" Width="170" Background="#FFDEDEDE" BorderBrush="Black" BorderThickness="1" FontSize="20"/>
 											<Grid x:Name="gridRound" HorizontalAlignment="Left" Height="74" Margin="42,184,0,0" VerticalAlignment="Top" Width="276" Background="#FFA6A6A6">
-												<Label x:Name="lblOrderDiam" VerticalAlignment="Top" Height="36" Background="#FFDEDEDE" BorderBrush="Black" BorderThickness="1" FontSize="15" Margin="38,36,38,0" Width="190"/>
+												<Label x:Name="lblOrderDiam" VerticalAlignment="Top" Height="36" Background="#FFDEDEDE" BorderBrush="Black" BorderThickness="1" FontSize="20" Margin="38,36,38,0" Width="190"/>
 												<Label Content="Diâmetro" FontSize="22" Margin="38,1,38,0" Background="#FFC1C1C1" BorderBrush="Black" BorderThickness="1" Height="36" VerticalAlignment="Top" Width="190"/>
 											</Grid>
 											<Label Content="Espessura" FontSize="22" Margin="20,270,179,0" Background="#FFC1C1C1" BorderBrush="Black" BorderThickness="1" Height="36" VerticalAlignment="Top" Width="160"/>
-											<Label x:Name="lblOrderThick" Content="" Margin="20,305,179,0" VerticalAlignment="Top" Height="36" Background="#FFDEDEDE" BorderBrush="Black" BorderThickness="1" FontSize="15" Width="160"/>
+											<Label x:Name="lblOrderThick" Content="" Margin="20,305,179,0" VerticalAlignment="Top" Height="36" Background="#FFDEDEDE" BorderBrush="Black" BorderThickness="1" FontSize="20" Width="160"/>
 											<Label Content="Comprimento" FontSize="22" Margin="179,270,20,0" Background="#FFC1C1C1" BorderBrush="Black" BorderThickness="1" Height="36" VerticalAlignment="Top" Width="160"/>
 											<Grid x:Name="gridSquare" Height="75" Margin="42,110,41,0" VerticalAlignment="Top" Width="276" Background="#FFA6A6A6">
 												<Label Content="Largura" FontSize="22" Margin="2,1,138,0" Background="#FFC1C1C1" BorderBrush="Black" BorderThickness="1" Height="36" VerticalAlignment="Top"/>
-												<Label x:Name="lblOrderWidth" Margin="2,36,138,0" VerticalAlignment="Top" Height="36" Background="#FFDEDEDE" BorderBrush="Black" BorderThickness="1" FontSize="15"/>
+												<Label x:Name="lblOrderWidth" Margin="2,36,138,0" VerticalAlignment="Top" Height="36" Background="#FFDEDEDE" BorderBrush="Black" BorderThickness="1" FontSize="20"/>
 												<Label Content="Altura" FontSize="22" Margin="137,1,3,0" Background="#FFC1C1C1" BorderBrush="Black" BorderThickness="1" Height="36" VerticalAlignment="Top"/>
-												<Label x:Name="lblOrderHeight" Content="" Margin="137,36,3,0" VerticalAlignment="Top" Height="36" Background="#FFDEDEDE" BorderBrush="Black" BorderThickness="1" FontSize="15"/>
+												<Label x:Name="lblOrderHeight" Content="" Margin="137,36,3,0" VerticalAlignment="Top" Height="36" Background="#FFDEDEDE" BorderBrush="Black" BorderThickness="1" FontSize="20"/>
 											</Grid>
 											<Label Content="Ordem nr." FontSize="22" Margin="94,26,95,0" Background="#FFC1C1C1" BorderBrush="Black" BorderThickness="1" Height="36" VerticalAlignment="Top" Width="170"/>
-											<Label x:Name="lblOrderLength" Content="" VerticalAlignment="Top" Height="36" Background="#FFDEDEDE" BorderBrush="Black" BorderThickness="1" FontSize="15" Margin="179,305,20,0" Width="160"/>
+											<Label x:Name="lblOrderLength" Content="" VerticalAlignment="Top" Height="36" Background="#FFDEDEDE" BorderBrush="Black" BorderThickness="1" FontSize="20" Margin="179,305,20,0" Width="160"/>
 										</Grid>
 									</Border>
 									<ListBox x:Name="lbAllowedRopeStraps" HorizontalAlignment="Left" Height="83" Margin="399,435,0,0" VerticalAlignment="Top" Width="157" FontSize="14">
@@ -221,10 +221,54 @@
 									</Border>
 									<Border BorderThickness="1" Margin="244,16,53,0" Background="#FFA6A6A6" Height="82" VerticalAlignment="Top">
 										<Grid HorizontalAlignment="Left" Height="100" Margin="-1" VerticalAlignment="Top" Width="439">
-											<Label Content="ID (auto) :" HorizontalAlignment="Left" Margin="35,-2,0,65" VerticalAlignment="Bottom" Height="37" Width="150" FontSize="20"/>
+											<Label x:Name="lblID1" Content="ID (auto) :" HorizontalAlignment="Left" Margin="35,-2,0,65" VerticalAlignment="Bottom" Height="37" Width="150" FontSize="20"/>
 											<Label Content="Nr. de ordem :" Margin="0,-2,35,65" VerticalAlignment="Bottom" Height="37" FontSize="20" HorizontalAlignment="Right" Width="150"/>
 											<TextBox x:Name="tbNrOrdem" TextWrapping="Wrap" Margin="0,35,35,26" FontSize="25" HorizontalAlignment="Right" Width="150" PreviewMouseDoubleClick="tb_PreviewMouseDoubleClick_Keypad" TabIndex="1"/>
 											<Label x:Name="lblID" Content="" Margin="35,35,0,26" HorizontalAlignment="Left" Width="150" BorderThickness="1" BorderBrush="#FFABADB3" Background="White" FontSize="20"/>
+										</Grid>
+									</Border>
+								</Grid>
+							</TabItem>
+							<TabItem x:Name="tabItemWrapperNewRecipe" Header="NovaRe" Background="#FFE5E5E5">
+								<Grid x:Name="gridNewRecipe" Background="#FFDEDEDE">
+									<Border BorderThickness="1" HorizontalAlignment="Left" Height="102" Margin="268,98,0,0" VerticalAlignment="Top" Width="196" Background="#FFA6A6A6">
+										<Grid>
+											<Label Content="Nr. Tubos:" Margin="22,4,22,0" VerticalAlignment="Top" Height="37" Width="150" FontSize="20"/>
+											<TextBox x:Name="tbNewRecipeTubeNmbr" TextWrapping="Wrap" FontSize="25" Margin="22,0,22,10" Height="50" VerticalAlignment="Bottom" TabIndex="8" PreviewMouseDoubleClick="tb_PreviewMouseDoubleClick_Keypad" TextChanged="tbNewRecipeTubeNmbr_TextChanged"/>
+										</Grid>
+									</Border>
+									<Border BorderThickness="1" HorizontalAlignment="Left" Height="103" Margin="44,224,0,0" VerticalAlignment="Top" Width="196" Background="#FFA6A6A6">
+										<Grid>
+											<Label Content="X:" Margin="22,4,22,0" VerticalAlignment="Top" Height="37" Width="150" FontSize="20"/>
+											<TextBox x:Name="tbNewRecipeX" TextWrapping="Wrap" FontSize="25" Margin="22,0,22,10" Height="50" VerticalAlignment="Bottom" TabIndex="8" PreviewMouseDoubleClick="tb_PreviewMouseDoubleClick_Keypad"/>
+										</Grid>
+									</Border>
+									<Border BorderThickness="1" HorizontalAlignment="Left" Height="103" Margin="493,224,0,0" VerticalAlignment="Top" Width="196" Background="#FFA6A6A6">
+										<Grid>
+											<Label Content="Y:" Margin="22,4,22,0" VerticalAlignment="Top" Height="37" Width="150" FontSize="20"/>
+											<TextBox x:Name="tbNewRecipeY" TextWrapping="Wrap" FontSize="25" Margin="22,0,22,10" Height="50" VerticalAlignment="Bottom" TabIndex="8" PreviewMouseDoubleClick="tb_PreviewMouseDoubleClick_Keypad"/>
+										</Grid>
+									</Border>
+									<Border x:Name="gridNewRecipeSquare" BorderThickness="1" HorizontalAlignment="Left" Height="103" VerticalAlignment="Top" Width="368" Background="#FFA6A6A6" Margin="182,365,0,0">
+										<Grid>
+											<Label Content="Colunas:" Margin="22,4,0,0" VerticalAlignment="Top" Height="37" Width="150" FontSize="20" HorizontalAlignment="Left"/>
+											<TextBox x:Name="tbNewRecipeColumns" TextWrapping="Wrap" FontSize="25" Margin="0,0,22,10" Height="50" VerticalAlignment="Bottom" TabIndex="8" PreviewMouseDoubleClick="tb_PreviewMouseDoubleClick_Keypad" Width="150" HorizontalAlignment="Right"/>
+											<Label Content="Filas:" Margin="0,4,22,0" VerticalAlignment="Top" Height="37" Width="150" FontSize="20" HorizontalAlignment="Right"/>
+											<TextBox x:Name="tbNewRecipeRows" TextWrapping="Wrap" FontSize="25" Margin="22,0,0,10" Height="50" VerticalAlignment="Bottom" TabIndex="8" PreviewMouseDoubleClick="tb_PreviewMouseDoubleClick_Keypad" Width="150" HorizontalAlignment="Left"/>
+										</Grid>
+									</Border>
+									<Border x:Name="gridNewRecipeHexa" BorderThickness="1" HorizontalAlignment="Left" Height="103" VerticalAlignment="Top" Width="368" Background="#FFA6A6A6" Margin="182,283,0,0" Visibility="Collapsed">
+										<Grid>
+											<Label Content="Fila grande:" Margin="22,4,0,0" VerticalAlignment="Top" Height="37" Width="150" FontSize="20" HorizontalAlignment="Left"/>
+											<TextBox x:Name="tbNewRecipeBigRow" TextWrapping="Wrap" FontSize="25" Margin="0,0,22,10" Height="50" VerticalAlignment="Bottom" TabIndex="8" PreviewMouseDoubleClick="tb_PreviewMouseDoubleClick_Keypad" LostFocus="tb_LostFocus" Width="150" HorizontalAlignment="Right"/>
+											<Label Content="Fila pequena:" Margin="0,4,22,0" VerticalAlignment="Top" Height="37" Width="150" FontSize="20" HorizontalAlignment="Right"/>
+											<TextBox x:Name="tbNewRecipeSmallRow" TextWrapping="Wrap" FontSize="25" Margin="22,0,0,10" Height="50" VerticalAlignment="Bottom" TabIndex="8" PreviewMouseDoubleClick="tb_PreviewMouseDoubleClick_Keypad" LostFocus="tb_LostFocus" Width="150" HorizontalAlignment="Left"/>
+										</Grid>
+									</Border>
+									<Border BorderThickness="1" HorizontalAlignment="Left" Height="103" Margin="268,224,0,0" VerticalAlignment="Top" Width="196" Background="#FFA6A6A6">
+										<Grid>
+											<Label Content="Escala:" Margin="22,4,22,0" VerticalAlignment="Top" Height="37" Width="150" FontSize="20"/>
+											<TextBox x:Name="tbNewRecipeScale" TextWrapping="Wrap" FontSize="25" Margin="22,0,22,10" Height="50" VerticalAlignment="Bottom" TabIndex="8" PreviewMouseDoubleClick="tb_PreviewMouseDoubleClick_Keypad"/>
 										</Grid>
 									</Border>
 								</Grid>
@@ -416,32 +460,31 @@
 				</TabItem>
 				<TabItem x:Name="tabItemRecipes" Header="Rec." HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="55">
 					<Grid>
-						<DataGrid x:Name="datagridRecipes" AlternatingRowBackground="#FF976666" Margin="229,10,605,0" Background="{x:Null}" BorderBrush="{x:Null}" Height="683" UseLayoutRounding="True" FontSize="24" GridLinesVisibility="Vertical" VerticalGridLinesBrush="#FF838383" HeadersVisibility="Column" IsReadOnly="True" VerticalAlignment="Top" AlternationCount="2" SelectionMode="Single" CanUserReorderColumns="False" Width="600" SelectedCellsChanged="datagridRecipes_SelectedCellsChanged" PreviewMouseDown="datagridRecipes_PreviewMouseDown"/>
+						<DataGrid x:Name="datagridRecipes" AlternatingRowBackground="#FF976666" Margin="229,10,605,0" Background="{x:Null}" BorderBrush="{x:Null}" Height="619" UseLayoutRounding="True" FontSize="24" GridLinesVisibility="Vertical" VerticalGridLinesBrush="#FF838383" HeadersVisibility="Column" IsReadOnly="True" VerticalAlignment="Top" AlternationCount="2" SelectionMode="Single" CanUserReorderColumns="False" Width="600" SelectedCellsChanged="datagridRecipes_SelectedCellsChanged" PreviewMouseDown="datagridRecipes_PreviewMouseDown"/>
 						<Button x:Name="btnRecipeRoundTube" Content="Redondo" HorizontalAlignment="Left" Margin="47,192,0,0" VerticalAlignment="Top" Width="141" Height="96" FontSize="20" Click="btnRecipeRoundTube_Click"/>
 						<Button x:Name="btnRecipeSquareTube" Content="Quadrado" HorizontalAlignment="Left" Margin="47,326,0,0" VerticalAlignment="Top" Width="141" Height="96" FontSize="20" Click="btnRecipeSquareTube_Click"/>
 						<Border BorderThickness="2" Margin="910,192,84,209" Background="#FFA6A6A6">
-							<Grid x:Name="gridRecipes" HorizontalAlignment="Left" Margin="0" Width="439">
+							<Grid x:Name="gridRecipes" HorizontalAlignment="Left" Width="436">
 								<Label Content="Nrº tubos" Margin="145,16,144,0" VerticalAlignment="Top" Height="36" FontSize="24" HorizontalAlignment="Center" Width="150"/>
 								<TextBox x:Name="tbRecipeTubes" Height="50" Margin="145,52,144,0" TextWrapping="Wrap" VerticalAlignment="Top" IsReadOnly="True" FontSize="24" Focusable="False"/>
-
 								<Grid x:Name="gridRecipesSquareTube" HorizontalAlignment="Left" Margin="0,118,0,0" Width="439" Background="#FFA6A6A6" VerticalAlignment="Center" Height="106">
 									<Label Content="Colunas" Margin="30,-7,230,0" VerticalAlignment="Top" Height="42" FontSize="24" HorizontalAlignment="Center" Width="180"/>
 									<TextBox x:Name="tbRecipecolumns" TextWrapping="Wrap" Margin="30,34,230,0" FontSize="24" TabIndex="1" Height="50" VerticalAlignment="Top" IsReadOnly="True" Focusable="False" Width="180"/>
 									<Label Content="Linhas" Margin="230,-7,30,0" VerticalAlignment="Top" Height="42" FontSize="24" HorizontalAlignment="Center" Width="180"/>
 									<TextBox x:Name="tbRecipeRows" TextWrapping="Wrap" Margin="230,34,30,0" FontSize="24" TabIndex="1" Height="50" VerticalAlignment="Top" IsReadOnly="True" Focusable="False" Width="180"/>
 								</Grid>
-								<Grid x:Name="gridRecipesRoundTube" HorizontalAlignment="Left" Margin="0,118,0,0" Width="439" Background="#FFA6A6A6" VerticalAlignment="Center" Height="106">
+								<Grid x:Name="gridRecipesRoundTube" HorizontalAlignment="Left" Margin="0,118,0,0" Width="436" Background="#FFA6A6A6" VerticalAlignment="Center" Height="106">
 									<Label Content="Linha grande" Margin="30,-7,230,0" VerticalAlignment="Top" Height="42" FontSize="24" HorizontalAlignment="Center" Width="180"/>
 									<TextBox x:Name="tbRecipeBigRow" TextWrapping="Wrap" Margin="30,34,230,0" FontSize="24" TabIndex="1" Height="50" VerticalAlignment="Top" IsReadOnly="True" Focusable="False" Width="180"/>
 									<Label Content="Linha pequena" Margin="230,-7,30,0" VerticalAlignment="Top" Height="42" FontSize="24" HorizontalAlignment="Center" Width="180"/>
 									<TextBox x:Name="tbRecipeSmallRow" TextWrapping="Wrap" Margin="230,34,30,0" FontSize="24" TabIndex="1" Height="50" VerticalAlignment="Top" IsReadOnly="True" Focusable="False" Width="180"/>
 								</Grid>
-
 							</Grid>
 						</Border>
 						<Button x:Name="btnRecipeEdit" Content="Editar" HorizontalAlignment="Left" Margin="1038,135,0,0" VerticalAlignment="Top" Width="187" Height="52" FontSize="20" Click="btnRecipeEdit_Click"/>
 						<Button x:Name="btnRecipeSave" Content="Guardar" HorizontalAlignment="Left" Margin="910,499,0,0" VerticalAlignment="Top" Width="210" Height="48" Click="btnRecipeSave_Click" FontSize="16" Visibility="Collapsed"/>
 						<Button x:Name="btnRecipeCancel" Content="Cancelar" HorizontalAlignment="Right" Margin="0,499,84,0" VerticalAlignment="Top" Width="210" Height="48" Click="btnRecipeCancel_Click" FontSize="16" Visibility="Collapsed"/>
+						<Button x:Name="btnAddRecipe" Content="Nova" HorizontalAlignment="Left" Margin="1038,78,0,0" VerticalAlignment="Top" Width="187" Height="52" FontSize="20" Click="btnAddRecipe_Click"/>
 					</Grid>
 				</TabItem>
 				<TabItem x:Name="tabItemPLCConnection" Header="PLC" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="55">

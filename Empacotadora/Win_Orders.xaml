@@ -120,11 +120,11 @@
 				</TabItem>
 				<TabItem x:Name="tabItemListOrders" Header="TabItem" BorderBrush="{x:Null}" Background="{x:Null}">
 					<Grid Background="#FFDEDEDE">
-						<Grid Margin="0,407,0,37" Background="#FFDEDEDE">
+						<Grid Margin="0,443,0,0" Background="#FFDEDEDE">
 							<Button x:Name="btnDeleteOrder" Content="Apagar" Margin="393,8,569,8" HorizontalAlignment="Center" Width="176" VerticalAlignment="Center" Height="57" Click="btnDeleteOrder_Click" BorderThickness="2"/>
 							<Button x:Name="btnLoadOrder" Content="Carregar" HorizontalAlignment="Center" Margin="569,8,393,8" Width="176" Click="btnLoadOrder_Click" VerticalAlignment="Center" Height="57" BorderThickness="2"/>
 						</Grid>
-						<DataGrid x:Name="datagridOrders" AlternatingRowBackground="#FF976666" Margin="10,10,10,0" Background="{x:Null}" BorderBrush="Black" Height="392" UseLayoutRounding="True" FontSize="23" GridLinesVisibility="Vertical" VerticalGridLinesBrush="#FF838383" HeadersVisibility="Column" IsReadOnly="True" VerticalAlignment="Top" AlternationCount="2" SelectionMode="Single" CanUserReorderColumns="False" Width="1164"/>
+						<DataGrid x:Name="datagridOrders" AlternatingRowBackground="#FF976666" Margin="12,10,15,0" Background="{x:Null}" BorderBrush="{x:Null}" Height="433" UseLayoutRounding="True" FontSize="22" GridLinesVisibility="Vertical" VerticalGridLinesBrush="#FF838383" HeadersVisibility="Column" IsReadOnly="True" VerticalAlignment="Top" AlternationCount="2" SelectionMode="Single" CanUserReorderColumns="False"/>
 					</Grid>
 				</TabItem>
 			</TabControl>

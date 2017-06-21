@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Windows;
 
 namespace Empacotadora {
 	public class OrderDetails {
 		// Properties
-		public string Active;
 		public string ID { get; set; }
+		public string Active;
 		public string Name { get; set; }
 		public string Diameter { get; set; }
 		public string Width { get; set; }
@@ -15,7 +17,6 @@ namespace Empacotadora {
 		public string Thick { get; set; }
 		public string Length { get; set; }
 		public string Density { get; set; }
-		//public string Hardness { get; set; }
 		public string TubeAm { get; set; }
 		public string TubeType { get; set; }
 		public string PackageType { get; set; }
@@ -25,20 +26,20 @@ namespace Empacotadora {
 		public int[] StrapsPosition { get; set; }
 		// Methods
 		public double CalculateWeight(string hei, string wid, string thick, string leng, string dens) {
-			double.TryParse(wid, out double width);
-			double.TryParse(hei, out double height);
-			double.TryParse(thick, out double thickness);
-			double.TryParse(leng, out double length);
-			double.TryParse(dens, out double density);
+			double.TryParse(wid, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double width);
+			double.TryParse(hei, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double height);
+			double.TryParse(thick, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double thickness);
+			double.TryParse(leng, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double length);
+			double.TryParse(dens, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double density);
 			double weight = (((height * width * length) - (((height - (2 * thickness)) *
 							(width - (2 * thickness))) * length)) * (density * 1000) * 0.000000001);
 			return weight;
 		}
 		public double CalculateWeight(string diam, string thick, string leng, string dens) {
-			double.TryParse(diam, out double diameter);
-			double.TryParse(thick, out double thickness);
-			double.TryParse(leng, out double length);
-			double.TryParse(dens, out double density);
+			double.TryParse(diam, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double diameter);
+			double.TryParse(thick, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double thickness);
+			double.TryParse(leng, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double length);
+			double.TryParse(dens, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double density);
 			double diameterOut = diameter;
 			double diameterIn = diameter - thickness;
 			double weight = ((Math.PI * ((Math.Pow((0.5 * diameterOut), 2)) -
@@ -46,7 +47,7 @@ namespace Empacotadora {
 			return weight;
 		}
 		public static ICollection<OrderDetails> ReadOrdersFromFile(string path) {
-			ICollection<OrderDetails> orders = new ICollection<OrderDetails>();
+			ICollection<OrderDetails> orders = new Collection<OrderDetails>();
 			if (!Document.ReadFromFile(path, out IEnumerable<string> linesFromFile)) return orders;
 			foreach (string line in linesFromFile) {
 				string[] array = line.Split(',');
@@ -61,11 +62,11 @@ namespace Empacotadora {
 							Thick = array[6],
 							Length = array[7],
 							Density = array[8],
-							TubeAm = array[10],
-							TubeType = array[11],
-							PackageType = array[12],
-							Weight = array[13],
-							Created = array[14],
+							TubeAm = array[9],
+							TubeType = array[10],
+							PackageType = array[11],
+							Weight = array[12],
+							Created = array[13],
 						});
 					}
 				}
@@ -76,12 +77,11 @@ namespace Empacotadora {
 			}
 			return orders;
 		}
-		public static void DeactivateOrder(string orderID, string path) {
-			if (!Document.ReadFromFile(path, out IEnumerable<string> linesFromFile)) return;
-			ICollection<string> newFileContent = new ICollection<string>();
+		public static bool DeactivateOrder(string path, string orderID) {
+			if (!Document.ReadFromFile(path, out IEnumerable<string> linesFromFile)) return false;
+			ICollection<string> newFileContent = new Collection<string>();
 			foreach (string line in linesFromFile) {
 				string newline = "";
-				// splits the order read from the line
 				string[] array = line.Split(',');
 				if (array[0] == orderID) {
 					array[1] = "0";
@@ -93,7 +93,23 @@ namespace Empacotadora {
 				}
 				newFileContent.Add(newline == "" ? line : newline);
 			}
-			Document.WriteToFile(path, newFileContent.ToArray());
+			return Document.WriteToFile(path, newFileContent.ToArray());
+		}
+		public static bool EditOrder(string path, string orderID, string[] valuesToWrite) {
+			if (!Document.ReadFromFile(path, out IEnumerable<string> linesFromFile)) return false;
+			ICollection<string> newFileContent = new Collection<string>();
+			foreach (string line in linesFromFile) {
+				string[] array = line.Split(',');
+				string newLine = "";
+				if (array[0] == orderID) {
+					for (int i = 0; i <= 11; i++)
+						newLine += valuesToWrite[i] + ",";
+					newLine += array[12] + ",";
+					newLine += array[13];
+				}
+				newFileContent.Add(newLine == "" ? line : newLine);
+			}
+			return Document.WriteToFile(path, newFileContent.ToArray());
 		}
 	}
 }
