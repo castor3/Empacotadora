@@ -25,25 +25,24 @@ namespace Empacotadora {
 		public byte Straps { get; set; }
 		public int[] StrapsPosition { get; set; }
 		// Methods
-		public double CalculateWeight(string hei, string wid, string thick, string leng, string dens) {
-			double.TryParse(wid, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double width);
-			double.TryParse(hei, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double height);
-			double.TryParse(thick, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double thickness);
-			double.TryParse(leng, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double length);
-			double.TryParse(dens, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double density);
-			double weight = (((height * width * length) - (((height - (2 * thickness)) *
+		public double CalculateWeight(OrderDetails order) {
+			double weight;
+			bool boolDiam = double.TryParse(order.Diameter, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double diameter);
+			bool boolWidth = double.TryParse(order.Width, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double width);
+			bool boolHeight = double.TryParse(order.Height, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double height);
+			double.TryParse(order.Thick, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double thickness);
+			double.TryParse(order.Length, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double length);
+			double.TryParse(order.Density, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double density);
+			if (boolDiam && !(boolWidth && boolHeight)) {
+				double diameterOut = diameter;
+				double diameterIn = diameter - thickness;
+				weight = ((Math.PI * ((Math.Pow((0.5 * diameterOut), 2)) -
+											(Math.Pow((0.5 * diameterIn), 2)))) * length * (density * 0.000001));
+			}
+			else {
+				weight = (((height * width * length) - (((height - (2 * thickness)) *
 							(width - (2 * thickness))) * length)) * (density * 1000) * 0.000000001);
-			return weight;
-		}
-		public double CalculateWeight(string diam, string thick, string leng, string dens) {
-			double.TryParse(diam, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double diameter);
-			double.TryParse(thick, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double thickness);
-			double.TryParse(leng, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double length);
-			double.TryParse(dens, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double density);
-			double diameterOut = diameter;
-			double diameterIn = diameter - thickness;
-			double weight = ((Math.PI * ((Math.Pow((0.5 * diameterOut), 2)) -
-							(Math.Pow((0.5 * diameterIn), 2)))) * length * (density * 0.000001));
+			}
 			return weight;
 		}
 		public static ICollection<OrderDetails> ReadOrdersFromFile(string path) {

@@ -121,16 +121,14 @@ namespace Empacotadora {
 			return shiftFromHistoryTime;
 		}
 		private static void AddArrayToList(ref IList<History> history, IReadOnlyList<string> array) {
-			try {
-				history.Add(new History() {
-					Name = array[0],
-					PackNmbr = array[1],
-					TubeAm = array[2],
-					Weight = array[3],
-					Created = array[4],
-				});
-			}
-			catch (IndexOutOfRangeException) { }
+			if (array == null) return;
+			history.Add(new History() {
+				Name = array[0],
+				PackNmbr = array[1],
+				TubeAm = array[2],
+				Weight = array[3],
+				Created = array[4],
+			});
 		}
 	}
 }

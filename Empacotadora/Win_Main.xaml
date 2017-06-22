@@ -102,7 +102,7 @@
 				<Button x:Name="btnExit" Content="Sair" Grid.Column="7" FontSize="20" Click="btnExit_Click"/>
 			</Grid>
 			<TabControl x:Name="tabLayout" HorizontalAlignment="Left" Margin="0,60,0,83" Width="1440" BorderBrush="{x:Null}" Background="{x:Null}">
-				<TabItem x:Name="tabItemInit" Header="Init">
+				<TabItem x:Name="tabItemInit" Header="Init" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top">
 					<Grid>
 						<Button x:Name="btnEnter" Margin="675,0,676,254" Content="Entrar" Cursor="Hand" FontStretch="SemiExpanded" FontSize="24" Click="btnEnter_Click" VerticalAlignment="Bottom" HorizontalAlignment="Center" Width="100">
 							<Button.Template>
@@ -126,7 +126,7 @@
 						<Image Height="132" Margin="424,0,424,380" Source="Resources/Ferpinta Logo.jpg" Stretch="Fill" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
 					</Grid>
 				</TabItem>
-				<TabItem x:Name="tabItemWrapper" Header="Emp.">
+				<TabItem x:Name="tabItemWrapper" Header="Empacot.">
 					<Grid>
 						<TabControl x:Name="tabWrapper" BorderThickness="0" HorizontalAlignment="Left" Height="593" Margin="3,0,0,0" VerticalAlignment="Top" Width="740" Background="{x:Null}">
 							<TabItem x:Name="tabItemWrapperMain" Header="default" Background="#FFE5E5E5">
@@ -175,7 +175,7 @@
 								</Grid>
 							</TabItem>
 							<TabItem x:Name="tabItemWrapperEditOrder" Header="Nova Ordem" Background="#FFE5E5E5">
-								<Grid Background="#FFDEDEDE">
+								<Grid x:Name="gridNewOrder" Background="#FFDEDEDE">
 									<Border BorderThickness="1" HorizontalAlignment="Left" Height="451" Margin="244,103,0,0" VerticalAlignment="Top" Width="439" Background="#FFA6A6A6">
 										<Grid>
 											<StackPanel HorizontalAlignment="Left" Height="430" Margin="27,10,0,0" VerticalAlignment="Top" Width="149">
@@ -234,41 +234,41 @@
 									<Border BorderThickness="1" HorizontalAlignment="Left" Height="102" Margin="268,98,0,0" VerticalAlignment="Top" Width="196" Background="#FFA6A6A6">
 										<Grid>
 											<Label Content="Nr. Tubos:" Margin="22,4,22,0" VerticalAlignment="Top" Height="37" Width="150" FontSize="20"/>
-											<TextBox x:Name="tbNewRecipeTubeNmbr" TextWrapping="Wrap" FontSize="25" Margin="22,0,22,10" Height="50" VerticalAlignment="Bottom" TabIndex="8" PreviewMouseDoubleClick="tb_PreviewMouseDoubleClick_Keypad" TextChanged="tbNewRecipeTubeNmbr_TextChanged"/>
+											<TextBox x:Name="tbNewRecipeTubeNmbr" TextWrapping="Wrap" FontSize="25" Margin="22,0,22,10" Height="50" VerticalAlignment="Bottom" TabIndex="8" PreviewMouseDoubleClick="tb_PreviewMouseDoubleClick_Keypad" TextChanged="tbNewRecipe_TextChanged"/>
 										</Grid>
 									</Border>
 									<Border BorderThickness="1" HorizontalAlignment="Left" Height="103" Margin="44,224,0,0" VerticalAlignment="Top" Width="196" Background="#FFA6A6A6">
 										<Grid>
 											<Label Content="X:" Margin="22,4,22,0" VerticalAlignment="Top" Height="37" Width="150" FontSize="20"/>
-											<TextBox x:Name="tbNewRecipeX" TextWrapping="Wrap" FontSize="25" Margin="22,0,22,10" Height="50" VerticalAlignment="Bottom" TabIndex="8" PreviewMouseDoubleClick="tb_PreviewMouseDoubleClick_Keypad"/>
+											<TextBox x:Name="tbNewRecipeX" TextWrapping="Wrap" FontSize="25" Margin="22,0,22,10" Height="50" VerticalAlignment="Bottom" TabIndex="8" PreviewMouseDoubleClick="tb_PreviewMouseDoubleClick_Keypad" TextChanged="tbNewRecipe_TextChanged"/>
 										</Grid>
 									</Border>
 									<Border BorderThickness="1" HorizontalAlignment="Left" Height="103" Margin="493,224,0,0" VerticalAlignment="Top" Width="196" Background="#FFA6A6A6">
 										<Grid>
 											<Label Content="Y:" Margin="22,4,22,0" VerticalAlignment="Top" Height="37" Width="150" FontSize="20"/>
-											<TextBox x:Name="tbNewRecipeY" TextWrapping="Wrap" FontSize="25" Margin="22,0,22,10" Height="50" VerticalAlignment="Bottom" TabIndex="8" PreviewMouseDoubleClick="tb_PreviewMouseDoubleClick_Keypad"/>
+											<TextBox x:Name="tbNewRecipeY" TextWrapping="Wrap" FontSize="25" Margin="22,0,22,10" Height="50" VerticalAlignment="Bottom" TabIndex="8" PreviewMouseDoubleClick="tb_PreviewMouseDoubleClick_Keypad" TextChanged="tbNewRecipe_TextChanged"/>
 										</Grid>
 									</Border>
 									<Border x:Name="gridNewRecipeSquare" BorderThickness="1" HorizontalAlignment="Left" Height="103" VerticalAlignment="Top" Width="368" Background="#FFA6A6A6" Margin="182,365,0,0">
 										<Grid>
 											<Label Content="Colunas:" Margin="22,4,0,0" VerticalAlignment="Top" Height="37" Width="150" FontSize="20" HorizontalAlignment="Left"/>
-											<TextBox x:Name="tbNewRecipeColumns" TextWrapping="Wrap" FontSize="25" Margin="0,0,22,10" Height="50" VerticalAlignment="Bottom" TabIndex="8" PreviewMouseDoubleClick="tb_PreviewMouseDoubleClick_Keypad" Width="150" HorizontalAlignment="Right"/>
+											<TextBox x:Name="tbNewRecipeColumns" TextWrapping="Wrap" FontSize="25" Margin="0,0,22,10" Height="50" VerticalAlignment="Bottom" TabIndex="8" PreviewMouseDoubleClick="tb_PreviewMouseDoubleClick_Keypad" Width="150" HorizontalAlignment="Right" TextChanged="tbNewRecipe_TextChanged"/>
 											<Label Content="Filas:" Margin="0,4,22,0" VerticalAlignment="Top" Height="37" Width="150" FontSize="20" HorizontalAlignment="Right"/>
-											<TextBox x:Name="tbNewRecipeRows" TextWrapping="Wrap" FontSize="25" Margin="22,0,0,10" Height="50" VerticalAlignment="Bottom" TabIndex="8" PreviewMouseDoubleClick="tb_PreviewMouseDoubleClick_Keypad" Width="150" HorizontalAlignment="Left"/>
+											<TextBox x:Name="tbNewRecipeRows" TextWrapping="Wrap" FontSize="25" Margin="22,0,0,10" Height="50" VerticalAlignment="Bottom" TabIndex="8" PreviewMouseDoubleClick="tb_PreviewMouseDoubleClick_Keypad" Width="150" HorizontalAlignment="Left" TextChanged="tbNewRecipe_TextChanged"/>
 										</Grid>
 									</Border>
-									<Border x:Name="gridNewRecipeHexa" BorderThickness="1" HorizontalAlignment="Left" Height="103" VerticalAlignment="Top" Width="368" Background="#FFA6A6A6" Margin="182,283,0,0" Visibility="Collapsed">
+									<Border x:Name="gridNewRecipeHexa" BorderThickness="1" HorizontalAlignment="Left" Height="103" VerticalAlignment="Top" Width="368" Background="#FFA6A6A6" Margin="182,365,0,0" Visibility="Collapsed">
 										<Grid>
 											<Label Content="Fila grande:" Margin="22,4,0,0" VerticalAlignment="Top" Height="37" Width="150" FontSize="20" HorizontalAlignment="Left"/>
-											<TextBox x:Name="tbNewRecipeBigRow" TextWrapping="Wrap" FontSize="25" Margin="0,0,22,10" Height="50" VerticalAlignment="Bottom" TabIndex="8" PreviewMouseDoubleClick="tb_PreviewMouseDoubleClick_Keypad" LostFocus="tb_LostFocus" Width="150" HorizontalAlignment="Right"/>
+											<TextBox x:Name="tbNewRecipeBigRow" TextWrapping="Wrap" FontSize="25" Margin="22,0,0,10" Height="50" VerticalAlignment="Bottom" TabIndex="8" PreviewMouseDoubleClick="tb_PreviewMouseDoubleClick_Keypad" Width="150" HorizontalAlignment="Left" TextChanged="tbNewRecipe_TextChanged"/>
 											<Label Content="Fila pequena:" Margin="0,4,22,0" VerticalAlignment="Top" Height="37" Width="150" FontSize="20" HorizontalAlignment="Right"/>
-											<TextBox x:Name="tbNewRecipeSmallRow" TextWrapping="Wrap" FontSize="25" Margin="22,0,0,10" Height="50" VerticalAlignment="Bottom" TabIndex="8" PreviewMouseDoubleClick="tb_PreviewMouseDoubleClick_Keypad" LostFocus="tb_LostFocus" Width="150" HorizontalAlignment="Left"/>
+											<TextBox x:Name="tbNewRecipeSmallRow" TextWrapping="Wrap" FontSize="25" Margin="0,0,22,10" Height="50" VerticalAlignment="Bottom" TabIndex="8" PreviewMouseDoubleClick="tb_PreviewMouseDoubleClick_Keypad" Width="150" HorizontalAlignment="Right" TextChanged="tbNewRecipe_TextChanged"/>
 										</Grid>
 									</Border>
 									<Border BorderThickness="1" HorizontalAlignment="Left" Height="103" Margin="268,224,0,0" VerticalAlignment="Top" Width="196" Background="#FFA6A6A6">
 										<Grid>
 											<Label Content="Escala:" Margin="22,4,22,0" VerticalAlignment="Top" Height="37" Width="150" FontSize="20"/>
-											<TextBox x:Name="tbNewRecipeScale" TextWrapping="Wrap" FontSize="25" Margin="22,0,22,10" Height="50" VerticalAlignment="Bottom" TabIndex="8" PreviewMouseDoubleClick="tb_PreviewMouseDoubleClick_Keypad"/>
+											<TextBox x:Name="tbNewRecipeScale" TextWrapping="Wrap" FontSize="25" Margin="22,0,22,10" Height="50" VerticalAlignment="Bottom" TabIndex="8" PreviewMouseDoubleClick="tb_PreviewMouseDoubleClick_Keypad" TextChanged="tbNewRecipe_TextChanged"/>
 										</Grid>
 									</Border>
 								</Grid>
@@ -277,8 +277,12 @@
 						<Border x:Name="borderCanvas" Background="#FFA6A6A6" BorderThickness="2" Margin="805,0,79,4" VerticalAlignment="Bottom" Height="467">
 							<Grid>
 								<Canvas x:Name="cnvAtado" Background="#FFBDBABA" ClipToBounds="True" Width="518" Height="435" Margin="0"/>
-								<Label x:Name="lblPackageWidth" Content="&lt;Width&gt;" Margin="216,412,262,20" FontSize="18" Width="70" BorderThickness="0" Height="23"/>
-								<Label x:Name="lblPackageHeight" Content="&lt;Height&gt;" Margin="440,226,28,211" FontSize="18" BorderThickness="0"/>
+								<Grid x:Name="gridNewRecipeDrawnShapes" Margin="14,14,295,399" Background="#FFBDBABA">
+									<Label x:Name="lblNewRecipeDrawnShapes" Content="Label" Margin="156,16,0,0" FontSize="22" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+									<Label Content="Tubos desenhados:" Margin="15,22,0,0" FontSize="16" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+								</Grid>
+								<Label x:Name="lblPackageWidth" Content="&lt;Width&gt;" Margin="216,412,262,20" FontSize="18" Width="70" Height="23"/>
+								<Label x:Name="lblPackageHeight" Content="&lt;Height&gt;" Margin="440,226,28,211" FontSize="18"/>
 								<Label Content="[mm]" Margin="286,412,217,20" FontSize="18" Height="23"/>
 								<Label Content="[mm]" FontSize="18" Margin="440,258,28,187"/>
 								<Label Content="&lt;-------------------------&gt;" Margin="121,379,119,52" FontSize="18" BorderThickness="0"/>
@@ -306,7 +310,7 @@
 						</Border>
 					</Grid>
 				</TabItem>
-				<TabItem x:Name="tabItemStrapper" Header="Cint.">
+				<TabItem x:Name="tabItemStrapper" Header="Cintad.">
 					<Grid Margin="0">
 						<Grid Height="120" Margin="0,360,0,0" VerticalAlignment="Top" Background="#FFA6A6A6">
 							<Label Content="Cinta nr. :" Margin="142,17,1057,65" VerticalAlignment="Center" Height="44" FontSize="18" BorderThickness="1" Background="{x:Null}"/>
@@ -355,7 +359,10 @@
 								<TextBox x:Name="tbstrap4_3" Height="40" Margin="492,13,228,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="104" FontSize="16" LostFocus="tbStrapPosition_LostFocus" TabIndex="4" BorderBrush="#FF595959" BorderThickness="2" IsReadOnly="True" Focusable="False" PreviewMouseDoubleClick="tb_PreviewMouseDoubleClickStrapper_Keypad"/>
 								<TextBox x:Name="tbstrap4_4" Height="40" Margin="670,13,50,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="104" FontSize="16" LostFocus="tbStrapPosition_LostFocus" TabIndex="5" BorderBrush="#FF595959" BorderThickness="2" IsReadOnly="True" Focusable="False" PreviewMouseDoubleClick="tb_PreviewMouseDoubleClickStrapper_Keypad"/>
 							</Grid>
-							<Button Content="Button" HorizontalAlignment="Left" Margin="36,142,0,0" VerticalAlignment="Top" Width="83" Height="63" Click="Button_Click"/>
+							<Button HorizontalAlignment="Left" Margin="60,144,0,0" VerticalAlignment="Top" Width="83" Height="63" Click="Button_Click">
+								<TextBox TextWrapping="Wrap" Text="Carregar Valores" Background="{x:Null}" BorderBrush="{x:Null}" FontSize="16" IsReadOnly="True" Focusable="False"/>
+							</Button>
+							<Button x:Name="btnSaveStraps" Content="Gravar" HorizontalAlignment="Left" Margin="1163,222,0,0" VerticalAlignment="Top" Width="120" Height="53"/>
 						</Grid>
 					</Grid>
 				</TabItem>
@@ -390,7 +397,7 @@
 						</Button>
 					</Grid>
 				</TabItem>
-				<TabItem x:Name="tabItemHistory" Header="Hist." HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="55">
+				<TabItem x:Name="tabItemHistory" Header="Historico" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="55">
 					<Grid>
 						<DataGrid x:Name="datagridHistory" AlternatingRowBackground="#FF976666" Margin="10,10,842,0" Background="{x:Null}" BorderBrush="{x:Null}" Height="609" UseLayoutRounding="True" FontSize="23" GridLinesVisibility="Vertical" VerticalGridLinesBrush="#FF838383" HeadersVisibility="Column" IsReadOnly="True" VerticalAlignment="Top" AlternationCount="2" SelectionMode="Single" CanUserReorderColumns="False"/>
 						<Viewbox HorizontalAlignment="Left" Height="401" Margin="986,219,0,0" VerticalAlignment="Top" Width="440" RenderTransformOrigin="0.5,0.5">
@@ -458,7 +465,7 @@
 						</RadioButton>
 					</Grid>
 				</TabItem>
-				<TabItem x:Name="tabItemRecipes" Header="Rec." HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="55">
+				<TabItem x:Name="tabItemRecipes" Header="Receitas" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="55">
 					<Grid>
 						<DataGrid x:Name="datagridRecipes" AlternatingRowBackground="#FF976666" Margin="229,10,605,0" Background="{x:Null}" BorderBrush="{x:Null}" Height="619" UseLayoutRounding="True" FontSize="24" GridLinesVisibility="Vertical" VerticalGridLinesBrush="#FF838383" HeadersVisibility="Column" IsReadOnly="True" VerticalAlignment="Top" AlternationCount="2" SelectionMode="Single" CanUserReorderColumns="False" Width="600" SelectedCellsChanged="datagridRecipes_SelectedCellsChanged" PreviewMouseDown="datagridRecipes_PreviewMouseDown"/>
 						<Button x:Name="btnRecipeRoundTube" Content="Redondo" HorizontalAlignment="Left" Margin="47,192,0,0" VerticalAlignment="Top" Width="141" Height="96" FontSize="20" Click="btnRecipeRoundTube_Click"/>

@@ -28,8 +28,15 @@ namespace Empacotadora {
 		public static string RectTubeRecipePath { get; } = _systemPath + @"\RectTubeRecipes.txt";
 		//// Methods ////
 		public static IEnumerable<TextBox> GetTextBoxesFromGrid(Grid currentGrid) {
-			IEnumerable<TextBox> textBoxes = currentGrid.Children.OfType<TextBox>();
+			IEnumerable<TextBox> textBoxes = Enumerable.Empty<TextBox>();
+			if (currentGrid == null) return textBoxes;
+			textBoxes = currentGrid.Children.OfType<TextBox>();
 			return textBoxes;
+		}
+		public static void SetTextBoxForEdit(TextBox item) {
+			item.Background = Brushes.YellowBrush;
+			item.IsReadOnly = false;
+			item.Focusable = true;
 		}
 		// Rope Straps
 		public static IEnumerable<string> GetAllRopeStrapsFromFile(string pathRopeStraps) {
@@ -55,7 +62,7 @@ namespace Empacotadora {
 		}
 		// Round (ellipse) shape
 		public static void CreateEllipseShapesToBeDrawn(int tubeAmount, int tubeAmountBigLine, int tubeAmountSmallLine, int shapeDiameter, int vPosInit, int hPosInit, ref int columns, ref int rows, ICollection<Ellipse> listEllipses) {
-			int hPos = hPosInit, vPos = vPosInit, tubeCurrentlyDrawing = 0, lastTube = 0;
+			int hPos = hPosInit, vPos = vPosInit, tubeCurrentlyDrawing = 0;
 			byte variavel = 0, lineCap = 0;
 			bool incrementing = false;
 			for (byte i = 0; i < tubeAmountBigLine; i++) {
@@ -83,7 +90,7 @@ namespace Empacotadora {
 					// prevent shape from being drawn if total number of tubes was reached
 					if (tubeCurrentlyDrawing < tubeAmount) {
 						ellip.StrokeThickness = 2;
-						ellip.Fill = (tubeCurrentlyDrawing < lastTube) ? Brushes.TomatoBrush : Brushes.GrayBrush;
+						ellip.Fill = (tubeCurrentlyDrawing < Win_Main.LastTube) ? Brushes.TomatoBrush : Brushes.GrayBrush;
 					}
 					else
 						ellip.StrokeThickness = 0;
@@ -100,14 +107,14 @@ namespace Empacotadora {
 		}
 		public static void GetValuesFromRoundTubeRecipe(int tubeAmount, out int tubeAmountBigLine, out int tubeAmountSmallLine, out int vPosInit, out int hPosInit, out int shapeDiameter) {
 			Dictionary<string, int> recipeValues = Recipes.GetRoundTubeRecipe(tubeAmount);
-			try {
+			if (recipeValues != null) {
 				tubeAmountBigLine = recipeValues["bigRowSize"];
 				tubeAmountSmallLine = recipeValues["smallRowSize"];
 				vPosInit = recipeValues["vPos"];
 				hPosInit = recipeValues["hPos"];
 				shapeDiameter = recipeValues["shapeSize"];
 			}
-			catch (KeyNotFoundException) {
+			else {
 				tubeAmountBigLine = 0;
 				tubeAmountSmallLine = 0;
 				vPosInit = 0;
@@ -143,20 +150,20 @@ namespace Empacotadora {
 			}
 		}
 		public static void GetValuesFromSquareRectTubeRecipe(int tubeAmount, int width, int height, out int shapeWidth, out int shapeHeight, out int vPosInit, out int hPosInit) {
-			Dictionary<string, int> value = Recipes.GetSquareTubeRecipe(tubeAmount);
-			try {
-				vPosInit = value["vPos"];
-				hPosInit = value["hPos"];
+			Dictionary<string, int> recipeValues = Recipes.GetSquareTubeRecipe(tubeAmount);
+			if (recipeValues != null) {
+				vPosInit = recipeValues["vPos"];
+				hPosInit = recipeValues["hPos"];
 				if (width != height) {
-					shapeWidth = value["shapeSize"] + (value["shapeSize"] / 5);
-					shapeHeight = value["shapeSize"] - (value["shapeSize"] / 5);
+					shapeWidth = recipeValues["shapeSize"] + (recipeValues["shapeSize"] / 5);
+					shapeHeight = recipeValues["shapeSize"] - (recipeValues["shapeSize"] / 5);
 				}
 				else {
-					shapeWidth = value["shapeSize"];
-					shapeHeight = value["shapeSize"];
+					shapeWidth = recipeValues["shapeSize"];
+					shapeHeight = recipeValues["shapeSize"];
 				}
 			}
-			catch (KeyNotFoundException) {
+			else {
 				shapeWidth = 0;
 				shapeHeight = 0;
 				vPosInit = 0;
@@ -181,30 +188,6 @@ namespace Empacotadora {
 			}
 			numV = temp1;
 			numH = temp2 + 1;
-		}
-		// Order text boxes
-		public static double GetWeight(IReadOnlyList<string> array) {
-			double weight;
-			double.TryParse(array[3], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double diameter);
-			int.TryParse(array[5], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out int width);
-			int.TryParse(array[4], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out int height);
-			double.TryParse(array[6], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double thickness);
-			double.TryParse(array[7], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double length);
-			double.TryParse(array[8], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double density);
-			double diameterOut = diameter, diameterIn = diameter - thickness;
-			// Existe um metodo na classe "OrderDetails" chamado "CalculateWeight"... porque calcular aqui?
-			// Não calcula bem o peso para tubos redondos
-			//if (diameter == 0)
-			weight = (((height * width * length) - (((height - (2 * thickness)) * (width - (2 * thickness))) * length)) * (density * 1000) * 0.000000001);
-			//else
-			//    weight = ((Math.PI * ((Math.Pow((0.5 * diameter_out), 2)) - (Math.Pow((0.5 * diameter_in), 2)))) * length * (density * 0.000001));
-			return weight;
-		}
-		//
-		public static void SetTextBoxForEdit(TextBox item) {
-			item.Background = Brushes.YellowBrush;
-			item.IsReadOnly = false;
-			item.Focusable = true;
 		}
 	}
 }
