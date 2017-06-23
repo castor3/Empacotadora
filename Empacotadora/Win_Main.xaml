@@ -252,9 +252,9 @@
 									<Border x:Name="gridNewRecipeSquare" BorderThickness="1" HorizontalAlignment="Left" Height="103" VerticalAlignment="Top" Width="368" Background="#FFA6A6A6" Margin="182,365,0,0">
 										<Grid>
 											<Label Content="Colunas:" Margin="22,4,0,0" VerticalAlignment="Top" Height="37" Width="150" FontSize="20" HorizontalAlignment="Left"/>
-											<TextBox x:Name="tbNewRecipeColumns" TextWrapping="Wrap" FontSize="25" Margin="0,0,22,10" Height="50" VerticalAlignment="Bottom" TabIndex="8" PreviewMouseDoubleClick="tb_PreviewMouseDoubleClick_Keypad" Width="150" HorizontalAlignment="Right" TextChanged="tbNewRecipe_TextChanged"/>
+											<TextBox x:Name="tbNewRecipeColumns" TextWrapping="Wrap" FontSize="25" Margin="22,0,0,10" Height="50" VerticalAlignment="Bottom" TabIndex="8" PreviewMouseDoubleClick="tb_PreviewMouseDoubleClick_Keypad" Width="150" HorizontalAlignment="Left" TextChanged="tbNewRecipe_TextChanged"/>
 											<Label Content="Filas:" Margin="0,4,22,0" VerticalAlignment="Top" Height="37" Width="150" FontSize="20" HorizontalAlignment="Right"/>
-											<TextBox x:Name="tbNewRecipeRows" TextWrapping="Wrap" FontSize="25" Margin="22,0,0,10" Height="50" VerticalAlignment="Bottom" TabIndex="8" PreviewMouseDoubleClick="tb_PreviewMouseDoubleClick_Keypad" Width="150" HorizontalAlignment="Left" TextChanged="tbNewRecipe_TextChanged"/>
+											<TextBox x:Name="tbNewRecipeRows" TextWrapping="Wrap" FontSize="25" Margin="0,0,22,10" Height="50" VerticalAlignment="Bottom" TabIndex="8" PreviewMouseDoubleClick="tb_PreviewMouseDoubleClick_Keypad" Width="150" HorizontalAlignment="Right" TextChanged="tbNewRecipe_TextChanged"/>
 										</Grid>
 									</Border>
 									<Border x:Name="gridNewRecipeHexa" BorderThickness="1" HorizontalAlignment="Left" Height="103" VerticalAlignment="Top" Width="368" Background="#FFA6A6A6" Margin="182,365,0,0" Visibility="Collapsed">
@@ -271,6 +271,16 @@
 											<TextBox x:Name="tbNewRecipeScale" TextWrapping="Wrap" FontSize="25" Margin="22,0,22,10" Height="50" VerticalAlignment="Bottom" TabIndex="8" PreviewMouseDoubleClick="tb_PreviewMouseDoubleClick_Keypad" TextChanged="tbNewRecipe_TextChanged"/>
 										</Grid>
 									</Border>
+									<RadioButton x:Name="rbNewRecipeSquareShape" Content="Quadrado" HorizontalAlignment="Left" Margin="562,386,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Checked="rbSelectedDate_Checked">
+										<RadioButton.LayoutTransform>
+											<ScaleTransform ScaleX="2" ScaleY="2"/>
+										</RadioButton.LayoutTransform>
+									</RadioButton>
+									<RadioButton x:Name="rbNewRecipeRectangleShape" Content="Rectângulo" HorizontalAlignment="Left" Margin="562,421,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Checked="rbSelectedDate_Checked">
+										<RadioButton.LayoutTransform>
+											<ScaleTransform ScaleX="2" ScaleY="2"/>
+										</RadioButton.LayoutTransform>
+									</RadioButton>
 								</Grid>
 							</TabItem>
 						</TabControl>

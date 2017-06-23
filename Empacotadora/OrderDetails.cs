@@ -26,7 +26,7 @@ namespace Empacotadora {
 		public int[] StrapsPosition { get; set; }
 		// Methods
 		public double CalculateWeight(OrderDetails order) {
-			double weight;
+			double weight = 0;
 			bool boolDiam = double.TryParse(order.Diameter, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double diameter);
 			bool boolWidth = double.TryParse(order.Width, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double width);
 			bool boolHeight = double.TryParse(order.Height, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double height);
@@ -34,14 +34,20 @@ namespace Empacotadora {
 			double.TryParse(order.Length, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double length);
 			double.TryParse(order.Density, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double density);
 			if (boolDiam && !(boolWidth && boolHeight)) {
+				thickness /= 1000;
+				diameter /= 2000;
 				double diameterOut = diameter;
-				double diameterIn = diameter - thickness;
-				weight = ((Math.PI * ((Math.Pow((0.5 * diameterOut), 2)) -
-											(Math.Pow((0.5 * diameterIn), 2)))) * length * (density * 0.000001));
+				double diameterIn = diameter - (thickness);
+
+				var area = (Math.PI * (Math.Pow(diameterOut, 2) - Math.PI * Math.Pow(diameterIn, 2))) / 4 * Math.Pow(10, 2); ;
+				weight = 0.785 * area;
+				//var tubeLength = length;
+				//weight = area * tubeLength * density;
 			}
 			else {
-				weight = (((height * width * length) - (((height - (2 * thickness)) *
-							(width - (2 * thickness))) * length)) * (density * 1000) * 0.000000001);
+				
+				//weight = (((height * width * length) - (((height - (2 * thickness)) *
+				//			(width - (2 * thickness))) * length)) * (density * 1000) * 0.000000001);
 			}
 			return weight;
 		}
@@ -101,9 +107,8 @@ namespace Empacotadora {
 				string[] array = line.Split(',');
 				string newLine = "";
 				if (array[0] == orderID) {
-					for (int i = 0; i <= 11; i++)
+					for (int i = 0; i <= 12; i++)
 						newLine += valuesToWrite[i] + ",";
-					newLine += array[12] + ",";
 					newLine += array[13];
 				}
 				newFileContent.Add(newLine == "" ? line : newLine);

@@ -173,7 +173,6 @@ namespace Empacotadora {
 		public static void CalculateNumberOfRowsAndColummsFromTubeAmount(int tubeAmount, int width, int height, out double numH, out double numV, out int packageWidth, out int packageHeight) {
 			// divides the number of tubes until the number of rows and collums is even (+/-)
 			double start, result = 0, temp1 = 0, temp2 = 0;
-
 			start = (tubeAmount > 300) ? 30 : 15;   // will likely be less than 300 tubes, no need to always start on 30
 			packageWidth = width * (int)(start + 1);
 			packageHeight = height * (int)result;
@@ -182,10 +181,11 @@ namespace Empacotadora {
 				temp1 = result;
 				temp2 = start;
 				result = tubeAmount / start;
-				start--;
-				packageWidth = width * (int)(start + 1);
+				packageWidth = width * (int)(--start + 1);
 				packageHeight = height * (int)result;
 			}
+			packageWidth = width * (int)(temp2 + 1);
+			packageHeight = height * (int)temp1;
 			numV = temp1;
 			numH = temp2 + 1;
 		}
