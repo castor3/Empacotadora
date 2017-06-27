@@ -106,10 +106,10 @@ namespace Empacotadora {
 		private static Shift GetShiftFromHistoryTime(DateTime historyDate) {
 			Shift shiftFromHistoryTime;
 			string stringHistoryTime = historyDate.ToString("HH:mm:ss");
-			TimeSpan historyTime = TimeSpan.Parse(stringHistoryTime);
-			TimeSpan shiftOneTimeInit = TimeSpan.Parse("07:00:00");
-			TimeSpan shiftTwoTimeInit = TimeSpan.Parse("15:00:00");
-			TimeSpan shiftThreeTimeInit = TimeSpan.Parse("23:00:00");
+			if (!TimeSpan.TryParse(stringHistoryTime, out TimeSpan historyTime) ||
+			!TimeSpan.TryParse("07:00:00", out TimeSpan shiftOneTimeInit) ||
+			!TimeSpan.TryParse("15:00:00", out TimeSpan shiftTwoTimeInit) ||
+			!TimeSpan.TryParse("23:00:00", out TimeSpan shiftThreeTimeInit)) return Shift.nill;
 			if (historyTime >= shiftOneTimeInit && historyTime < shiftTwoTimeInit)
 				shiftFromHistoryTime = Shift.ShiftOne;
 			else if (historyTime >= shiftTwoTimeInit && historyTime < shiftThreeTimeInit)

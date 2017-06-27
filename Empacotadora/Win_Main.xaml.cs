@@ -12,6 +12,7 @@ using System.Windows.Threading;
 using System.Windows.Interop;
 using System.Globalization;
 using Empacotadora.Address;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -29,6 +30,7 @@ namespace Empacotadora {
 		const string SaveError = "Erro ao tentar gravar no ficheiro";
 		FERP_MairCOMS7 PLC = new FERP_MairCOMS7();
 		public static OrderDetails CurrentOrder = null;
+		public static OrderDetails TempOrder = null;
 		Visibility _visible = Visibility.Visible;
 		Visibility _collapsed = Visibility.Collapsed;
 		// Wrapper
@@ -107,7 +109,11 @@ namespace Empacotadora {
 					break;
 				case Win_Orders.Layout.EditOrder:
 					SetEditOrderLayout();
-					FillEditOrderLayoutWithCurrentOrder();
+					FillEditOrderLayoutWithOrder(TempOrder);
+					break;
+				case Win_Orders.Layout.EditCurrentOrder:
+					SetEditOrderLayout();
+					FillEditOrderLayoutWithOrder(CurrentOrder);
 					break;
 				case Win_Orders.Layout.Recipes:
 					HideGeneralControls();
@@ -115,40 +121,42 @@ namespace Empacotadora {
 					break;
 			}
 		}
-		private void FillEditOrderLayoutWithCurrentOrder() {
-			if (CurrentOrder.TubeType == "R")
+		private void FillEditOrderLayoutWithOrder(OrderDetails order) {
+			if (order.TubeType == "R")
 				SetRoundTube();
-			else if (CurrentOrder.TubeType == "Q")
+			else if (order.TubeType == "Q")
 				SetSqrTube();
-			if (CurrentOrder.PackageType == "H")
+			if (order.PackageType == "H")
 				SetHexaWrap();
-			else if (CurrentOrder.PackageType == "Q")
+			else if (order.PackageType == "Q")
 				SetSqrWrap();
-			tbNrOrdem.Text = CurrentOrder.Name;
-			tbDiam.Text = CurrentOrder.Diameter;
-			tbWidth.Text = CurrentOrder.Width;
-			tbHeight.Text = CurrentOrder.Height;
-			tbThickness.Text = CurrentOrder.Thick;
-			tbLength.Text = CurrentOrder.Length;
-			tbDensity.Text = CurrentOrder.Density;
-			tbTubeNmbr.Text = CurrentOrder.TubeAm;
-			lblWeight.Content = CurrentOrder.Weight;
-			lblID.Content = CurrentOrder.ID;
+			tbNrOrdem.Text = order.Name;
+			tbDiam.Text = order.Diameter;
+			tbWidth.Text = order.Width;
+			tbHeight.Text = order.Height;
+			tbThickness.Text = order.Thickness;
+			tbLength.Text = order.Length;
+			tbDensity.Text = order.Density;
+			tbTubeNmbr.Text = order.TubeAm;
+			tbWeight.Text = order.Weight;
+			lblID.Content = order.ID;
 			lblID1.Content = "ID:";
 		}
 		private void SetNewOrderEnvironment() {
+			if (!Document.ReadFromFile(General.OrdersPath, out IEnumerable<string> linesFromFile)) return;
 			SetEditOrderLayout();
 			SetSqrWrap();
 			SetSqrTube();
-			IEnumerable<TextBox> newOrderTextBoxes = General.GetTextBoxesFromGrid(gridNewOrder);
-			foreach (TextBox item in newOrderTextBoxes)
-				item.Text = "";
+			ClearTextBoxes(gridNewOrder);
 			lblID1.Content = "ID (auto):";
-			tbDensity.Text = "7.65";
-			if (!Document.ReadFromFile(General.Path, out IEnumerable<string> linesFromFile)) return;
+			tbDensity.Text = "7.85";
 			string[] array = linesFromFile.Last().Split(',');
 			int.TryParse(array[0], out int id);
 			lblID.Content = (++id).ToString();
+		}
+		private void ClearTextBoxes(Grid grid) {
+			foreach (TextBox item in General.GetTFromControl<TextBox>(grid))
+				item.Text = "";
 		}
 		private void ShowCurrentOrderOnWrapperLayout() {
 			if (CurrentOrder == null) return;
@@ -165,30 +173,37 @@ namespace Empacotadora {
 				lblOrderDiam.Content = CurrentOrder.Diameter;
 			}
 			lblOrderName.Content = CurrentOrder.Name;
-			lblOrderThick.Content = CurrentOrder.Thick;
+			lblOrderThick.Content = CurrentOrder.Thickness;
 			lblOrderLength.Content = CurrentOrder.Length;
 			lblPackageLength.Content = CurrentOrder.Length;
 		}
 		private void btnSaveOrder_Click(object sender, RoutedEventArgs e) {
-			string msg = "";
 			OrderDetails order = GatherOrderTextBoxesValues();
-			List<string> orderList = new List<string> {
-				order.ID, order.Active, order.Name, order.Diameter, order.Width, order.Height, order.Thick, order.Length,
-				order.Density, order.TubeAm, order.TubeType, order.PackageType, order.Weight, order.Created };
 			if (order == null) {
 				UpdateStatusBar("Para gravar tem que preencher todos os campos");
 				return;
 			}
-			if (Win_Orders.ordersLayout == Win_Orders.Layout.NewOrder) {
-				//foreach (string item in GatherNewOrderTextBoxesValues())
-				//	valuesToWrite += item;
-				string valuesToWrite = orderList.Aggregate("", (current, item) => current + (item + ","));
-				valuesToWrite = valuesToWrite.Remove(valuesToWrite.Length - 1);
-				msg = Document.AppendToFile(General.Path, valuesToWrite) ? SaveSuccessful : SaveError;
-			}
-			else if (Win_Orders.ordersLayout == Win_Orders.Layout.EditOrder) {
-				msg = OrderDetails.EditOrder(General.Path, CurrentOrder.ID, orderList.ToArray()) ?
-																		SaveSuccessful : SaveError;
+			string msg = "";
+			string[] arrayFromOrder = OrderDetails.CreateArrayFromOrder(order);
+			switch (Win_Orders.ordersLayout) {
+				case Win_Orders.Layout.NewOrder:
+					//foreach (string item in arrayFromOrder)
+					//	valuesToWrite += item;
+					string valuesToWrite = arrayFromOrder.Aggregate("", (current, item) => current + (item + ","));
+					valuesToWrite += GetStrapsPositionFromCurrentGrid(5);
+					msg = Document.AppendToFile(General.OrdersPath, valuesToWrite) ? SaveSuccessful : SaveError;
+					break;
+				case Win_Orders.Layout.EditOrder:
+					msg = OrderDetails.EditOrder(General.OrdersPath, CurrentOrder.ID, arrayFromOrder) ?
+																			SaveSuccessful : SaveError;
+					break;
+				case Win_Orders.Layout.EditCurrentOrder:
+					CurrentOrder = order;
+					msg = OrderDetails.EditOrder(General.OrdersPath, CurrentOrder.ID, arrayFromOrder) ?
+																			SaveSuccessful : SaveError;
+					break;
+				default:
+					break;
 			}
 			UpdateStatusBar(msg);
 			SetWrapperLayout();
@@ -302,8 +317,8 @@ namespace Empacotadora {
 																		Convert.ToInt32(CurrentOrder.Height));
 			}
 			else
-				//DrawSquareWrap(_defaultSquareTubeNmbr, _defaultWidth, _defaultHeight);
-				DrawHexagonalWrap(_defaultRoundTubeNmbr, _defaultDiameter);
+				DrawSquareWrap(_defaultSquareTubeNmbr, _defaultWidth, _defaultHeight);
+				//DrawHexagonalWrap(_defaultRoundTubeNmbr, _defaultDiameter);
 		}
 		#region StatusBar
 		// Status bar update
@@ -359,7 +374,12 @@ namespace Empacotadora {
 			btnSqrWrap.ClearValue(BackgroundProperty);
 			btnSqrWrap.BorderBrush = Brushes.NonActiveBorder;
 			_currentWrapType = General.ActiveWrapType.Hexagonal;
-			DrawHexagonalWrap(_defaultRoundTubeNmbr, _defaultDiameter);
+			if (CurrentOrder != null) {
+				int.TryParse(CurrentOrder.Diameter, out int diameter);
+				DrawHexagonalWrap(_defaultRoundTubeNmbr, diameter);
+			}
+			else
+				DrawHexagonalWrap(_defaultRoundTubeNmbr, _defaultDiameter);
 		}
 		private void SetSqrWrap() {
 			if (_currentLayout == General.ActiveLayout.NewRecipe) {
@@ -371,9 +391,9 @@ namespace Empacotadora {
 			btnHexaWrap.ClearValue(BackgroundProperty);
 			btnHexaWrap.BorderBrush = Brushes.NonActiveBorder;
 			_currentWrapType = General.ActiveWrapType.Square;
-			if (tbWidth.Text != "" && tbHeight.Text != "") {
-				int.TryParse(tbWidth.Text, out int width);
-				int.TryParse(tbHeight.Text, out int height);
+			if (CurrentOrder != null) {
+				int.TryParse(CurrentOrder.Width, out int width);
+				int.TryParse(CurrentOrder.Height, out int height);
 				DrawSquareWrap(_defaultSquareTubeNmbr, width, height);
 			}
 			else
@@ -452,13 +472,13 @@ namespace Empacotadora {
 		}
 		// "Show"/"Hide" methods show or hide layout controls
 		private void ShowGeneralControls() {
-			IEnumerable<Button> buttons = new List<Button>() {
+			IEnumerable<Button> buttons = new Collection<Button>() {
 				btnWrapper, btnStrapper, btnStorage, btnExit, btnManual, btnPLCConnection};
 			foreach (var item in buttons)
 				item.Visibility = _visible;
 		}
 		private void HideGeneralControls() {
-			IEnumerable<Button> buttons = new List<Button>() {
+			IEnumerable<Button> buttons = new Collection<Button>() {
 				btnWrapper, btnStrapper, btnStorage, btnExit, btnReturn, btnManual, btnPLCConnection};
 			foreach (var item in buttons)
 				item.Visibility = _collapsed;
@@ -470,7 +490,7 @@ namespace Empacotadora {
 			borderCanvas.Margin = new Thickness(805, 0, 79, 78);
 			tabLayout.SelectedItem = tabItemWrapper;
 			tabWrapper.SelectedItem = tabItemWrapperMain;
-			IEnumerable<Button> buttonsToClear = new List<Button>() {
+			IEnumerable<Button> buttonsToClear = new Collection<Button>() {
 				btnOrders, btnStrapper, btnStorage, btnPLCConnection };
 			ClearButtonBackground(buttonsToClear);
 			btnWrapper.Background = Brushes.LightRed;
@@ -500,7 +520,7 @@ namespace Empacotadora {
 		private void ShowStrapperControls() {
 			lblTitle.Content = "Cintadora";
 			tabLayout.SelectedItem = tabItemStrapper;
-			IEnumerable<Button> buttonsToClear = new List<Button>() {
+			IEnumerable<Button> buttonsToClear = new Collection<Button>() {
 				btnWrapper, btnStorage, btnPLCConnection };
 			ClearButtonBackground(buttonsToClear);
 			if (CurrentOrder != null)
@@ -514,7 +534,7 @@ namespace Empacotadora {
 		private void ShowStorageControls() {
 			lblTitle.Content = "Armazém";
 			tabLayout.SelectedItem = tabItemStorage;
-			IEnumerable<Button> buttonsToClear = new List<Button>() {
+			IEnumerable<Button> buttonsToClear = new Collection<Button>() {
 				btnWrapper, btnStrapper, btnPLCConnection };
 			ClearButtonBackground(buttonsToClear);
 			btnStorage.Background = Brushes.LightRed;
@@ -523,7 +543,7 @@ namespace Empacotadora {
 			_currentLayout = General.ActiveLayout.Storage;
 		}
 		private void ShowPLCConnectionLayout() {
-			IEnumerable<Button> buttonsToClear = new List<Button>() {
+			IEnumerable<Button> buttonsToClear = new Collection<Button>() {
 				btnWrapper, btnStorage, btnStorage };
 			ClearButtonBackground(buttonsToClear);
 			btnPLCConnection.Background = Brushes.LightRed;
@@ -531,7 +551,7 @@ namespace Empacotadora {
 		}
 		// General Layout
 		private void ShowInitialScreen() {
-			IEnumerable<Button> buttons = new List<Button>() {
+			IEnumerable<Button> buttons = new Collection<Button>() {
 				btnWrapper, btnStrapper, btnStorage, btnManual, btnPLCConnection};
 			foreach (var item in buttons)
 				item.Visibility = _collapsed;
@@ -544,7 +564,7 @@ namespace Empacotadora {
 			tabLayout.SelectedItem = tabItemInit;
 		}
 		private void ShowMainLayout() {
-			IEnumerable<Button> buttons = new List<Button>() {
+			IEnumerable<Button> buttons = new Collection<Button>() {
 				btnWrapper, btnStrapper, btnStorage, btnManual, btnPLCConnection};
 			foreach (var item in buttons)
 				item.Visibility = _visible;
@@ -556,7 +576,7 @@ namespace Empacotadora {
 			statusBar.Visibility = _visible;
 		}
 		private void InitializeLayout() {
-			IEnumerable<TabItem> buttons = new List<TabItem>() {
+			IEnumerable<TabItem> buttons = new Collection<TabItem>() {
 				tabItemInit, tabItemWrapper,tabItemStrapper, tabItemStorage, tabItemWrapperMain,
 				tabItemWrapperEditOrder, tabItemHistory, tabItemRecipes, tabItemPLCConnection,
 				tabManualWrapper, tabManualStrapper,  tabManualStorage, tabItemWrapperNewRecipe };
@@ -577,10 +597,11 @@ namespace Empacotadora {
 			lblCurrentPackage.Content = _currentPackage.ToString();
 		}
 		private void tbPackage_TextChanged(object sender, TextChangedEventArgs e) {
-			try {
-				FillListBoxOfAllowedRopeStraps(int.Parse(tbPackagePerimeter.Text), int.Parse(tbPackageWeight.Text));
-			}
-			catch (NullReferenceException) { }
+			TextBox tb = (TextBox)sender;
+			if (!tb.IsInitialized) return;
+			if (!int.TryParse(tbPackagePerimeter.Text, out int packagePerimeter) ||
+				!int.TryParse(tbPackageWeight.Text, out int packageWeight)) return;
+			FillListBoxOfAllowedRopeStraps(packagePerimeter, packageWeight);
 		}
 		private void tbPackage_LostFocus(object sender, RoutedEventArgs e) {
 			TextBox tb = (TextBox)sender;
@@ -629,7 +650,6 @@ namespace Empacotadora {
 		#endregion
 
 		#region Draw shapes in canvas
-		// Shapes
 		private void DrawHexagonalWrap(int tubeAmount, double diameter) {
 			CheckIfIsLastTubeAndIncreasesPackage(tubeAmount);
 			General.GetValuesFromRoundTubeRecipe(tubeAmount, out int tubeAmountBigLine, out int tubeAmountSmallLine, out int vPosInit, out int hPosInit, out int shapeDiameter);
@@ -704,45 +724,46 @@ namespace Empacotadora {
 		#endregion
 
 		#region Order TextBoxe's Values
-		// Handle NewOrder textboxe's values
-		private void tb_LostFocus(object sender, RoutedEventArgs e) {
-			// main input method is the on screen keypad
-			// anyway, should be added code to prevent user
-			// from typing letters (from full-size physical keyboard, if available)
+		private void tb_TextChanged(object sender, TextChangedEventArgs e) {
 			TextBox tb = (TextBox)sender;
 			CheckIfTextBoxeValueIsValid(sender, tb);
 			OrderDetails order = GatherOrderTextBoxesValues();
 			if (order == null) return;
 			double weight = order.CalculateWeight(order);
 			if (!int.TryParse(tbTubeNmbr.Text, out int tubes)) return;
+			UpdateDrawnShapes(order, tubes);
+			if (!int.TryParse(order.Length, out int length)) return;
+			weight *= length / 1000;
 			if (tubes > 0)
 				weight *= tubes;
-			lblWeight.Content = Math.Round(weight);
-			UpdateDrawnShapes(order, tubes);
+			tbWeight.Text = Math.Round(weight).ToString();
 		}
 		private void UpdateDrawnShapes(OrderDetails order, int tubes) {
-			double.TryParse(order.Diameter, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double diameter);
-			int.TryParse(order.Width, out int width);
-			int.TryParse(order.Height, out int height);
-			if (_currentTubeType == General.ActiveTubeType.Round)
+			if (_currentTubeType == General.ActiveTubeType.Round) {
+				double.TryParse(order.Diameter, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double diameter);
 				DrawHexagonalWrap(tubes, diameter);
-			if (_currentTubeType == General.ActiveTubeType.Square)
+			}
+			if (_currentTubeType == General.ActiveTubeType.Square) {
+				int.TryParse(order.Width, out int width);
+				int.TryParse(order.Height, out int height);
 				DrawSquareWrap(tubes, width, height);
+			}
 		}
 		private void CheckIfTextBoxeValueIsValid(object sender, TextBox tb) {
-			if (sender != tbDiam && sender != tbWidth && sender != tbHeight) return;
-			if (double.TryParse(tb.Text, out double value))
-				tb.ClearValue(BackgroundProperty);
-			else {
+			if (tb.Text == "") return;
+			bool parsed = double.TryParse(tb.Text, out double value);
+			if (!parsed) {// Non number value
 				tb.Background = Brushes.NonActiveBack;
-				if (tb.Text != "")
-					MessageBox.Show("- Apenas são aceites números\n" +
-									"- Medida não pode ser igual 0", "Valor inserido inválido");
+				MessageBox.Show("- Apenas são aceites números\n" +
+								"- Medida não pode ser igual 0", "Valor inserido inválido");
+				return;
 			}
-			if (value != 0.0) return;
-			tb.Background = Brushes.NonActiveBack;
-			if (tb.Text != "")
-				MessageBox.Show("Medida não pode ser igual a 0");
+			else {
+				if (value == 0.0) {
+					MessageBox.Show("Medida não pode ser igual a 0");
+					tb.Background = Brushes.NonActiveBack;
+				}
+			}
 		}
 		private void tb_isEnabledChanged(object sender, DependencyPropertyChangedEventArgs e) {
 			TextBox tb = (TextBox)sender;
@@ -758,22 +779,22 @@ namespace Empacotadora {
 				Diameter = tbDiam.Text,
 				Width = tbWidth.Text,
 				Height = tbHeight.Text,
-				Thick = tbThickness.Text,
+				Thickness = tbThickness.Text,
 				Length = tbLength.Text,
 				Density = tbDensity.Text,
 				TubeAm = tbTubeNmbr.Text,
 				TubeType = (_currentTubeType == General.ActiveTubeType.Round ? "R" : "Q"),
 				PackageType = (_currentWrapType == General.ActiveWrapType.Hexagonal ? "H" : "Q"),
-				Weight = lblWeight.Content.ToString(),
+				Weight = tbWeight.Text,
 				Created = DateTime.Now.ToString("dd/MM/yyyy HH\\hmm")
 			};
-			if (CheckEmptyTextBoxes()) {
+			if (CheckEmptyNewOrderTextBoxes()) {
 				OrderDetails emptyOrder = null;
 				return emptyOrder;
 			}
 			return newOrder;
 		}
-		private bool CheckEmptyTextBoxes() {
+		private bool CheckEmptyNewOrderTextBoxes() {
 			bool boxIsEmpty = false;
 			ICollection<TextBox> textBoxes = new Collection<TextBox>() {tbNrOrdem, tbDiam, tbWidth, tbHeight,
 															tbThickness,tbLength, tbTubeNmbr };
@@ -825,69 +846,67 @@ namespace Empacotadora {
 		private void tbStrapPosition_LostFocus(object sender, RoutedEventArgs e) {
 			// Finds number of active textboxes (nmbr of straps)
 			// and calls method passing the nmbr of straps
-			byte.TryParse(numKeypadUpDown.Value.ToString(), out byte value);
+			if (!byte.TryParse(numKeypadUpDown.Value.ToString(), out byte value)) return;
 			switch (value) {
 				case 2:
-					if (!(tbstrap2_1.Text != "" && tbstrap2_2.Text != "")) return;
+					if ((tbstrap2_1.Text == "" || tbstrap2_2.Text == "")) return;
 					break;
 				case 3:
-					if (!(tbstrap3_1.Text != "" && tbstrap3_2.Text != "" && tbstrap3_3.Text != "")) return;
+					if ((tbstrap3_1.Text == "" || tbstrap3_2.Text == "" || tbstrap3_3.Text == "")) return;
 					break;
 				case 4:
-					if (!(tbstrap4_1.Text != "" && tbstrap4_2.Text != "" && tbstrap4_3.Text != "" && tbstrap4_4.Text != "")) return;
+					if ((tbstrap4_1.Text == "" || tbstrap4_2.Text == "" || tbstrap4_3.Text == "" || tbstrap4_4.Text == "")) return;
 					break;
 				case 5:
-					if (!(tbstrap5_1.Text != "" && tbstrap5_2.Text != "" && tbstrap5_3.Text != "" && tbstrap5_4.Text != "" && tbstrap5_5.Text != "")) return;
+					if ((tbstrap5_1.Text == "" || tbstrap5_2.Text == "" || tbstrap5_3.Text == "" || tbstrap5_4.Text == "" || tbstrap5_5.Text == "")) return;
 					break;
 				case 6:
-					if (!(tbstrap6_1.Text != "" && tbstrap6_2.Text != "" && tbstrap6_3.Text != "" && tbstrap6_4.Text != "" && tbstrap6_5.Text != "" && tbstrap6_6.Text != "")) return;
+					if ((tbstrap6_1.Text == "" || tbstrap6_2.Text == "" || tbstrap6_3.Text == "" || tbstrap6_4.Text == "" || tbstrap6_5.Text == "" || tbstrap6_6.Text == "")) return;
 					break;
 				default:
 					break;
 			}
-			GetStrapsPositionFromTextboxes(value);
+			GetStrapsPositionFromCurrentGrid(value);
 		}
-		private void GetStrapsPositionFromTextboxes(byte straps) {
-			// Gets straps position from active grid
-			string values = "";
-			IEnumerable<TextBox> textBoxes = Enumerable.Empty<TextBox>();
-			Grid currentGrid = null;
-			switch (straps) {
-				case 2:
-					currentGrid = grid2Straps;
-					break;
-				case 3:
-					currentGrid = grid3Straps;
-					break;
-				case 4:
-					currentGrid = grid4Straps;
-					break;
-				case 5:
-					currentGrid = grid5Straps;
-					break;
-				case 6:
-					currentGrid = grid6Straps;
-					break;
-				default:
-					break;
+		private IList<string> GetStrapsPositionFromCurrentGrid(byte straps) {
+			Grid currentGrid = General.GetActiveGrid(straps);
+			if (currentGrid == null) return new List<string>();
+			IEnumerable<TextBox> textBoxes = General.GetTFromControl<TextBox>(currentGrid);
+			if (textBoxes == Enumerable.Empty<TextBox>()) return new List<string>();
+			IList<string> strapsValues = General.GetStrapsValuesFromTextBoxes(textBoxes).ToList();
+			foreach (var item in strapsValues) {
+				if (item == "")
+					return new List<string>();
 			}
-			if (currentGrid == null) return;
-			textBoxes = General.GetTextBoxesFromGrid(currentGrid);
-			if (textBoxes == Enumerable.Empty<TextBox>()) return;
-			values = GetStrapsValuesFromTextBoxes(textBoxes);
-			UpdateStatusBar(values);
-		}
-		private string GetStrapsValuesFromTextBoxes(IEnumerable<TextBox> TextBoxes) {
-			string values = "";
-			foreach (var textbBox in TextBoxes)
-				values += textbBox.Text + ",";
-			return values;
+			return strapsValues;
 		}
 		private void numKeypadUpDown_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e) {
 			_textChanged = true;
 			if (!numKeypadUpDown.IsInitialized) return;
 			UpdateImageAndNumberOfTextBoxes();
 			ToogleModifyStrapsTextBoxes();
+		}
+		private void btnSaveStraps_Click(object sender, RoutedEventArgs e) {
+			if (CurrentOrder == null) {
+				UpdateStatusBar("Tem que carregar uma ordem antes de alterar as cintas");
+				return;
+			}
+			if (!byte.TryParse(numKeypadUpDown.Value.ToString(), out byte straps)) return;
+			CurrentOrder.Straps = numKeypadUpDown.Value.ToString();
+			IList<string> strapsPosition = GetStrapsPositionFromCurrentGrid(straps);
+			string stringStraps = strapsPosition.Aggregate("", (current, item) => current + (item + ","));
+			CurrentOrder.StrapsPosition = stringStraps.Remove(stringStraps.Count() - 1);
+			IList<string> valuesToWrite = OrderDetails.CreateArrayFromOrder(CurrentOrder).ToList();
+			UpdateStatusBar(OrderDetails.EditOrder(General.OrdersPath, CurrentOrder.ID, valuesToWrite.ToArray()) ?
+																						SaveSuccessful : SaveError);
+		}
+		private void btnLoadStrapsDefaultValues_Click(object sender, RoutedEventArgs e) {
+			int length = 6000;
+			if ((CurrentOrder != null) && int.TryParse(CurrentOrder.Length, out length))
+				UpdateStrapsTextBoxesValues(length);
+			else
+				UpdateStrapsTextBoxesValues(6000);
+			lblPackageLength.Content = length;
 		}
 		private void tb_PreviewMouseDoubleClickStrapper_Keypad(object sender, MouseButtonEventArgs e) {
 			if (!_isStrapsModifyActive) return;
@@ -946,9 +965,9 @@ namespace Empacotadora {
 				default:
 					break;
 			}
-			return controlsCollection = General.GetTextBoxesFromGrid(currentGrid);
+			return controlsCollection = General.GetTFromControl<TextBox>(currentGrid);
 		}
-		private void UpdateStrapsValues(int length) {
+		private void UpdateStrapsTextBoxesValues(int length) {
 			if (_currentLayout != General.ActiveLayout.Strapper) return;
 			byte.TryParse(numKeypadUpDown.Value.ToString(), out byte nmbr);
 			IEnumerable<TextBox> controlsCollection = Enumerable.Empty<TextBox>();
@@ -973,7 +992,7 @@ namespace Empacotadora {
 					break;
 			}
 			if (currentGrid == null) return;
-			controlsCollection = General.GetTextBoxesFromGrid(currentGrid);
+			controlsCollection = General.GetTFromControl<TextBox>(currentGrid);
 			if (controlsCollection == Enumerable.Empty<TextBox>()) return;
 			int[] values = Recipes.GetStrapsPositionFromRecipe(length, nmbr);
 			byte i = 0;
@@ -981,9 +1000,6 @@ namespace Empacotadora {
 				item.Text = values[i].ToString();
 				++i;
 			}
-		}
-		private void Button_Click(object sender, RoutedEventArgs e) {
-			UpdateStrapsValues(6000);
 		}
 		private void UpdateStrapperPage() {
 			// From old program -> update_controlli_standard()
@@ -1145,16 +1161,11 @@ namespace Empacotadora {
 				string sInitDate = tbHistoryDayInit.Text + " " + tbHistoryMonthInit.Text + " " + tbHistoryYearInit.Text;
 				string sEndDate = tbHistoryDayEnd.Text + " " + tbHistoryMonthEnd.Text + " " + tbHistoryYearEnd.Text;
 				DateTime.TryParse(sInitDate, out DateTime initialDate);
-				try {
-					DateTime endDate = DateTime.Parse(sEndDate);
-					if (comboboxShift.SelectedIndex == 0)
-						datagridHistory.ItemsSource = History.ReadHistoryFromFile(General.HistoryPath, initialDate, endDate);
-					else
-						datagridHistory.ItemsSource = History.ReadHistoryFromFile(General.HistoryPath, initialDate, endDate, (byte)comboboxShift.SelectedIndex);
-				}
-				catch (FormatException) {
-					UpdateStatusBar("Escolha um intervalo de datas");
-				}
+				if (!DateTime.TryParse(sEndDate, out DateTime endDate)) return;
+				if (comboboxShift.SelectedIndex == 0)
+					datagridHistory.ItemsSource = History.ReadHistoryFromFile(General.HistoryPath, initialDate, endDate);
+				else
+					datagridHistory.ItemsSource = History.ReadHistoryFromFile(General.HistoryPath, initialDate, endDate, (byte)comboboxShift.SelectedIndex);
 			}
 		}
 		#endregion
@@ -1163,24 +1174,13 @@ namespace Empacotadora {
 		// Recipes
 		private void btnRecipeRoundTube_Click(object sender, RoutedEventArgs e) {
 			ShowTubeRecipesOnDataGrid(General.PathRoundTubes);
-			List<TextBox> textBoxes = CollectRecipeTextBoxes();
-			foreach (TextBox item in textBoxes)
-				item.Text = "";
+			ClearTextBoxes(gridRecipes);
 			_currentRecipe = General.ActiveRecipe.RoundTube;
 		}
 		private void btnRecipeSquareTube_Click(object sender, RoutedEventArgs e) {
 			ShowTubeRecipesOnDataGrid(General.PathSquareTubes, General.PathRectTubes);
-			List<TextBox> textBoxes = CollectRecipeTextBoxes();
-			foreach (TextBox item in textBoxes)
-				item.Text = "";
+			ClearTextBoxes(gridRecipes);
 			_currentRecipe = General.ActiveRecipe.SquareTube;
-		}
-		private List<TextBox> CollectRecipeTextBoxes() {
-			List<TextBox> textBoxes = new List<TextBox>();
-			textBoxes.AddRange(General.GetTextBoxesFromGrid(gridRecipes));
-			textBoxes.AddRange(General.GetTextBoxesFromGrid(gridRecipesRoundTube));
-			textBoxes.AddRange(General.GetTextBoxesFromGrid(gridRecipesSquareTube));
-			return textBoxes;
 		}
 		private void ShowTubeRecipesOnDataGrid(string pathRoundTube) {
 			datagridRecipes.ItemsSource = Recipes.ReadTubeRecipesFromFile(pathRoundTube);
@@ -1203,8 +1203,7 @@ namespace Empacotadora {
 		private void btnRecipeEdit_Click(object sender, RoutedEventArgs e) {
 			if (_cellsArePopulated) {
 				_editingRecipe = true;
-				List<TextBox> textBoxes = CollectRecipeTextBoxes();
-				foreach (TextBox item in textBoxes)
+				foreach (TextBox item in General.GetTFromControl<TextBox>(gridRecipes))
 					General.SetTextBoxForEdit(item);
 				DisableRecipeUIButtons();
 			}
@@ -1284,8 +1283,7 @@ namespace Empacotadora {
 			_editingRecipe = false;
 		}
 		private void DisableTextBoxesModification() {
-			List<TextBox> textBoxes = CollectRecipeTextBoxes();
-			foreach (TextBox item in textBoxes)
+			foreach (TextBox item in General.GetTFromControl<TextBox>(gridRecipes))
 				ResetTextBox(item);
 		}
 		private bool EditSquareTubeRecipesTextFile(ICollection<string> newFileContent, string path) {
@@ -1342,8 +1340,7 @@ namespace Empacotadora {
 			borderManualWrap.Visibility = _collapsed;
 		}
 		private void btnRecipeCancel_Click(object sender, RoutedEventArgs e) {
-			List<TextBox> textBoxes = CollectRecipeTextBoxes();
-			foreach (TextBox item in textBoxes)
+			foreach (TextBox item in General.GetTFromControl<TextBox>(gridRecipes))
 				ResetTextBox(item);
 			ResetRecipeUIButtons();
 			_editingRecipe = false;

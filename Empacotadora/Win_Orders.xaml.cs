@@ -15,13 +15,14 @@ using System.Windows.Threading;
 using System.IO;
 using System.Windows.Interop;
 using System.Drawing;
+using System.Collections.ObjectModel;
 
 namespace Empacotadora {
 	/// <summary>
 	/// Lógica interna para Win_Orders.xaml
 	/// </summary>
 	public partial class Win_Orders : Window {
-		public enum Layout { Default, NewOrder, EditOrder, Recipes }
+		public enum Layout { Default, NewOrder, EditOrder, EditCurrentOrder, Recipes }
 		public static Layout ordersLayout;
 		Visibility _visible = Visibility.Visible;
 		Visibility _collapsed = Visibility.Collapsed;
@@ -45,6 +46,14 @@ namespace Empacotadora {
 		private void btnCurrentOrder_Click(object sender, RoutedEventArgs e) {
 			SetCurrentOrderLayout();
 			ordersLayout = Layout.Default;
+		}
+		private void btnEditCurrentOrder_Click(object sender, RoutedEventArgs e) {
+			if (Win_Main.CurrentOrder == null) {
+				UpdateStatusBar("Nenhuma ordem carregada", 1);
+				return;
+			}
+			ordersLayout = Layout.EditCurrentOrder;
+			Close();
 		}
 		private void btnListOrders_Click(object sender, RoutedEventArgs e) {
 			SetOrdersListLayout();
@@ -76,9 +85,9 @@ namespace Empacotadora {
 											 "             remover a seguinte ordem?\n\t" +
 											 "              " + datagridRow.Name, "Confirmar?", MessageBoxButton.YesNo);
 			if (answer != MessageBoxResult.Yes) return;
-			OrderDetails.DeactivateOrder(datagridRow.ID, General.Path);
+			OrderDetails.DeactivateOrder(datagridRow.ID, General.OrdersPath);
 			datagridOrders.ItemsSource = null;
-			datagridOrders.ItemsSource = OrderDetails.ReadOrdersFromFile(General.Path);
+			datagridOrders.ItemsSource = OrderDetails.ReadOrdersFromFile(General.OrdersPath);
 		}
 		private void LoadOrder(OrderDetails datagridRow) {
 			MessageBoxResult answer = MessageBoxResult.None;
@@ -95,11 +104,11 @@ namespace Empacotadora {
 			FillControlsWithCurrentOrder();
 
 			SetCurrentOrderLayout();
-			UpdateStatusBar(Win_Main.CurrentOrder.Name + " " + Win_Main.CurrentOrder.Thick + " " + Win_Main.CurrentOrder.Length);
+			UpdateStatusBar(Win_Main.CurrentOrder.Name + " " + Win_Main.CurrentOrder.Thickness + " " + Win_Main.CurrentOrder.Length);
 			ShowGreenLabelLoadSuccessful();
 		}
 		private void EditOrder(OrderDetails datagridRow) {
-			Win_Main.CurrentOrder = datagridRow;
+			Win_Main.TempOrder = datagridRow;
 			ordersLayout = Layout.EditOrder;
 			Close();
 		}
@@ -161,7 +170,7 @@ namespace Empacotadora {
 				lblOrderDiam.Content = Win_Main.CurrentOrder.Diameter;
 			}
 			lblOrderName.Content = Win_Main.CurrentOrder.Name;
-			lblOrderThick.Content = Win_Main.CurrentOrder.Thick;
+			lblOrderThick.Content = Win_Main.CurrentOrder.Thickness;
 			lblOrderLength.Content = Win_Main.CurrentOrder.Length;
 		}
 		private void ShowGreenLabelLoadSuccessful() {
@@ -175,7 +184,7 @@ namespace Empacotadora {
 		private void SetCurrentOrderLayout() {
 			tabOrders.SelectedItem = tabItemCurrentOrder;
 			lblTitle.Content = "Ordem atual";
-			IEnumerable<Button> buttonsToClear = new List<Button>() {
+			IEnumerable<Button> buttonsToClear = new Collection<Button>() {
 				btnListOrders, btnReturn, btnNewOrder };
 			ClearButtonBackground(buttonsToClear);
 			btnCurrentOrder.Background = Brushes.LightRed;
@@ -183,15 +192,67 @@ namespace Empacotadora {
 		private void SetOrdersListLayout() {
 			tabOrders.SelectedItem = tabItemListOrders;
 			lblTitle.Content = "Ordens";
-			datagridOrders.ItemsSource = OrderDetails.ReadOrdersFromFile(General.Path);
+			datagridOrders.ItemsSource = OrderDetails.ReadOrdersFromFile(General.OrdersPath);
 			btnListOrders.Background = Brushes.LightRed;
-			IEnumerable<Button> buttonsToClear = new List<Button>() {
+			IEnumerable<Button> buttonsToClear = new Collection<Button>() {
 				btnReturn, btnNewOrder, btnCurrentOrder };
 			ClearButtonBackground(buttonsToClear);
 		}
 		private void ClearButtonBackground(IEnumerable<Button> buttonsToClear) {
 			foreach (Button item in buttonsToClear)
 				item.ClearValue(BackgroundProperty);
+		}
+
+		private void datagridOrders_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e) {
+			switch (e.Column.Header.ToString()) {
+				case "ID":
+					e.Column.Visibility = _collapsed;
+					break;
+				case "Name":
+					e.Column.Header = "Nome";
+					break;
+				case "Diameter":
+					e.Column.Header = "Diâmetro";
+					break;
+				case "Width":
+					e.Column.Header = "Largura";
+					break;
+				case "Height":
+					e.Column.Header = "Altura";
+					break;
+				case "Thickness":
+					e.Column.Header = "Espess.";
+					break;
+				case "Length":
+					e.Column.Header = "Comprim.";
+					break;
+				case "Density":
+					e.Column.Visibility = _collapsed;
+					break;
+				case "TubeAm":
+					e.Column.Header = "Tubos";
+					break;
+				case "TubeType":
+					e.Column.Header = "Tubos";
+					break;
+				case "PackageType":
+					e.Column.Header = "Pacote";
+					break;
+				case "Weight":
+					e.Column.Header = "Peso";
+					break;
+				case "Created":
+					e.Column.Header = "Criado";
+					break;
+				case "Straps":
+					e.Column.Header = "Cintas";
+					break;
+				case "StrapsPosition":
+					e.Column.Visibility = _collapsed;
+					break;
+				default:
+					break;
+			}
 		}
 	}
 }

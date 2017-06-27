@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Shapes;
 
 namespace Empacotadora {
@@ -17,7 +19,7 @@ namespace Empacotadora {
 		static readonly string _systemPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Empacotadora";
 		//// Properties ////
 		// Diretories
-		public static string Path { get; } = _systemPath + @"\Orders.txt";
+		public static string OrdersPath { get; } = _systemPath + @"\Orders.txt";
 		public static string HistoryPath { get; } = _systemPath + @"\PackageHistory.txt";
 		public static string PathSquareTubes { get; } = _systemPath + @"\SquareTubeRecipes.txt";
 		public static string PathRectTubes { get; } = _systemPath + @"\RectTubeRecipes.txt";
@@ -27,16 +29,58 @@ namespace Empacotadora {
 		public static string SquareTubeRecipePath { get; } = _systemPath + @"\SquareTubeRecipes.txt";
 		public static string RectTubeRecipePath { get; } = _systemPath + @"\RectTubeRecipes.txt";
 		//// Methods ////
-		public static IEnumerable<TextBox> GetTextBoxesFromGrid(Grid currentGrid) {
-			IEnumerable<TextBox> textBoxes = Enumerable.Empty<TextBox>();
-			if (currentGrid == null) return textBoxes;
-			textBoxes = currentGrid.Children.OfType<TextBox>();
-			return textBoxes;
+		/// <summary>
+		/// Gets generic type Childs from generic type Control
+		/// </summary>
+		public static IEnumerable<T> GetTFromControl<T>(DependencyObject depObj) where T : DependencyObject {
+			if (depObj == null) yield break;
+			for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++) {
+				DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
+				if (child != null && child is T) {
+					yield return (T)child;
+				}
+				foreach (T childOfChild in GetTFromControl<T>(child)) {
+					yield return childOfChild;
+				}
+			}
 		}
 		public static void SetTextBoxForEdit(TextBox item) {
 			item.Background = Brushes.YellowBrush;
 			item.IsReadOnly = false;
 			item.Focusable = true;
+		}
+		public static string[] GetStrapsValuesFromTextBoxes(IEnumerable<TextBox> TextBoxes) {
+			string[] values = new string[TextBoxes.Count()];
+			byte i = 0;
+			foreach (var textbBox in TextBoxes) {
+				values[i] = textbBox.Text;
+				++i;
+			}
+			return values;
+		}
+		public static Grid GetActiveGrid(byte straps) {
+			// Gets straps position from active grid
+			Grid currentGrid = null;
+			switch (straps) {
+				case 2:
+					currentGrid.Name = "grid2Straps";
+					break;
+				case 3:
+					currentGrid.Name = "grid3Straps";
+					break;
+				case 4:
+					currentGrid.Name = "grid4Straps";
+					break;
+				case 5:
+					currentGrid.Name = "grid5Straps";
+					break;
+				case 6:
+					currentGrid.Name = "grid6Straps";
+					break;
+				default:
+					break;
+			}
+			return currentGrid;
 		}
 		// Rope Straps
 		public static IEnumerable<string> GetAllRopeStrapsFromFile(string pathRopeStraps) {
@@ -47,15 +91,10 @@ namespace Empacotadora {
 		public static bool CheckIfRopeIsValid(int packagePerimeter, int packageWeight, string[] values) {
 			bool ropeIsValid = false, ropePerimeterIsValid = false, ropeWeightIsValid = false;
 			int ropePerimeter = 0, ropeWeight = 0;
-			try {
-				ropePerimeter = int.Parse(values[1]);
-				ropeWeight = int.Parse(values[2]);
-			}
-			catch (Exception exc) when (exc is ArgumentNullException || exc is FormatException || exc is OverflowException) {
-				return false;
-			}
+			if (!int.TryParse(values[1], out ropePerimeter) ||
+				!int.TryParse(values[2], out ropeWeight)) return false;
 			ropePerimeterIsValid = (ropePerimeter >= packagePerimeter + 150 &&
-									ropePerimeter <= packagePerimeter + 300);
+										ropePerimeter <= packagePerimeter + 300);
 			ropeWeightIsValid = (ropeWeight >= packageWeight + 50);
 			ropeIsValid = (ropePerimeterIsValid && ropeWeightIsValid);
 			return ropeIsValid;
@@ -107,7 +146,7 @@ namespace Empacotadora {
 		}
 		public static void GetValuesFromRoundTubeRecipe(int tubeAmount, out int tubeAmountBigLine, out int tubeAmountSmallLine, out int vPosInit, out int hPosInit, out int shapeDiameter) {
 			Dictionary<string, int> recipeValues = Recipes.GetRoundTubeRecipe(tubeAmount);
-			if (recipeValues != null) {
+			if (recipeValues != null && !recipeValues.Equals(new Dictionary<string, int>())) {
 				tubeAmountBigLine = recipeValues["bigRowSize"];
 				tubeAmountSmallLine = recipeValues["smallRowSize"];
 				vPosInit = recipeValues["vPos"];

@@ -20,7 +20,7 @@ namespace Empacotadora {
 			}
 		}
 		/// <summary>
-		/// Rewrites the entire file with the argument List<string>
+		/// Rewrites the entire file with the argument newFileContent
 		/// </summary>
 		public static bool WriteToFile(string path, string[] newFileContent) {
 			try {

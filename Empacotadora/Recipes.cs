@@ -9,7 +9,7 @@ namespace Empacotadora {
 	class Recipes {
 		public static Dictionary<string, int> GetRoundTubeRecipe(int tubeNmbr) {
 			Dictionary<string, int> recipeValues = new Dictionary<string, int>();
-			if (!Document.ReadFromFile(General.RoundTubeRecipePath, out IEnumerable<string> linesFromFile)) return recipeValues;
+			if (!Document.ReadFromFile(General.RoundTubeRecipePath, out IEnumerable<string> linesFromFile)) return null;
 			ParseRoundTubeRecipeValues(linesFromFile, tubeNmbr, out byte bigRow, out byte smallRow, out byte shapeSize, out int vPos, out int hPos);
 			recipeValues = new Dictionary<string, int>()
 			{
@@ -24,10 +24,10 @@ namespace Empacotadora {
 		public static Dictionary<string, int> GetSquareTubeRecipe(int tubeNmbr) {
 			bool found = false;
 			Dictionary<string, int> recipeValues = new Dictionary<string, int>();
-			if (!Document.ReadFromFile(General.SquareTubeRecipePath, out IEnumerable<string> linesFromFile)) return recipeValues;
+			if (!Document.ReadFromFile(General.SquareTubeRecipePath, out IEnumerable<string> linesFromFile)) return null;
 			ParseSquareTubeRecipeValues(linesFromFile, tubeNmbr, out byte shapeSize, out int vPos, out int hPos, ref found);
 			if (found == false) {
-				if (!Document.ReadFromFile(General.RectTubeRecipePath, out IEnumerable<string> linesFromFileOfRectangleRecipe)) return recipeValues;
+				if (!Document.ReadFromFile(General.RectTubeRecipePath, out IEnumerable<string> linesFromFileOfRectangleRecipe)) return null;
 				ParseSquareTubeRecipeValues(linesFromFileOfRectangleRecipe, tubeNmbr, out shapeSize, out vPos, out hPos, ref found);
 			}
 			recipeValues = new Dictionary<string, int>()
