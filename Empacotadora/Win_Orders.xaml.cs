@@ -22,8 +22,6 @@ namespace Empacotadora {
 	/// Lógica interna para Win_Orders.xaml
 	/// </summary>
 	public partial class Win_Orders : Window {
-		public enum Layout { Default, NewOrder, EditOrder, EditCurrentOrder, Recipes }
-		public static Layout ordersLayout;
 		Visibility _visible = Visibility.Visible;
 		Visibility _collapsed = Visibility.Collapsed;
 
@@ -36,28 +34,28 @@ namespace Empacotadora {
 			errorImage.Source = Imaging.CreateBitmapSourceFromHIcon(SystemIcons.Error.Handle‌​, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
 		}
 		private void btnReturn_Click(object sender, RoutedEventArgs e) {
-			ordersLayout = Layout.Default;
+			General.CurrentLayout = General.Layout.Wrapper;
 			Close();
 		}
 		private void btnNewOrder_Click(object sender, RoutedEventArgs e) {
-			ordersLayout = Layout.NewOrder;
+			General.CurrentLayout = General.Layout.NewOrder;
 			Close();
 		}
 		private void btnCurrentOrder_Click(object sender, RoutedEventArgs e) {
 			SetCurrentOrderLayout();
-			ordersLayout = Layout.Default;
+			General.CurrentLayout = General.Layout.Wrapper;
 		}
 		private void btnEditCurrentOrder_Click(object sender, RoutedEventArgs e) {
 			if (Win_Main.CurrentOrder == null) {
 				UpdateStatusBar("Nenhuma ordem carregada", 1);
 				return;
 			}
-			ordersLayout = Layout.EditCurrentOrder;
+			General.CurrentLayout = General.Layout.EditCurrentOrder;
 			Close();
 		}
 		private void btnListOrders_Click(object sender, RoutedEventArgs e) {
 			SetOrdersListLayout();
-			ordersLayout = Layout.Default;
+			General.CurrentLayout = General.Layout.Wrapper;
 		}
 		private void btnOrdersList_Click(object sender, RoutedEventArgs e) {
 			OrderDetails datagridRow = GetDataFromGrid();
@@ -109,11 +107,11 @@ namespace Empacotadora {
 		}
 		private void EditOrder(OrderDetails datagridRow) {
 			Win_Main.TempOrder = datagridRow;
-			ordersLayout = Layout.EditOrder;
+			General.CurrentLayout = General.Layout.EditOrder;
 			Close();
 		}
 		private void btnRecipes_Click(object sender, RoutedEventArgs e) {
-			ordersLayout = Layout.Recipes;
+			General.CurrentLayout = General.Layout.Recipes;
 			Close();
 		}
 		private OrderDetails GetDataFromGrid() {

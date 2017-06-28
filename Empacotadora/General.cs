@@ -11,7 +11,8 @@ namespace Empacotadora {
 	class General {
 		public enum ActiveTubeType { Round, Square }
 		public enum ActiveWrapType { Hexagonal, Square }
-		public enum ActiveLayout { Wrapper, EditOrder, Strapper, Storage, Recipes, NewRecipe, History }
+		public enum Layout { Wrapper, NewOrder, StrapsNewOrder, EditOrder, StrapsEditOrder, EditCurrentOrder, StrapsEditCurrentOrder, Strapper, Storage, Recipes, NewRecipe, History }
+		public static Layout CurrentLayout;
 		public enum ActiveDate { Initial, End }
 		public enum ActiveRecipe { RoundTube, SquareTube }
 		//// Fields ////
@@ -36,12 +37,10 @@ namespace Empacotadora {
 			if (depObj == null) yield break;
 			for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++) {
 				DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
-				if (child != null && child is T) {
+				if (child != null && child is T)
 					yield return (T)child;
-				}
-				foreach (T childOfChild in GetTFromControl<T>(child)) {
+				foreach (T childOfChild in GetTFromControl<T>(child))
 					yield return childOfChild;
-				}
 			}
 		}
 		public static void SetTextBoxForEdit(TextBox item) {
@@ -57,30 +56,6 @@ namespace Empacotadora {
 				++i;
 			}
 			return values;
-		}
-		public static Grid GetActiveGrid(byte straps) {
-			// Gets straps position from active grid
-			Grid currentGrid = null;
-			switch (straps) {
-				case 2:
-					currentGrid.Name = "grid2Straps";
-					break;
-				case 3:
-					currentGrid.Name = "grid3Straps";
-					break;
-				case 4:
-					currentGrid.Name = "grid4Straps";
-					break;
-				case 5:
-					currentGrid.Name = "grid5Straps";
-					break;
-				case 6:
-					currentGrid.Name = "grid6Straps";
-					break;
-				default:
-					break;
-			}
-			return currentGrid;
 		}
 		// Rope Straps
 		public static IEnumerable<string> GetAllRopeStrapsFromFile(string pathRopeStraps) {

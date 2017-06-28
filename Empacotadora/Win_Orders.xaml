@@ -119,7 +119,7 @@
 				</TabItem>
 				<TabItem x:Name="tabItemListOrders" Header="ListOrders" BorderBrush="{x:Null}" Background="{x:Null}">
 					<Grid Background="#FFDEDEDE">
-						<DataGrid x:Name="datagridOrders" AlternatingRowBackground="#FF976666" Margin="12,10,15,0" Background="{x:Null}" BorderBrush="{x:Null}" Height="418" UseLayoutRounding="True" FontSize="22" GridLinesVisibility="Vertical" VerticalGridLinesBrush="#FF838383" HeadersVisibility="Column" IsReadOnly="True" VerticalAlignment="Top" AlternationCount="2" SelectionMode="Single" CanUserReorderColumns="False" AutoGeneratingColumn="datagridOrders_AutoGeneratingColumn" Width="1025"/>
+						<DataGrid x:Name="datagridOrders" AlternatingRowBackground="#FF976666" Margin="12,10,15,0" Background="{x:Null}" BorderBrush="{x:Null}" Height="418" UseLayoutRounding="True" FontSize="22" GridLinesVisibility="Vertical" VerticalGridLinesBrush="#FF838383" HeadersVisibility="Column" IsReadOnly="True" VerticalAlignment="Top" AlternationCount="2" SelectionMode="Single" CanUserReorderColumns="False" AutoGeneratingColumn="datagridOrders_AutoGeneratingColumn" Width="1050"/>
 						<Button x:Name="btnDeleteOrder" Content="Apagar ordem" FontSize="20" Margin="369,428,0,0" Click="btnOrdersList_Click" Width="150" HorizontalAlignment="Left" Height="80"/>
 						<Button x:Name="btnLoadOrder" Content="Carregar ordem" FontSize="20" Margin="519,428,0,0" Click="btnOrdersList_Click" Width="150" HorizontalAlignment="Left" BorderThickness="1,3,1,3" Height="80"/>
 						<Button x:Name="btnEditOrder" Content="Editar ordem" FontSize="20" Margin="669,428,0,0" Click="btnOrdersList_Click" Width="150" HorizontalAlignment="Left" Height="80"/>

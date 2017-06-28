@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Windows;
 using IBHNETLib;
@@ -20,7 +21,8 @@ namespace Empacotadora {
 		/// <summary>
 		/// Returns connection status
 		/// </summary>
-		public string Connect(string IPAddr, byte MPIAddr) {
+		public string Connect(string IPAddr, byte MPIAddr)
+		{
 			// Establish a connection to the control unit
 			if (!_initialized)
 				Init();
@@ -39,7 +41,8 @@ namespace Empacotadora {
 				_message = (_connected ? "Already connected" : "Not initialized");
 			return _message;
 		}
-		private void Init() {
+		private void Init()
+		{
 			// PLC Object Initialize and create a reference to all interfaces.
 			try {
 				SPS = new IIBHnet();
@@ -52,7 +55,8 @@ namespace Empacotadora {
 				_initialized = false;
 			}
 		}
-		private void TryToConnect(string IPAddr, int nMpi, int nRack, int nSlot) {
+		private void TryToConnect(string IPAddr, int nMpi, int nRack, int nSlot)
+		{
 			try {
 				// Since the function "Connect_DP" of interface 3 activates an
 				// exception in the event of an incorrect connection setup, this function is used.
@@ -77,7 +81,8 @@ namespace Empacotadora {
 		/// <summary>
 		/// Returns connection status
 		/// </summary>
-		public string Disconnect() {
+		public string Disconnect()
+		{
 			// Disconnect the connection to the PLC
 			if (_connected)
 				TryToDisconnect();
@@ -85,7 +90,8 @@ namespace Empacotadora {
 				_message = "Not connected";
 			return _message;
 		}
-		private void TryToDisconnect() {
+		private void TryToDisconnect()
+		{
 			try {
 				//SPS.Disconnect();
 				_connected = false;
@@ -100,7 +106,8 @@ namespace Empacotadora {
 		#endregion
 
 		#region Bool
-		public bool ReadBool(int DB, Tuple<int, int, string> variable) {
+		public bool ReadBool(int DB, Tuple<int, int, string> variable)
+		{
 			string valueReadFromPLC = "";
 			if (_connected) {
 				int DBAddress = DB;
@@ -116,7 +123,8 @@ namespace Empacotadora {
 			bool.TryParse(valueReadFromPLC, out bool result);
 			return result;
 		}
-		private void TryToReadBool(int DBAddress, int variableAddress, int bitToChange, ref string valueReadFromPLC) {
+		private void TryToReadBool(int DBAddress, int variableAddress, int bitToChange, ref string valueReadFromPLC)
+		{
 			try {
 				// SPS.get_D(int DBNr, int nr, int bit);
 				// DBNr     : The number of the data block
@@ -133,7 +141,8 @@ namespace Empacotadora {
 			}
 		}
 
-		public string WriteBool(int DBAddress, Tuple<int, int, string> variable, bool valueToWrite) {
+		public string WriteBool(int DBAddress, Tuple<int, int, string> variable, bool valueToWrite)
+		{
 			if (_connected) {
 				int variableAddress = variable.Item1;
 				int bitToChange = variable.Item2;
@@ -143,7 +152,8 @@ namespace Empacotadora {
 				_message = "Not connected";
 			return _message;
 		}
-		private void TryToWriteBool(int DBAddress, int variableAddress, int bitToChange, bool valueToWrite) {
+		private void TryToWriteBool(int DBAddress, int variableAddress, int bitToChange, bool valueToWrite)
+		{
 			// SPS.set_D(int DBNr, int nr, int bit, int pVal);
 			// DBNr : The number of the data block
 			// nr   : The byte address within the DB
@@ -160,13 +170,15 @@ namespace Empacotadora {
 			}
 		}
 
-		public void ToogleBool(int DB, Tuple<int, int, string> variable) {
+		public void ToogleBool(int DB, Tuple<int, int, string> variable)
+		{
 			//WriteBool(DB, variable, !ReadBool(DB, variable));
 		}
 		#endregion
 
 		#region Int
-		public int ReadInt(int DBAddress, int varAddress) {
+		public int ReadInt(int DBAddress, int varAddress)
+		{
 			string valueReadFromPLC = "";
 			if (_connected) {
 				try {
@@ -189,7 +201,8 @@ namespace Empacotadora {
 			int.TryParse(valueReadFromPLC, out int result);
 			return result;
 		}
-		public void WriteInt(int DBAddress, int varAddress, double valueToWrite) {
+		public void WriteInt(int DBAddress, int varAddress, double valueToWrite)
+		{
 			if (!_connected) {
 				try {
 					// SPS.set_DW(int DBNr, int nr, int pVal);
@@ -217,7 +230,8 @@ namespace Empacotadora {
 		#endregion
 
 		#region Real
-		public double ReadReal(int DBAddress, int varAddress) {
+		public double ReadReal(int DBAddress, int varAddress)
+		{
 			string valueReadFromPLC = "";
 			if (_connected) {
 				try {
@@ -237,10 +251,11 @@ namespace Empacotadora {
 				return 0;
 			}
 			MessageBox.Show(_message);
-			double.TryParse(valueReadFromPLC, out double result);
+			double.TryParse(valueReadFromPLC, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double result);
 			return result;
 		}
-		public void WriteReal(int DBAddress, int varAddress, double valueToWrite) {
+		public void WriteReal(int DBAddress, int varAddress, double valueToWrite)
+		{
 			if (_connected) {
 				try {
 					// SPS.set_DW(int DBNr, int nr, int pVal);
@@ -262,7 +277,8 @@ namespace Empacotadora {
 		#endregion
 
 		#region Array Int
-		public int[] ReadArrayInt(int DBAddress, int varAddressFrom, int varAddressTo) {
+		public int[] ReadArrayInt(int DBAddress, int varAddressFrom, int varAddressTo)
+		{
 			int[] arrayOfInts = new int[0];
 			if (_connected) {
 				try {
@@ -285,7 +301,8 @@ namespace Empacotadora {
 		#endregion
 
 		#region Array Real
-		public double[] ReadArrayReal(int DBAddress, int varAddressFrom, int varAddressTo) {
+		public double[] ReadArrayReal(int DBAddress, int varAddressFrom, int varAddressTo)
+		{
 			double[] arrayOfReals = new double[0];
 			if (_connected) {
 				try {

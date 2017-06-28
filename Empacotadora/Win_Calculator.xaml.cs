@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -47,8 +48,8 @@ namespace Empacotadora {
 			}
 
 			string operation = tbResult.Text.Substring(indexOfOperation, 1);
-			double.TryParse(tbResult.Text.Substring(0, indexOfOperation), out double op1);
-			double.TryParse(tbResult.Text.Substring(indexOfOperation + 1, tbResult.Text.Length - indexOfOperation - 1), out double op2);
+			double.TryParse(tbResult.Text.Substring(0, indexOfOperation), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double op1);
+			double.TryParse(tbResult.Text.Substring(indexOfOperation + 1, tbResult.Text.Length - indexOfOperation - 1), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double op2);
 
 			switch (operation) {
 				case "+":

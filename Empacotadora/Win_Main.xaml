@@ -100,6 +100,7 @@
 				<Button x:Name="btnReturn" Content="Voltar" Grid.Column="7" FontSize="20" Click="btnReturn_Click"/>
 				<Button x:Name="btnAbout" Content="Sobre" Grid.Column="6" FontSize="20" Margin="157.333,0,0,0" Click="btnAbout_Click" BorderThickness="3,3,1,3"/>
 				<Button x:Name="btnExit" Content="Sair" Grid.Column="7" FontSize="20" Click="btnExit_Click"/>
+				<Button x:Name="btnDefineStraps" Content="Definir Cintas" FontSize="20" Click="btnDefineStraps_Click" Visibility="Collapsed"/>
 			</Grid>
 			<TabControl x:Name="tabLayout" HorizontalAlignment="Left" Margin="0,60,0,83" Width="1440" BorderBrush="{x:Null}" Background="{x:Null}">
 				<TabItem x:Name="tabItemInit" Header="Init" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top">
@@ -123,7 +124,7 @@
 								</Style>
 							</Button.Style>
 						</Button>
-						<Image Height="132" Margin="424,0,424,380" Source="Resources/Ferpinta Logo.jpg" Stretch="Fill" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
+						<Image Height="132" Margin="424,117,424,0" Source="Resources/Ferpinta Logo.jpg" Stretch="Fill" VerticalAlignment="Top" HorizontalAlignment="Center"/>
 					</Grid>
 				</TabItem>
 				<TabItem x:Name="tabItemWrapper" Header="Empacot.">
