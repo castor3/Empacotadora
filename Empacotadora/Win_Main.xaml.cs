@@ -62,7 +62,7 @@ namespace Empacotadora {
 		StructTubeChange _oldTube = new StructTubeChange();
 
 		readonly int _defaultRoundTubeNmbr = 37, _defaultDiameter = 120;
-		readonly int _defaultSquareTubeNmbr = 36, _defaultWidth = 60, _defaultHeight = 40;
+		readonly int _defaultSquareTubeNmbr = 81, _defaultWidth = 60, _defaultHeight = 60;
 		readonly byte _defaultStrapsNumber = 4;
 
 		public Win_Main()
@@ -148,13 +148,6 @@ namespace Empacotadora {
 			lblID.Content = order.ID;
 			lblID1.Content = "ID:";
 		}
-		private void ShowStrapsOnStrapperLayout()
-		{
-			if (CurrentOrder == null) return;
-			int.TryParse(CurrentOrder.Straps, out int strapsNmbr);
-			numKeypadUpDown.Value = strapsNmbr;
-			FillStrapsTextBoxesWithOrderValues(CurrentOrder);
-		}
 		private void SetNewOrderEnvironment()
 		{
 			if (!Document.ReadFromFile(General.OrdersPath, out IEnumerable<string> linesFromFile)) return;
@@ -172,26 +165,6 @@ namespace Empacotadora {
 		{
 			foreach (TextBox item in General.GetTFromControl<TextBox>(grid))
 				item.Text = "";
-		}
-		private void ShowCurrentOrderOnWrapperLayout()
-		{
-			if (CurrentOrder == null) return;
-			int.TryParse(CurrentOrder.TubeAm, out int amount);
-			if (CurrentOrder.Diameter == "") {
-				gridRound.Visibility = _collapsed;
-				gridSquare.Visibility = _visible;
-				lblOrderWidth.Content = CurrentOrder.Width;
-				lblOrderHeight.Content = CurrentOrder.Height;
-			}
-			else {
-				gridRound.Visibility = _visible;
-				gridSquare.Visibility = _collapsed;
-				lblOrderDiam.Content = CurrentOrder.Diameter;
-			}
-			lblOrderName.Content = CurrentOrder.Name;
-			lblOrderThick.Content = CurrentOrder.Thickness;
-			lblOrderLength.Content = CurrentOrder.Length;
-			lblPackageLength.Content = CurrentOrder.Length;
 		}
 		private void btnSaveOrder_Click(object sender, RoutedEventArgs e)
 		{
@@ -239,43 +212,6 @@ namespace Empacotadora {
 			}
 			UpdateStatusBar(msg);
 			SetWrapperLayout();
-		}
-		private void btnDefineStraps_Click(object sender, RoutedEventArgs e)
-		{
-			if (GatherOrderTextBoxesValues() == null) {
-				UpdateStatusBar("Para continuar tem que preencher todos os campos");
-				return;
-			}
-			SetDefineStrapsLayout();
-			lblPackageLength.Content = tbLength.Text;
-			switch (General.CurrentLayout) {
-				case General.Layout.NewOrder:
-					General.CurrentLayout = General.Layout.StrapsNewOrder;
-					LoadStrapsDefaultValues();
-					break;
-				case General.Layout.EditOrder:
-					General.CurrentLayout = General.Layout.StrapsEditOrder;
-					FillStrapsTextBoxesWithOrderValues(TempOrder);
-					break;
-				case General.Layout.EditCurrentOrder:
-					General.CurrentLayout = General.Layout.StrapsEditCurrentOrder;
-					FillStrapsTextBoxesWithOrderValues(CurrentOrder);
-					break;
-				default:
-					UpdateStatusBar("Estado inválido", 1);
-					return;
-			}
-		}
-		private void FillStrapsTextBoxesWithOrderValues(OrderDetails order)
-		{
-			numKeypadUpDown.Value = int.Parse(order.Straps);
-			IEnumerable<TextBox> textBoxes = GetCurrentActiveStrapsTextBoxes();
-			string[] array = order.StrapsPosition.Split(',');
-			byte i = 0;
-			foreach (TextBox box in textBoxes) {
-				box.Text = array[i];
-				++i;
-			}
 		}
 		private void btnWrapper_Click(object sender, RoutedEventArgs e)
 		{
@@ -596,6 +532,7 @@ namespace Empacotadora {
 			btnOrders.Visibility = _collapsed;
 			gridRecipesSquareTube.Visibility = _collapsed;
 			gridRecipesRoundTube.Visibility = _visible;
+			borderManualWrap.Visibility = _collapsed;
 			datagridRecipes.ItemsSource = Recipes.ReadTubeRecipesFromFile(General.PathRoundTubes);
 			_currentRecipe = General.ActiveRecipe.RoundTube;
 			General.CurrentLayout = General.Layout.Recipes;
@@ -651,6 +588,7 @@ namespace Empacotadora {
 			btnReturn.Visibility = _collapsed;
 			btnDefineStraps.Visibility = _collapsed;
 			borderWrapTubeType.Visibility = _collapsed;
+			btnSaveOrder.Visibility = _collapsed;
 		}
 		private void ShowStrapperControls()
 		{
@@ -935,6 +873,26 @@ namespace Empacotadora {
 			}
 			lbAllowedRopeStraps.ItemsSource = ropeStraps;
 		}
+		private void ShowCurrentOrderOnWrapperLayout()
+		{
+			if (CurrentOrder == null) return;
+			int.TryParse(CurrentOrder.TubeAm, out int amount);
+			if (CurrentOrder.Diameter == "") {
+				gridRound.Visibility = _collapsed;
+				gridSquare.Visibility = _visible;
+				lblOrderWidth.Content = CurrentOrder.Width;
+				lblOrderHeight.Content = CurrentOrder.Height;
+			}
+			else {
+				gridRound.Visibility = _visible;
+				gridSquare.Visibility = _collapsed;
+				lblOrderDiam.Content = CurrentOrder.Diameter;
+			}
+			lblOrderName.Content = CurrentOrder.Name;
+			lblOrderThick.Content = CurrentOrder.Thickness;
+			lblOrderLength.Content = CurrentOrder.Length;
+			lblPackageLength.Content = CurrentOrder.Length;
+		}
 		private void PLC_UpdateTubesAndPackageData()
 		{
 			// checks if tubes per row has changed
@@ -1066,6 +1024,7 @@ namespace Empacotadora {
 			}
 			CurrentOrder.Straps = numKeypadUpDown.Value.ToString();
 			IList<string> strapsPosition = GetStrapsPositionFromCurrentGrid();
+			if (strapsPosition == null) return;
 			string stringStraps = strapsPosition.Aggregate("", (current, item) => current + (item + ","));
 			CurrentOrder.StrapsPosition = stringStraps.Remove(stringStraps.Count() - 1);
 			IList<string> valuesToWrite = OrderDetails.CreateArrayFromOrder(CurrentOrder).ToList();
@@ -1105,6 +1064,43 @@ namespace Empacotadora {
 			_isStrapsModifyActive ^= true;
 			btnModifyStraps.Content = (_isStrapsModifyActive ? "Guardar" : "Modificar");
 			ToogleModifyStrapsTextBoxes();
+		}
+		private void btnDefineStraps_Click(object sender, RoutedEventArgs e)
+		{
+			if (GatherOrderTextBoxesValues() == null) {
+				UpdateStatusBar("Para continuar tem que preencher todos os campos");
+				return;
+			}
+			SetDefineStrapsLayout();
+			lblPackageLength.Content = tbLength.Text;
+			switch (General.CurrentLayout) {
+				case General.Layout.NewOrder:
+					General.CurrentLayout = General.Layout.StrapsNewOrder;
+					LoadStrapsDefaultValues();
+					break;
+				case General.Layout.EditOrder:
+					General.CurrentLayout = General.Layout.StrapsEditOrder;
+					FillStrapsTextBoxesWithOrderValues(TempOrder);
+					break;
+				case General.Layout.EditCurrentOrder:
+					General.CurrentLayout = General.Layout.StrapsEditCurrentOrder;
+					FillStrapsTextBoxesWithOrderValues(CurrentOrder);
+					break;
+				default:
+					UpdateStatusBar("Estado inválido", 1);
+					return;
+			}
+		}
+		private void FillStrapsTextBoxesWithOrderValues(OrderDetails order)
+		{
+			numKeypadUpDown.Value = int.Parse(order.Straps);
+			IEnumerable<TextBox> textBoxes = GetCurrentActiveStrapsTextBoxes();
+			string[] array = order.StrapsPosition.Split(',');
+			byte i = 0;
+			foreach (TextBox box in textBoxes) {
+				box.Text = array[i];
+				++i;
+			}
 		}
 		private void ToogleModifyStrapsTextBoxes()
 		{
@@ -1236,6 +1232,13 @@ namespace Empacotadora {
 			foreach (TextBox box in textBoxes)
 				box.Text = "";
 			numKeypadUpDown.Value = 4;
+		}
+		private void ShowStrapsOnStrapperLayout()
+		{
+			if (CurrentOrder == null) return;
+			if (!int.TryParse(CurrentOrder.Straps, out int strapsNmbr)) return;
+			numKeypadUpDown.Value = strapsNmbr;
+			FillStrapsTextBoxesWithOrderValues(CurrentOrder);
 		}
 		#endregion
 
@@ -1518,7 +1521,7 @@ namespace Empacotadora {
 				ResetTextBox(item);
 		}
 		private bool EditSquareTubeRecipesTextFile(ICollection<string> newFileContent, string path)
-		{
+		{// This method will "out"/"ref" the newFileContent because "ICollection" is of reference type
 			bool found = false;
 			if (!Document.ReadFromFile(path, out IEnumerable<string> linesFromFile)) return false;
 			foreach (string item in linesFromFile) {
@@ -1532,13 +1535,13 @@ namespace Empacotadora {
 					//	newline += value + ",";
 					newline = array.Aggregate(newline, (current, value) => current + (value + ","));
 					newline = newline.Remove(newline.Length - 1);
-					newFileContent.Add(newline == "" ? item : newline);
 				}
+				newFileContent.Add(newline == "" ? item : newline);
 			}
 			return found;
 		}
 		private void EditRoundTubeRecipesTextFile(ICollection<string> newFileContent)
-		{
+		{// This method will "out"/"ref" the newFileContent because "ICollection" is of reference type
 			if (!Document.ReadFromFile(General.PathRoundTubes, out IEnumerable<string> linesFromFile)) return;
 			foreach (string item in linesFromFile) {
 				string newline = "";

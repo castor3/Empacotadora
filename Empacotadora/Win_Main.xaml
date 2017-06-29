@@ -383,27 +383,27 @@
 						<Label Content="Escoar" HorizontalAlignment="Left" Margin="0,221,0,0" VerticalAlignment="Top" Height="65" Width="323" FontSize="30"/>
 						<Rectangle Fill="#FFBFBFBF" HorizontalAlignment="Left" Margin="703,49,0,74" Width="10"/>
 						<Rectangle Fill="#FFBFBFBF" HorizontalAlignment="Left" Margin="323,49,0,74" Width="10"/>
-						<Label Content="Peso" HorizontalAlignment="Left" Margin="941,49,0,0" VerticalAlignment="Top" FontSize="25" Width="240" Height="60" Background="{x:Null}" BorderThickness="1"/>
-						<Label x:Name="lblWeightHistory" x:FieldModifier="public" Content="&lt;peso&gt;" FontSize="25" Background="#FFCFCFCF" BorderThickness="1" Margin="941,108,0,0" Height="60" VerticalAlignment="Top" BorderBrush="Black" HorizontalAlignment="Left" Width="240"/>
-						<Rectangle Fill="#FFBFBFBF" HorizontalAlignment="Left" Margin="1038,244,0,185" Width="15" Height="175"/>
-						<Rectangle Fill="#FFBFBFBF" HorizontalAlignment="Left" Height="10" Margin="841,206,0,0" VerticalAlignment="Top" Width="455"/>
-						<Rectangle Fill="#FFBFBFBF" HorizontalAlignment="Left" Height="10" Margin="841,447,0,0" VerticalAlignment="Top" Width="455"/>
-						<Label x:Name="lblWeight1" Content="..." HorizontalAlignment="Left" Margin="829,283,0,0" VerticalAlignment="Top" Height="50" Width="204" FontSize="20"/>
-						<Label x:Name="lblWeight2" Content="..." HorizontalAlignment="Left" Margin="829,333,0,0" VerticalAlignment="Top" Height="50" Width="204" FontSize="20"/>
-						<Label x:Name="lblWeight3" Content="..." HorizontalAlignment="Left" Margin="829,383,0,0" VerticalAlignment="Top" Height="50" Width="204" FontSize="20"/>
+						<Label Content="Peso" HorizontalAlignment="Left" Margin="941,35,0,0" VerticalAlignment="Top" FontSize="25" Width="240" Height="60" Background="{x:Null}" BorderThickness="1"/>
+						<Label x:Name="lblWeightHistory" x:FieldModifier="public" Content="&lt;peso&gt;" FontSize="25" Background="#FFCFCFCF" BorderThickness="1" Margin="941,94,0,0" Height="60" VerticalAlignment="Top" BorderBrush="Black" HorizontalAlignment="Left" Width="240"/>
+						<Rectangle Fill="#FFBFBFBF" HorizontalAlignment="Left" Margin="1038,242,0,211" Width="15" Height="175"/>
+						<Rectangle Fill="#FFBFBFBF" HorizontalAlignment="Left" Height="10" Margin="841,192,0,0" VerticalAlignment="Top" Width="455"/>
+						<Rectangle Fill="#FFBFBFBF" HorizontalAlignment="Left" Height="10" Margin="841,433,0,0" VerticalAlignment="Top" Width="455"/>
+						<Label x:Name="lblWeight1" Content="..." HorizontalAlignment="Left" Margin="829,269,0,0" VerticalAlignment="Top" Height="50" Width="204" FontSize="20"/>
+						<Label x:Name="lblWeight2" Content="..." HorizontalAlignment="Left" Margin="829,319,0,0" VerticalAlignment="Top" Height="50" Width="204" FontSize="20"/>
+						<Label x:Name="lblWeight3" Content="..." HorizontalAlignment="Left" Margin="829,369,0,0" VerticalAlignment="Top" Height="50" Width="204" FontSize="20"/>
 						<Label Content="Atado" HorizontalAlignment="Left" Margin="398,98,0,0" VerticalAlignment="Top" FontSize="25" Width="240" Height="60" Background="{x:Null}" BorderThickness="1"/>
 						<Label x:Name="lblPackageHistory" x:FieldModifier="public" Content="&lt;atado&gt;" FontSize="25" Background="#FFCFCFCF" BorderThickness="1" Margin="398,157,0,0" Height="60" VerticalAlignment="Top" BorderBrush="Black" HorizontalAlignment="Left" Width="240"/>
 						<Label Content="Tubos" HorizontalAlignment="Left" Margin="398,376,0,0" VerticalAlignment="Top" FontSize="25" Width="240" Height="60" Background="{x:Null}" BorderThickness="1"/>
 						<Label x:Name="lblTubesHistory" x:FieldModifier="public" Content="&lt;tubos&gt;" FontSize="25" Background="#FFCFCFCF" BorderThickness="1" Margin="398,0,0,107" BorderBrush="Black" HorizontalAlignment="Left" Width="240" Height="60" VerticalAlignment="Bottom"/>
-						<Label x:Name="lblDate1" Content="..." HorizontalAlignment="Left" Margin="1053,283,0,0" VerticalAlignment="Top" Height="50" Width="243" FontSize="20"/>
-						<Label x:Name="lblDate2" Content="..." HorizontalAlignment="Left" Margin="1053,333,0,0" VerticalAlignment="Top" Height="50" Width="243" FontSize="20"/>
-						<Label x:Name="lblDate3" Content="..." HorizontalAlignment="Left" Margin="1053,383,0,0" VerticalAlignment="Top" Height="50" Width="243" FontSize="20"/>
-						<Label Content="Peso (kg)" HorizontalAlignment="Left" Margin="829,226,0,0" VerticalAlignment="Top" Height="50" Width="204" FontSize="20"/>
-						<Label Content="Data de saída" HorizontalAlignment="Left" Margin="1053,226,0,0" VerticalAlignment="Top" Height="50" Width="243" FontSize="20"/>
-						<Button x:Name="btnHistory" HorizontalAlignment="Left" Margin="841,0,0,52" Width="154" Background="#FFC1C1C1" BorderBrush="#FF707070" Click="btnHistory_Click" Height="60" VerticalAlignment="Bottom">
+						<Label x:Name="lblDate1" Content="..." HorizontalAlignment="Left" Margin="1053,269,0,0" VerticalAlignment="Top" Height="50" Width="243" FontSize="20"/>
+						<Label x:Name="lblDate2" Content="..." HorizontalAlignment="Left" Margin="1053,319,0,0" VerticalAlignment="Top" Height="50" Width="243" FontSize="20"/>
+						<Label x:Name="lblDate3" Content="..." HorizontalAlignment="Left" Margin="1053,369,0,0" VerticalAlignment="Top" Height="50" Width="243" FontSize="20"/>
+						<Label Content="Peso (kg)" HorizontalAlignment="Left" Margin="829,212,0,0" VerticalAlignment="Top" Height="50" Width="204" FontSize="20"/>
+						<Label Content="Data de saída" HorizontalAlignment="Left" Margin="1053,212,0,0" VerticalAlignment="Top" Height="50" Width="243" FontSize="20"/>
+						<Button x:Name="btnHistory" HorizontalAlignment="Left" Margin="841,0,0,66" Width="154" Background="#FFC1C1C1" BorderBrush="#FF707070" Click="btnHistory_Click" Height="60" VerticalAlignment="Bottom">
 							<TextBlock TextWrapping="Wrap" TextAlignment="Center" Text="Histórico de atados" FontSize="20"/>
 						</Button>
-						<Button x:Name="btnEvacuatePackage" HorizontalAlignment="Left" Margin="1142,0,0,52" Width="154" BorderBrush="#FF707070" Click="btnEvacuatePackage_Click" Height="60" VerticalAlignment="Bottom">
+						<Button x:Name="btnEvacuatePackage" HorizontalAlignment="Left" Margin="1142,0,0,66" Width="154" BorderBrush="#FF707070" Click="btnEvacuatePackage_Click" Height="60" VerticalAlignment="Bottom">
 							<TextBlock TextWrapping="Wrap" Text="Evacuar atado" FontSize="20"/>
 						</Button>
 					</Grid>

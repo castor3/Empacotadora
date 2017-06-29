@@ -83,7 +83,7 @@ namespace Empacotadora {
 											 "             remover a seguinte ordem?\n\t" +
 											 "              " + datagridRow.Name, "Confirmar?", MessageBoxButton.YesNo);
 			if (answer != MessageBoxResult.Yes) return;
-			OrderDetails.DeactivateOrder(datagridRow.ID, General.OrdersPath);
+			OrderDetails.DeactivateOrder(General.OrdersPath, datagridRow.ID);
 			datagridOrders.ItemsSource = null;
 			datagridOrders.ItemsSource = OrderDetails.ReadOrdersFromFile(General.OrdersPath);
 		}
@@ -200,7 +200,6 @@ namespace Empacotadora {
 			foreach (Button item in buttonsToClear)
 				item.ClearValue(BackgroundProperty);
 		}
-
 		private void datagridOrders_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e) {
 			switch (e.Column.Header.ToString()) {
 				case "ID":
