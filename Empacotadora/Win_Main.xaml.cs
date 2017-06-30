@@ -18,11 +18,13 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Reflection;
 
-namespace Empacotadora {
+namespace Empacotadora
+{
 	/// <summary>
 	/// Lógica interna para Win_Main.xaml
 	/// </summary>
-	public partial class Win_Main : Window {
+	public partial class Win_Main : Window
+	{
 		// tb -> textbox / lbl -> label / btn -> button / rb -> radiobutton / sb -> statusbar
 		// cal -> calendar / vb -> viewbox / lb -> listbox
 		// General
@@ -52,7 +54,8 @@ namespace Empacotadora {
 		int[] PLCArrayPackageRows;
 		int _tubeNumber;
 		bool _changeOn, _tubeChange, _pageActive;
-		struct StructTubeChange {
+		struct StructTubeChange
+		{
 			public string OldLength;
 			public string OldThickness;
 			public string OldTi;
@@ -62,7 +65,7 @@ namespace Empacotadora {
 		StructTubeChange _oldTube = new StructTubeChange();
 
 		readonly int _defaultRoundTubeNmbr = 37, _defaultDiameter = 120;
-		readonly int _defaultSquareTubeNmbr = 81, _defaultWidth = 60, _defaultHeight = 60;
+		readonly int _defaultSquareTubeNmbr = 80, _defaultWidth = 60, _defaultHeight = 40;
 		readonly byte _defaultStrapsNumber = 4;
 
 		public Win_Main()
@@ -100,7 +103,7 @@ namespace Empacotadora {
 		private void btnOrders_Click(object sender, RoutedEventArgs e)
 		{
 			Win_Orders wnOrders = new Win_Orders();
-			btnOrders.Background = Brushes.LightRed;
+			btnOrders.Background = Brushes.IndianRed;
 			btnWrapper.ClearValue(BackgroundProperty);
 			wnOrders.ShowDialog();
 			switch (General.CurrentLayout) {
@@ -154,17 +157,12 @@ namespace Empacotadora {
 			SetEditOrderLayout();
 			SetSqrWrap();
 			SetSqrTube();
-			ClearTextBoxes(gridNewOrder);
+			General.ClearTextBoxes(gridNewOrder);
 			lblID1.Content = "ID (auto):";
 			tbDensity.Text = "7.85";
 			string[] array = linesFromFile.Last().Split(',');
 			int.TryParse(array[0], out int id);
 			lblID.Content = (++id).ToString();
-		}
-		private void ClearTextBoxes(Grid grid)
-		{
-			foreach (TextBox item in General.GetTFromControl<TextBox>(grid))
-				item.Text = "";
 		}
 		private void btnSaveOrder_Click(object sender, RoutedEventArgs e)
 		{
@@ -347,7 +345,7 @@ namespace Empacotadora {
 		}
 		private void DrawShape()
 		{
-			if (CurrentOrder != null) {
+			if (CurrentOrder != null && CurrentOrder.PackageType != null) {
 				if (CurrentOrder.PackageType == "H")
 					DrawHexagonalWrap(Convert.ToInt32(CurrentOrder.TubeAm), Convert.ToInt32(CurrentOrder.Diameter));
 				else
@@ -416,7 +414,7 @@ namespace Empacotadora {
 				gridNewRecipeHexa.Visibility = _visible;
 				gridNewRecipeSquare.Visibility = _collapsed;
 			}
-			btnHexaWrap.Background = Brushes.LightRed;
+			btnHexaWrap.Background = Brushes.IndianRed;
 			btnHexaWrap.BorderBrush = Brushes.ActiveBorder;
 			btnSqrWrap.ClearValue(BackgroundProperty);
 			btnSqrWrap.BorderBrush = Brushes.NonActiveBorder;
@@ -434,7 +432,7 @@ namespace Empacotadora {
 				gridNewRecipeHexa.Visibility = _collapsed;
 				gridNewRecipeSquare.Visibility = _visible;
 			}
-			btnSqrWrap.Background = Brushes.LightRed;
+			btnSqrWrap.Background = Brushes.IndianRed;
 			btnSqrWrap.BorderBrush = Brushes.ActiveBorder;
 			btnHexaWrap.ClearValue(BackgroundProperty);
 			btnHexaWrap.BorderBrush = Brushes.NonActiveBorder;
@@ -449,7 +447,7 @@ namespace Empacotadora {
 		}
 		private void SetRoundTube()
 		{
-			btnRoundTube.Background = Brushes.LightRed;
+			btnRoundTube.Background = Brushes.IndianRed;
 			btnRoundTube.BorderBrush = Brushes.ActiveBorder;
 			btnSqrTube.ClearValue(BackgroundProperty);
 			btnSqrTube.BorderBrush = Brushes.NonActiveBorder;
@@ -463,7 +461,7 @@ namespace Empacotadora {
 		}
 		private void SetSqrTube()
 		{
-			btnSqrTube.Background = Brushes.LightRed;
+			btnSqrTube.Background = Brushes.IndianRed;
 			btnSqrTube.BorderBrush = Brushes.ActiveBorder;
 			btnRoundTube.ClearValue(BackgroundProperty);
 			btnRoundTube.BorderBrush = Brushes.NonActiveBorder;
@@ -525,7 +523,7 @@ namespace Empacotadora {
 		{
 			lblTitle.Content = "Receitas";
 			tabLayout.SelectedItem = tabItemRecipes;
-			btnRecipeRoundTube.Background = Brushes.LightRed;
+			btnRecipeRoundTube.Background = Brushes.IndianRed;
 			btnRecipeSquareTube.ClearValue(BackgroundProperty);
 			btnReturn.Visibility = _visible;
 			btnManual.Visibility = _collapsed;
@@ -563,7 +561,7 @@ namespace Empacotadora {
 			IEnumerable<Button> buttonsToClear = new Collection<Button>() {
 				btnOrders, btnStrapper, btnStorage, btnPLCConnection };
 			ClearButtonBackground(buttonsToClear);
-			btnWrapper.Background = Brushes.LightRed;
+			btnWrapper.Background = Brushes.IndianRed;
 			borderManualWrap.Visibility = _collapsed;
 			gridNewRecipeDrawnShapes.Visibility = _collapsed;
 			General.CurrentLayout = General.Layout.Wrapper;
@@ -599,7 +597,7 @@ namespace Empacotadora {
 			ClearButtonBackground(buttonsToClear);
 			if (CurrentOrder != null)
 				lblPackageLength.Content = CurrentOrder.Length;
-			btnStrapper.Background = Brushes.LightRed;
+			btnStrapper.Background = Brushes.IndianRed;
 			_isStrapsModifyActive = false;
 			ToogleModifyStrapsTextBoxes();
 			borderManualWrap.Visibility = _collapsed;
@@ -612,7 +610,7 @@ namespace Empacotadora {
 			IEnumerable<Button> buttonsToClear = new Collection<Button>() {
 				btnWrapper, btnStrapper, btnPLCConnection };
 			ClearButtonBackground(buttonsToClear);
-			btnStorage.Background = Brushes.LightRed;
+			btnStorage.Background = Brushes.IndianRed;
 			borderManualWrap.Visibility = _collapsed;
 			FillLastHistory();
 			General.CurrentLayout = General.Layout.Storage;
@@ -622,7 +620,7 @@ namespace Empacotadora {
 			IEnumerable<Button> buttonsToClear = new Collection<Button>() {
 				btnWrapper, btnStorage, btnStorage };
 			ClearButtonBackground(buttonsToClear);
-			btnPLCConnection.Background = Brushes.LightRed;
+			btnPLCConnection.Background = Brushes.IndianRed;
 			tabLayout.SelectedItem = tabItemPLCConnection;
 		}
 		// General Layout
@@ -670,23 +668,32 @@ namespace Empacotadora {
 		private void DrawHexagonalWrap(int tubeAmount, double diameter)
 		{
 			CheckIfIsLastTubeAndIncreasesPackage(tubeAmount);
-			General.GetValuesFromRoundTubeRecipe(tubeAmount, out int tubeAmountBigLine, out int tubeAmountSmallLine, out int vPosInit, out int hPosInit, out int shapeDiameter);
+			Dictionary<string, int> recipeValues = Recipes.GetRoundTubeRecipe(tubeAmount);
+			int shapeDiameter = recipeValues["shapeSize"];
 			if (shapeDiameter == 0) return;
 			int columns = 0, rows = 0;
 			ICollection<Ellipse> listEllipses = new Collection<Ellipse>();
-			General.CreateEllipseShapesToBeDrawn(tubeAmount, tubeAmountBigLine, tubeAmountSmallLine, shapeDiameter, vPosInit, hPosInit, ref columns, ref rows, listEllipses);
-			PutShapesInCanvas(listEllipses);
+			General.CreateEllipseShapesToBeDrawn(tubeAmount, recipeValues, ref columns, ref rows, listEllipses);
+			General.PutShapesInCanvas(listEllipses, cnvAtado);
 			double packageWidth = diameter * columns;
 			double packageHeight = diameter * rows;
 			UpdateLabelsValues(tubeAmount, packageWidth, packageHeight);
 		}
 		private void DrawHexagonalWrap(int tubeAmount, double diameter, int tubeAmountBigLine, int tubeAmountSmallLine, int vPosInit, int hPosInit, int shapeSize)
 		{
+			Dictionary<string,int> recipeValues = new Dictionary<string, int>()
+			{
+				{ "bigRowSize", tubeAmountBigLine },
+				{ "smallRowSize", tubeAmountSmallLine },
+				{ "vPos", vPosInit },
+				{ "hPos", hPosInit },
+				{ "shapeSize", shapeSize }
+			};
 			if (shapeSize == 0) return;
 			int columns = 0, rows = 0;
 			ICollection<Ellipse> listEllipses = new Collection<Ellipse>();
-			General.CreateEllipseShapesToBeDrawn(tubeAmount, tubeAmountBigLine, tubeAmountSmallLine, shapeSize, vPosInit, hPosInit, ref columns, ref rows, listEllipses);
-			PutShapesInCanvas(listEllipses);
+			General.CreateEllipseShapesToBeDrawn(tubeAmount, recipeValues, ref columns, ref rows, listEllipses);
+			General.PutShapesInCanvas(listEllipses, cnvAtado);
 
 			double packageWidth = diameter * columns;
 			double packageHeight = diameter * rows;
@@ -696,29 +703,57 @@ namespace Empacotadora {
 		private void DrawSquareWrap(int tubeAmount, int width, int height)
 		{
 			CheckIfIsLastTubeAndIncreasesPackage(tubeAmount);
-			General.GetValuesFromSquareRectTubeRecipe(tubeAmount, width, height, out int shapeWidth, out int shapeHeight, out int vPosInit, out int hPosInit);
-			if (shapeWidth == 0 || shapeHeight == 0) return;
-			General.CalculateNumberOfRowsAndColummsFromTubeAmount(tubeAmount, width, height, out double numH, out double numV, out int packageWidth, out int packageHeight);
+			Dictionary<string, int> recipeValues;
+			if (width == height) {
+				recipeValues = Recipes.GetSquareTubeRecipe(tubeAmount);
+				recipeValues["shapeWidth"] = recipeValues["shapeSize"];
+				recipeValues["shapeHeight"] = recipeValues["shapeSize"];
+			}
+			else {
+				recipeValues = Recipes.GetRectTubeRecipe(tubeAmount);
+				recipeValues["shapeWidth"] = recipeValues["shapeSize"]+ (recipeValues["shapeSize"]/5);
+				recipeValues["shapeHeight"] = recipeValues["shapeSize"] - (recipeValues["shapeSize"] / 5);
+			}
+			if (recipeValues["shapeSize"] == 0 || recipeValues["shapeSize"] == 0) {
+				cnvAtado.Children.Clear();
+				return;
+			}
+			if (recipeValues["columns"] == 0 || recipeValues["rows"] == 0) {
+				Tuple<double, double> values = General.CalculateNumberOfRowsAndColummsFromTubeAmount(tubeAmount, width, height);
+				recipeValues["columns"] = Convert.ToInt32(values.Item1);
+				recipeValues["rows"] = Convert.ToInt32(values.Item2);
+			}
+			int packageWidth = width * recipeValues["columns"];
+			int packageHeight = height * recipeValues["rows"];
 			ICollection<Rectangle> listRectangles = new Collection<Rectangle>();
-			General.CreateRectangleShapesToBeDrawn(tubeAmount, shapeWidth, shapeHeight, hPosInit, vPosInit, numH, numV, listRectangles);
-			PutShapesInCanvas(listRectangles);
+			General.CreateRectangleShapesToBeDrawn(tubeAmount, recipeValues, listRectangles);
+			General.PutShapesInCanvas(listRectangles, cnvAtado);
 			UpdateLabelsValues(tubeAmount, packageWidth, packageHeight);
 		}
 		private void DrawSquareWrap(int tubeAmount, int width, int height, int rows, int columns, int vPosInit, int hPosInit, int shapeSize)
 		{
 			int shapeWidth, shapeHeight;
-			if (width != height) {
-				shapeWidth = shapeSize + (shapeSize / 5);
-				shapeHeight = shapeSize - (shapeSize / 5);
-			}
-			else {
+			if (width == height) {
 				shapeWidth = shapeSize;
 				shapeHeight = shapeSize;
 			}
+			else {
+				shapeWidth = shapeSize + (shapeSize / 5);
+				shapeHeight = shapeSize - (shapeSize / 5);
+			}
 			if (shapeWidth == 0 || shapeHeight == 0) return;
+			Dictionary<string, int> recipeValues = new Dictionary<string, int>()
+			{
+				{ "shapeWidth", shapeWidth },
+				{ "shapeHeight", shapeHeight },
+				{ " hPosInit" , hPosInit },
+				{ " vPosInit", vPosInit },
+				{ " columns", columns },
+				{ " rows", rows }
+			};
 			ICollection<Rectangle> listRectangles = new Collection<Rectangle>();
-			General.CreateRectangleShapesToBeDrawn(tubeAmount, shapeWidth, shapeHeight, hPosInit, vPosInit, columns, rows, listRectangles);
-			PutShapesInCanvas(listRectangles);
+			General.CreateRectangleShapesToBeDrawn(tubeAmount, recipeValues, listRectangles);
+			General.PutShapesInCanvas(listRectangles, cnvAtado);
 			int packageWidth = width * columns;
 			int packageHeight = height * rows;
 			UpdateLabelsValues(tubeAmount, packageWidth, packageHeight);
@@ -729,12 +764,6 @@ namespace Empacotadora {
 				_lastTube = 0;
 				++_currentPackage;
 			}
-		}
-		private void PutShapesInCanvas<T>(IEnumerable<T> listOfShapes) where T : Shape
-		{
-			cnvAtado.Children.Clear();
-			foreach (var shape in listOfShapes)
-				cnvAtado.Children.Add(shape);
 		}
 		private void UpdateLabelsValues(int tubeAmount, double packageWidth, double packageHeight)
 		{
@@ -1288,7 +1317,7 @@ namespace Empacotadora {
 			}
 			else {
 				lblDrain.Content = "OFF";
-				lblDrain.Foreground = Brushes.LightRed;
+				lblDrain.Foreground = Brushes.IndianRed;
 			}
 		}
 		// History
@@ -1396,19 +1425,19 @@ namespace Empacotadora {
 		private void btnRecipeRoundTube_Click(object sender, RoutedEventArgs e)
 		{
 			ShowTubeRecipesOnDataGrid(General.PathRoundTubes);
-			ClearTextBoxes(gridRecipes);
+			General.ClearTextBoxes(gridRecipes);
 			_currentRecipe = General.ActiveRecipe.RoundTube;
 		}
 		private void btnRecipeSquareTube_Click(object sender, RoutedEventArgs e)
 		{
 			ShowTubeRecipesOnDataGrid(General.PathSquareTubes, General.PathRectTubes);
-			ClearTextBoxes(gridRecipes);
+			General.ClearTextBoxes(gridRecipes);
 			_currentRecipe = General.ActiveRecipe.SquareTube;
 		}
 		private void ShowTubeRecipesOnDataGrid(string pathRoundTube)
 		{
 			datagridRecipes.ItemsSource = Recipes.ReadTubeRecipesFromFile(pathRoundTube);
-			btnRecipeRoundTube.Background = Brushes.LightRed;
+			btnRecipeRoundTube.Background = Brushes.IndianRed;
 			btnRecipeSquareTube.ClearValue(BackgroundProperty);
 			gridRecipesSquareTube.Visibility = _collapsed;
 			gridRecipesRoundTube.Visibility = _visible;
@@ -1416,7 +1445,7 @@ namespace Empacotadora {
 		private void ShowTubeRecipesOnDataGrid(string pathSquareTube, string pathRectTube)
 		{
 			datagridRecipes.ItemsSource = Recipes.ReadTubeRecipesFromFile(pathSquareTube, pathRectTube);
-			btnRecipeSquareTube.Background = Brushes.LightRed;
+			btnRecipeSquareTube.Background = Brushes.IndianRed;
 			btnRecipeRoundTube.ClearValue(BackgroundProperty);
 			gridRecipesRoundTube.Visibility = _collapsed;
 			gridRecipesSquareTube.Visibility = _visible;
@@ -1492,20 +1521,20 @@ namespace Empacotadora {
 			DisableTextBoxesModification();
 			ICollection<string> newFileContent = new Collection<string>();
 			if (_currentRecipe == General.ActiveRecipe.RoundTube) {
-				EditRoundTubeRecipesTextFile(newFileContent);
+				General.EditRoundTubeRecipesTextFile(newFileContent, tbRecipeTubes.Text, tbRecipeBigRow.Text, tbRecipeSmallRow.Text);
 				msg = Document.WriteToFile(General.PathRoundTubes, newFileContent.ToArray()) ? SaveSuccessful : SaveError;
 				UpdateStatusBar(msg);
 				datagridRecipes.ItemsSource = null;
 				datagridRecipes.ItemsSource = Recipes.ReadTubeRecipesFromFile(General.PathRoundTubes);
 			}
 			else {
-				found = EditSquareTubeRecipesTextFile(newFileContent, General.PathSquareTubes);
+				found = General.EditSquareTubeRecipesTextFile(newFileContent, General.PathSquareTubes, tbRecipeTubes.Text, tbRecipecolumns.Text, tbRecipeRows.Text);
 				if (found) {
 					msg = Document.WriteToFile(General.PathSquareTubes, newFileContent.ToArray()) ? SaveSuccessful : SaveError;
 					UpdateStatusBar(msg);
 				}
 				else {
-					EditSquareTubeRecipesTextFile(newFileContent, General.PathRectTubes);
+					General.EditSquareTubeRecipesTextFile(newFileContent, General.PathRectTubes, tbRecipeTubes.Text, tbRecipecolumns.Text, tbRecipeRows.Text);
 					msg = Document.WriteToFile(General.PathRectTubes, newFileContent.ToArray()) ? SaveSuccessful : SaveError;
 					UpdateStatusBar(msg);
 				}
@@ -1519,43 +1548,6 @@ namespace Empacotadora {
 		{
 			foreach (TextBox item in General.GetTFromControl<TextBox>(gridRecipes))
 				ResetTextBox(item);
-		}
-		private bool EditSquareTubeRecipesTextFile(ICollection<string> newFileContent, string path)
-		{// This method will "out"/"ref" the newFileContent because "ICollection" is of reference type
-			bool found = false;
-			if (!Document.ReadFromFile(path, out IEnumerable<string> linesFromFile)) return false;
-			foreach (string item in linesFromFile) {
-				string newline = "";
-				string[] array = item.Split(',');
-				if (array[0] == tbRecipeTubes.Text) {
-					array[array.Length - 2] = tbRecipecolumns.Text;
-					array[array.Length - 1] = tbRecipeRows.Text;
-					found = true;
-					//foreach (string value in array)
-					//	newline += value + ",";
-					newline = array.Aggregate(newline, (current, value) => current + (value + ","));
-					newline = newline.Remove(newline.Length - 1);
-				}
-				newFileContent.Add(newline == "" ? item : newline);
-			}
-			return found;
-		}
-		private void EditRoundTubeRecipesTextFile(ICollection<string> newFileContent)
-		{// This method will "out"/"ref" the newFileContent because "ICollection" is of reference type
-			if (!Document.ReadFromFile(General.PathRoundTubes, out IEnumerable<string> linesFromFile)) return;
-			foreach (string item in linesFromFile) {
-				string newline = "";
-				string[] array = item.Split(',');
-				if (array[0] == tbRecipeTubes.Text) {
-					array[1] = tbRecipeBigRow.Text;
-					array[2] = tbRecipeSmallRow.Text;
-					//foreach (string value in array)
-					//	newline += value + ",";
-					newline = array.Aggregate(newline, (current, value) => current + (value + ","));
-					newline = newline.Remove(newline.Length - 1);
-				}
-				newFileContent.Add(newline == "" ? item : newline);
-			}
 		}
 		private void btnAddRecipe_Click(object sender, RoutedEventArgs e)
 		{
@@ -1749,7 +1741,7 @@ namespace Empacotadora {
 			string status = PLC.Disconnect();
 			UpdateStatusBar(status);
 			if (!status.Contains("Disconnected") && !status.Contains("Not connected")) return;
-			lblConnectionStatus.Background = Brushes.LightRed;
+			lblConnectionStatus.Background = Brushes.IndianRed;
 			lblConnectionStatus.Content = "Desligado";
 		}
 		private void btnWriteData_Click(object sender, RoutedEventArgs e)

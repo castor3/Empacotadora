@@ -7,8 +7,10 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
-namespace Empacotadora {
-	class General {
+namespace Empacotadora
+{
+	class General
+	{
 		public enum ActiveTubeType { Round, Square }
 		public enum ActiveWrapType { Hexagonal, Square }
 		public enum Layout { Wrapper, NewOrder, StrapsNewOrder, EditOrder, StrapsEditOrder, EditCurrentOrder, StrapsEditCurrentOrder, Strapper, Storage, Recipes, NewRecipe, History }
@@ -33,7 +35,8 @@ namespace Empacotadora {
 		/// <summary>
 		/// Gets generic type Childs from generic type Control
 		/// </summary>
-		public static IEnumerable<T> GetTFromControl<T>(DependencyObject depObj) where T : DependencyObject {
+		public static IEnumerable<T> GetTFromControl<T>(DependencyObject depObj) where T : DependencyObject
+		{
 			if (depObj == null) yield break;
 			for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++) {
 				DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
@@ -43,12 +46,14 @@ namespace Empacotadora {
 					yield return childOfChild;
 			}
 		}
-		public static void SetTextBoxForEdit(TextBox item) {
+		public static void SetTextBoxForEdit(TextBox item)
+		{
 			item.Background = Brushes.YellowBrush;
 			item.IsReadOnly = false;
 			item.Focusable = true;
 		}
-		public static string[] GetStrapsValuesFromTextBoxes(IEnumerable<TextBox> TextBoxes) {
+		public static string[] GetStrapsValuesFromTextBoxes(IEnumerable<TextBox> TextBoxes)
+		{
 			string[] values = new string[TextBoxes.Count()];
 			byte i = 0;
 			foreach (var textbBox in TextBoxes) {
@@ -57,13 +62,20 @@ namespace Empacotadora {
 			}
 			return values;
 		}
+		public static void ClearTextBoxes(Grid grid)
+		{
+			foreach (TextBox item in GetTFromControl<TextBox>(grid))
+				item.Text = "";
+		}
 		// Rope Straps
-		public static IEnumerable<string> GetAllRopeStrapsFromFile(string pathRopeStraps) {
+		public static IEnumerable<string> GetAllRopeStrapsFromFile(string pathRopeStraps)
+		{
 			if (!Document.ReadFromFile(pathRopeStraps, out IEnumerable<string> linesFromFile))
 				return Enumerable.Empty<string>();
 			return linesFromFile;
 		}
-		public static bool CheckIfRopeIsValid(int packagePerimeter, int packageWeight, string[] values) {
+		public static bool CheckIfRopeIsValid(int packagePerimeter, int packageWeight, string[] values)
+		{
 			bool ropeIsValid = false, ropePerimeterIsValid = false, ropeWeightIsValid = false;
 			int ropePerimeter = 0, ropeWeight = 0;
 			if (!int.TryParse(values[1], out ropePerimeter) ||
@@ -74,8 +86,21 @@ namespace Empacotadora {
 			ropeIsValid = (ropePerimeterIsValid && ropeWeightIsValid);
 			return ropeIsValid;
 		}
+		// Draw Shapes
+		public static void PutShapesInCanvas<T>(IEnumerable<T> listOfShapes, Canvas atado) where T : Shape
+		{
+			atado.Children.Clear();
+			foreach (var shape in listOfShapes)
+				atado.Children.Add(shape);
+		}
 		// Round (ellipse) shape
-		public static void CreateEllipseShapesToBeDrawn(int tubeAmount, int tubeAmountBigLine, int tubeAmountSmallLine, int shapeDiameter, int vPosInit, int hPosInit, ref int columns, ref int rows, ICollection<Ellipse> listEllipses) {
+		public static void CreateEllipseShapesToBeDrawn(int tubeAmount, Dictionary<string,int> recipeValues, ref int columns, ref int rows, ICollection<Ellipse> listEllipses)
+		{
+			int shapeDiameter = recipeValues["shapeSize"];
+			int tubeAmountBigLine = recipeValues["bigRowSize"];
+			int tubeAmountSmallLine = recipeValues["smallRowSize"];
+			int vPosInit = recipeValues["vPos"];
+			int hPosInit = recipeValues["hPos"];
 			int hPos = hPosInit, vPos = vPosInit, tubeCurrentlyDrawing = 0;
 			byte variavel = 0, lineCap = 0;
 			bool incrementing = false;
@@ -104,7 +129,7 @@ namespace Empacotadora {
 					// prevent shape from being drawn if total number of tubes was reached
 					if (tubeCurrentlyDrawing < tubeAmount) {
 						ellip.StrokeThickness = 2;
-						ellip.Fill = (tubeCurrentlyDrawing < Win_Main.LastTube) ? Brushes.TomatoBrush : Brushes.GrayBrush;
+						ellip.Fill = (tubeCurrentlyDrawing < Win_Main.LastTube) ? Brushes.IndianRed : Brushes.GrayBrush;
 					}
 					else
 						ellip.StrokeThickness = 0;
@@ -119,28 +144,18 @@ namespace Empacotadora {
 				vPos -= shapeDiameter + (_shapeMargin / 2);
 			}
 		}
-		public static void GetValuesFromRoundTubeRecipe(int tubeAmount, out int tubeAmountBigLine, out int tubeAmountSmallLine, out int vPosInit, out int hPosInit, out int shapeDiameter) {
-			Dictionary<string, int> recipeValues = Recipes.GetRoundTubeRecipe(tubeAmount);
-			if (recipeValues != null && !recipeValues.Equals(new Dictionary<string, int>())) {
-				tubeAmountBigLine = recipeValues["bigRowSize"];
-				tubeAmountSmallLine = recipeValues["smallRowSize"];
-				vPosInit = recipeValues["vPos"];
-				hPosInit = recipeValues["hPos"];
-				shapeDiameter = recipeValues["shapeSize"];
-			}
-			else {
-				tubeAmountBigLine = 0;
-				tubeAmountSmallLine = 0;
-				vPosInit = 0;
-				hPosInit = 0;
-				shapeDiameter = 0;
-			}
-		}
-		// Square (rectangle) shape
-		public static void CreateRectangleShapesToBeDrawn(int tubeAmount, int shapeWidth, int shapeHeight, int hPosInit, int vPosInit, double numH, double numV, ICollection<Rectangle> listRectangles) {
+		// Rectangle shape
+		public static void CreateRectangleShapesToBeDrawn(int tubeAmount, Dictionary<string, int> recipeValues, ICollection<Rectangle> listRectangles)
+		{
+			int shapeWidth = recipeValues["shapeWidth"];
+			int shapeHeight = recipeValues["shapeHeight"];
+			int vPosInit = recipeValues["vPos"];
+			int hPosInit = recipeValues["hPos"];
+			int columns = recipeValues["columns"];
+			int rows = recipeValues["rows"];
 			int hPos = hPosInit, vPos = vPosInit, tubeCurrentlyDrawing = 0;
-			for (int i = 0; i < numV; i++) {
-				for (int j = 0; j < numH; j++) {
+			for (int i = 0; i < rows; i++) {
+				for (int j = 0; j < columns; j++) {
 					Rectangle rect = new Rectangle() {
 						Stroke = Brushes.BlackBrush,
 						Width = shapeWidth,
@@ -151,7 +166,7 @@ namespace Empacotadora {
 					// prevent shape from being drawn if total number of tubes was reached
 					if (tubeCurrentlyDrawing < tubeAmount) {
 						rect.StrokeThickness = 2;
-						rect.Fill = (tubeCurrentlyDrawing < Win_Main.LastTube) ? Brushes.TomatoBrush : Brushes.GrayBrush;
+						rect.Fill = (tubeCurrentlyDrawing < Win_Main.LastTube) ? Brushes.IndianRed : Brushes.GrayBrush;
 					}
 					else
 						rect.StrokeThickness = 0;
@@ -163,30 +178,11 @@ namespace Empacotadora {
 				vPos -= shapeHeight + _shapeMargin;
 			}
 		}
-		public static void GetValuesFromSquareRectTubeRecipe(int tubeAmount, int width, int height, out int shapeWidth, out int shapeHeight, out int vPosInit, out int hPosInit) {
-			Dictionary<string, int> recipeValues = Recipes.GetSquareTubeRecipe(tubeAmount);
-			if (recipeValues != null) {
-				vPosInit = recipeValues["vPos"];
-				hPosInit = recipeValues["hPos"];
-				if (width != height) {
-					shapeWidth = recipeValues["shapeSize"] + (recipeValues["shapeSize"] / 5);
-					shapeHeight = recipeValues["shapeSize"] - (recipeValues["shapeSize"] / 5);
-				}
-				else {
-					shapeWidth = recipeValues["shapeSize"];
-					shapeHeight = recipeValues["shapeSize"];
-				}
-			}
-			else {
-				shapeWidth = 0;
-				shapeHeight = 0;
-				vPosInit = 0;
-				hPosInit = 0;
-			}
-		}
-		public static void CalculateNumberOfRowsAndColummsFromTubeAmount(int tubeAmount, int width, int height, out double numH, out double numV, out int packageWidth, out int packageHeight) {
+		public static Tuple<double, double> CalculateNumberOfRowsAndColummsFromTubeAmount(int tubeAmount, int width, int height)
+		{
 			// divides the number of tubes until the number of rows and collums is even (+/-)
 			double start, result = 0, temp1 = 0, temp2 = 0;
+			int packageWidth = 0, packageHeight = 0;
 			start = (tubeAmount > 300) ? 30 : 15;   // will likely be less than 300 tubes, no need to always start on 30
 			packageWidth = width * (int)(start + 1);
 			packageHeight = height * (int)result;
@@ -198,10 +194,48 @@ namespace Empacotadora {
 				packageWidth = width * (int)(--start + 1);
 				packageHeight = height * (int)result;
 			}
-			packageWidth = width * (int)(temp2 + 1);
-			packageHeight = height * (int)temp1;
-			numV = temp1;
-			numH = temp2 + 1;
+			double columns = temp1;
+			double rows = temp2 + 1;
+			return new Tuple<double, double>(rows, columns);
+		}
+		// Recipes
+		public static bool EditSquareTubeRecipesTextFile(ICollection<string> newFileContent, string path, string recipeTubes, string recipeColumns, string recipeRows)
+		{// This method will "out"/"ref" the newFileContent because "ICollection" is of reference type
+			bool success = false;
+			if (!Document.ReadFromFile(path, out IEnumerable<string> linesFromFile)) return false;
+			foreach (string item in linesFromFile) {
+				string newline = "";
+				string[] array = item.Split(',');
+				if (array[0] == recipeTubes) {
+					array[array.Length - 2] = recipeColumns;
+					array[array.Length - 1] = recipeRows;
+					success = true;
+					//foreach (string value in array)
+					//	newline += value + ",";
+					newline = array.Aggregate(newline, (current, value) => current + (value + ","));
+					newline = newline.Remove(newline.Length - 1);
+				}
+				newFileContent.Add(newline == "" ? item : newline);
+			}
+			return success;
+		}
+		public static bool EditRoundTubeRecipesTextFile(ICollection<string> newFileContent, string recipeTubes, string recipeBigRow, string recipeSmallRow)
+		{// This method acts as "ref" to newFileContent because "ICollection" is of reference type
+			if (!Document.ReadFromFile(PathRoundTubes, out IEnumerable<string> linesFromFile)) return false;
+			foreach (string item in linesFromFile) {
+				string newline = "";
+				string[] array = item.Split(',');
+				if (array[0] == recipeTubes) {
+					array[1] = recipeBigRow;
+					array[2] = recipeSmallRow;
+					//foreach (string value in array)
+					//	newline += value + ",";
+					newline = array.Aggregate(newline, (current, value) => current + (value + ","));
+					newline = newline.Remove(newline.Length - 1);
+				}
+				newFileContent.Add(newline == "" ? item : newline);
+			}
+			return true;
 		}
 	}
 }

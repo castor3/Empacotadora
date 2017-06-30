@@ -30,7 +30,7 @@ namespace Empacotadora {
 			tabItemCurrentOrder.Visibility = _collapsed;
 			tabItemListOrders.Visibility = _collapsed;
 			FillControlsWithCurrentOrder();
-			btnCurrentOrder.Background = Brushes.LightRed;
+			btnCurrentOrder.Background = Brushes.IndianRed;
 			errorImage.Source = Imaging.CreateBitmapSourceFromHIcon(SystemIcons.Error.Handle‌​, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
 		}
 		private void btnReturn_Click(object sender, RoutedEventArgs e) {
@@ -185,13 +185,13 @@ namespace Empacotadora {
 			IEnumerable<Button> buttonsToClear = new Collection<Button>() {
 				btnListOrders, btnReturn, btnNewOrder };
 			ClearButtonBackground(buttonsToClear);
-			btnCurrentOrder.Background = Brushes.LightRed;
+			btnCurrentOrder.Background = Brushes.IndianRed;
 		}
 		private void SetOrdersListLayout() {
 			tabOrders.SelectedItem = tabItemListOrders;
 			lblTitle.Content = "Ordens";
 			datagridOrders.ItemsSource = OrderDetails.ReadOrdersFromFile(General.OrdersPath);
-			btnListOrders.Background = Brushes.LightRed;
+			btnListOrders.Background = Brushes.IndianRed;
 			IEnumerable<Button> buttonsToClear = new Collection<Button>() {
 				btnReturn, btnNewOrder, btnCurrentOrder };
 			ClearButtonBackground(buttonsToClear);
