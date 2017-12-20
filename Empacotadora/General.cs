@@ -76,15 +76,13 @@ namespace Empacotadora
 		}
 		public static bool CheckIfRopeIsValid(int packagePerimeter, int packageWeight, string[] values)
 		{
-			bool ropeIsValid = false, ropePerimeterIsValid = false, ropeWeightIsValid = false;
-			int ropePerimeter = 0, ropeWeight = 0;
-			if (!int.TryParse(values[1], out ropePerimeter) ||
-				!int.TryParse(values[2], out ropeWeight)) return false;
+			bool ropePerimeterIsValid = false, ropeWeightIsValid = false;
+			if (!int.TryParse(values[1], out int ropePerimeter) ||
+				!int.TryParse(values[2], out int ropeWeight)) return false;
 			ropePerimeterIsValid = (ropePerimeter >= packagePerimeter + 150 &&
 										ropePerimeter <= packagePerimeter + 300);
 			ropeWeightIsValid = (ropeWeight >= packageWeight + 50);
-			ropeIsValid = (ropePerimeterIsValid && ropeWeightIsValid);
-			return ropeIsValid;
+			return (ropePerimeterIsValid && ropeWeightIsValid);
 		}
 		// Draw Shapes
 		public static void PutShapesInCanvas<T>(IEnumerable<T> listOfShapes, Canvas atado) where T : Shape
@@ -183,7 +181,7 @@ namespace Empacotadora
 			// divides the number of tubes until the number of rows and collums is even (+/-)
 			double start, result = 0, temp1 = 0, temp2 = 0;
 			int packageWidth = 0, packageHeight = 0;
-			start = (tubeAmount > 300) ? 30 : 15;   // will likely be less than 300 tubes, no need to always start on 30
+			start = (tubeAmount > 300) ? 30 : 15;
 			packageWidth = width * (int)(start + 1);
 			packageHeight = height * (int)result;
 			// packagewidth can never be higher than packageHeight

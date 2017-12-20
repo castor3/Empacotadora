@@ -27,7 +27,10 @@ namespace Empacotadora {
 				File.WriteAllLines(path, newFileContent);
 				return true;
 			}
-			catch (Exception exc) when (exc is IOException || exc is FileNotFoundException || exc is DirectoryNotFoundException || exc is UnauthorizedAccessException) {
+			catch (Exception exc) when (exc is IOException ||
+										exc is FileNotFoundException ||
+										exc is DirectoryNotFoundException ||
+										exc is UnauthorizedAccessException) {
 				MessageBox.Show(exc.Message);
 				return false;
 			}
@@ -40,7 +43,10 @@ namespace Empacotadora {
 				File.AppendAllText(path, stringToSave);
 				return true;
 			}
-			catch (Exception exc) when (exc is IOException || exc is FileNotFoundException || exc is DirectoryNotFoundException || exc is UnauthorizedAccessException) {
+			catch (Exception exc) when (exc is IOException ||
+										exc is FileNotFoundException ||
+										exc is DirectoryNotFoundException ||
+										exc is UnauthorizedAccessException) {
 				MessageBox.Show(exc.Message);
 				return false;
 			}

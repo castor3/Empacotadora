@@ -27,7 +27,6 @@ namespace Empacotadora {
 		// Methods
 		public double CalculateWeight(OrderDetails order) {
 			// Returns kg/m
-			double weight = 0;
 			bool boolDiam = double.TryParse(order.Diameter, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double diameter);
 			bool boolWidth = double.TryParse(order.Width, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double width);
 			bool boolHeight = double.TryParse(order.Height, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double height);
@@ -39,7 +38,7 @@ namespace Empacotadora {
 				area = GetAreaOfRoundTube(diameter, thickness);
 			else
 				area = GetAreaOfSquareTube(width, height, thickness);
-			weight = (density / 10) * area;
+			double weight = (density / 10) * area;
 			return weight;
 		}
 		private static double GetAreaOfSquareTube(double width, double height, double thickness) {
@@ -125,10 +124,7 @@ namespace Empacotadora {
 				string[] array = line.Split(',');
 				if (array[0] == orderID) {
 					array[1] = "0";
-					//foreach (string value in array)
-					//	newline += value + ",";
 					newline = array.Aggregate(newline, (current, value) => current + (value + ","));
-					// removes "," in the end of the line
 					newline = newline.Remove(newline.Length - 1);
 				}
 				newFileContent.Add(newline == "" ? line : newline);

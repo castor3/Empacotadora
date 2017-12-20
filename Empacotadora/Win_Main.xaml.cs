@@ -163,6 +163,7 @@ namespace Empacotadora
 			string[] array = linesFromFile.Last().Split(',');
 			int.TryParse(array[0], out int id);
 			lblID.Content = (++id).ToString();
+			lblTitle.Content = "Nova Ordem";
 		}
 		private void btnSaveOrder_Click(object sender, RoutedEventArgs e)
 		{
@@ -488,6 +489,7 @@ namespace Empacotadora
 			HideGeneralControls();
 			HideWrapperControls();
 			ShowEditOrderControls();
+			lblTitle.Content = "Editar Ordem";
 		}
 		private void SetStrapperLayout()
 		{
@@ -504,6 +506,7 @@ namespace Empacotadora
 			btnSaveOrder.Visibility = _visible;
 			btnReturn.Visibility = _visible;
 			btnSaveStraps.Visibility = _collapsed;
+			lblTitle.Content = "Definir Cintas";
 		}
 		private void SetStorageLayout()
 		{
@@ -517,6 +520,7 @@ namespace Empacotadora
 			FillHistoryDataGrid();
 			HideGeneralControls();
 			btnReturn.Visibility = _visible;
+			lblTitle.Content = "Histórico";
 			General.CurrentLayout = General.Layout.History;
 		}
 		private void SetRecipesLayout()
